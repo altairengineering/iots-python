@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
-from typing import List, overload
+from typing import List, overload, Union
 
+from models.property import PropertiesReq, PropertiesResp
 from .obj import APIObject
-from models.property import PropertiesResp
 
 
 @dataclass
@@ -10,9 +10,20 @@ class Property(APIObject):
     name: str
 
     def get(self) -> PropertiesResp:
+        """
+        Make a request to the server to get the value of the Property.
+
+        :return: A `PropertiesResp` dict with the value of the Property.
+        """
         return PropertiesResp(self._make_request().json())
 
     def update(self, value) -> PropertiesResp:
+        """
+        Make a request to the server to update the value of the Property.
+
+        :param value: The value to set on the Property.
+        :return: A `PropertiesResp` dict with the new value of the Property.
+        """
         payload = {self.name: value}
         return PropertiesResp(self._make_request("POST", payload).json())
 
@@ -25,9 +36,22 @@ class Properties(APIObject):
     properties: List[Property] = field(default_factory=list)
 
     def get(self) -> PropertiesResp:
+        """
+        Make a request to the server to list the value of all the Thing
+        Properties.
+
+        :return: A `PropertiesResp` dict with the values of all the Thing
+                 Properties.
+        """
         return PropertiesResp(self._make_request().json())
 
-    def update(self, values: dict) -> PropertiesResp:
+    def update(self, values: Union[dict, PropertiesReq]) -> PropertiesResp:
+        """
+        Make a request to the server to update one or multiple Property values.
+
+        :param values: A dictionary with the Property names and values to set.
+        :return: A `PropertiesResp` dict with the new Property values.
+        """
         return PropertiesResp(self._make_request("POST", values).json())
 
     def _build_partial_path(self):
