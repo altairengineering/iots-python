@@ -2,6 +2,7 @@ import os
 
 import requests
 
+from errors import ResponseError
 from .category import _CategoriesMethod
 from .errors import ExcMissingToken
 from .thing import _ThingsMethod
@@ -76,7 +77,6 @@ class API(_CategoriesMethod, _ThingsMethod):
                                 headers=headers, data=body, timeout=3)
 
         if resp.status_code >= 400:
-            # TODO: Return ResponseError
-            raise Exception(f"API error: {resp.status_code} - {resp.text}")
+            raise ResponseError.parse(resp.json())
 
         return resp

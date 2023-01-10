@@ -5,6 +5,7 @@ import pytest
 
 from api.api import API
 from api.errors import APIException, ExcMissingToken
+from errors import ResponseError
 from tests.common import make_json_response
 
 
@@ -60,6 +61,32 @@ class TestAPI(TestCase):
 
         assert resp.status_code == 200
         assert resp.json() == expected_resp_payload
+
+    def test_make_request_unauthenticated(self):
+        """
+        Makes an unauthenticated request to the API.
+        """
+        expected_resp_payload = {
+            "error": {
+                "message": "missing token",
+                "status": 401
+            }
+        }
+
+        expected_resp = make_json_response(401, expected_resp_payload)
+
+        with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+            with pytest.raises(ResponseError) as e:
+                API(host="test-api.swx.altairone.com").make_request("GET", "/info", auth=False)
+
+        m.assert_called_once_with("GET",
+                                  "https://test-api.swx.altairone.com/info",
+                                  headers={},
+                                  data=None,
+                                  timeout=3)
+
+        assert e.value.status_code == 401
+        assert e.value.json() == expected_resp_payload
 
     def test_make_request_missing_token(self):
         """
