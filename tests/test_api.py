@@ -1,20 +1,23 @@
 import os
-from unittest import TestCase
+from unittest import TestCase, mock
 
 import pytest
+
 from api.api import API
+from api.errors import APIException, ExcMissingToken
+from tests.common import make_json_response
 
 
 class TestAPI(TestCase):
     def test_create_successfully(self):
-        """ Tests creating an API instance successfully. """
+        """ Creates an API instance successfully. """
         api = API(host="test-api.swx.altairone.com")
         assert api.host == "https://test-api.swx.altairone.com"
 
     def test_default_host(self):
         """
-        Tests creating an API instance taking the host from the default
-        environment variable.
+        Creates an API instance taking the host from the default environment
+        variable.
         """
         os.environ["SWX_API_URL"] = "https://test-api.swx.altairone.com"
         api = API()
@@ -22,16 +25,57 @@ class TestAPI(TestCase):
 
     def test_missing_host(self):
         """
-        Tests creating an API instance taking the host from the default
-        environment variable.
+        Creates an API instance taking the host from the default environment
+        variable, but the variable is not set.
         """
         os.environ.pop("SWX_API_URL")
         with pytest.raises(ValueError):
             API()
 
+    def test_make_request(self):
+        """
+        Makes an authenticated request to the API successfully.
+        """
+        req_payload = {"foo": "bar"}
+        expected_resp_payload = {
+            "key1": 123,
+            "key2": "hey!"
+        }
+
+        expected_resp = make_json_response(200, expected_resp_payload)
+
+        with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+            resp = (API(host="test-api.swx.altairone.com").
+                    token("valid-token").
+                    make_request("POST", "/info", body=req_payload))
+
+        m.assert_called_once_with("POST",
+                                  "https://test-api.swx.altairone.com/info",
+                                  headers={
+                                      'Authorization': 'Bearer valid-token',
+                                      'Content-Type': 'application/json'
+                                  },
+                                  data=req_payload,
+                                  timeout=3)
+
+        assert resp.status_code == 200
+        assert resp.json() == expected_resp_payload
+
+    def test_make_request_missing_token(self):
+        """
+        Makes an authenticated request to the API, but the token is not set.
+        """
+        with pytest.raises(APIException) as e:
+            API(host="test-api.swx.altairone.com").make_request("POST", "/info")
+
+        assert e.value == ExcMissingToken
+
 
 class TestAPIObject(TestCase):
     def test_build_url(self):
+        """
+        Builds the full URL of a chained call successfully.
+        """
         api = API(host="test-api.swx.altairone.com")
         prop = api.categories("cat01").things("thing01").properties("temperature")
 
@@ -39,6 +83,9 @@ class TestAPIObject(TestCase):
                                    "/categories/cat01/things/thing01/properties/temperature"
 
     def test_build_path(self):
+        """
+        Builds the URL path of a chained call successfully.
+        """
         api = API(host="test-api.swx.altairone.com")
 
         cat = api.categories("cat01")

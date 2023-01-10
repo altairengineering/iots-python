@@ -16,6 +16,7 @@ class TestAPIProperties(TestCase):
 
         with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
             prop = (API(host="test-api.swx.altairone.com").
+                    token("valid-token").
                     things("thing01").
                     properties("temperature").
                     get())
@@ -42,6 +43,7 @@ class TestAPIProperties(TestCase):
 
         with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
             prop = (API(host="test-api.swx.altairone.com").
+                    token("valid-token").
                     things("thing01").
                     properties().
                     get())
@@ -65,6 +67,7 @@ class TestAPIProperties(TestCase):
 
         with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
             prop = (API(host="test-api.swx.altairone.com").
+                    token("valid-token").
                     things("thing01").
                     properties("temperature").
                     update(17.5))
@@ -95,6 +98,7 @@ class TestAPIProperties(TestCase):
 
         with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
             prop = (API(host="test-api.swx.altairone.com").
+                    token("valid-token").
                     things("thing01").
                     properties().
                     update(new_values))
