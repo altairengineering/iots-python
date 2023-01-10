@@ -5,8 +5,8 @@ import pytest
 from requests import Response
 from requests.exceptions import MissingSchema
 
-from swx.auth.token import Token, get_token, revoke_token, DEFAULT_TIMEOUT
-from swx.errors import OAuth2Error, TokenRevokeError
+from auth.token import Token, get_token, revoke_token, DEFAULT_TIMEOUT
+from errors import OAuth2Error, TokenRevokeError
 
 
 class TestToken(TestCase):
@@ -25,7 +25,7 @@ class TestToken(TestCase):
         resp.status_code = 200
         resp._content = json.dumps(expected_token).encode('utf-8')
 
-        with mock.patch("swx.auth.token.requests.post", return_value=resp) as m:
+        with mock.patch("auth.token.requests.post", return_value=resp) as m:
             actual_token = get_token("https://api.swx.mock", "client-id", "client-secret",
                                      ["app", "function"])
 
@@ -48,7 +48,7 @@ class TestToken(TestCase):
         resp.status_code = 204
         resp._content = None
 
-        with mock.patch("swx.auth.token.requests.post", return_value=resp) as m:
+        with mock.patch("auth.token.requests.post", return_value=resp) as m:
             actual_token.revoke()
 
         expected_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -80,7 +80,7 @@ class TestToken(TestCase):
         resp.status_code = expected_status_code
         resp._content = json.dumps(expected_resp_payload).encode('utf-8')
 
-        with mock.patch("swx.auth.token.requests.post", return_value=resp) as m:
+        with mock.patch("auth.token.requests.post", return_value=resp) as m:
             with pytest.raises(OAuth2Error) as e:
                 get_token("https://api.swx.mock", "client-id", "invalid-client-secret",
                           ["app", "function"])
@@ -111,7 +111,7 @@ class TestToken(TestCase):
         resp = Response()
         resp.status_code = 204
 
-        with mock.patch("swx.auth.token.requests.post", return_value=resp) as m:
+        with mock.patch("auth.token.requests.post", return_value=resp) as m:
             revoke_token("https://api.swx.mock","some-access-token", "client-id", "client-secret")
 
         expected_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -133,7 +133,7 @@ class TestToken(TestCase):
         resp = Response()
         resp.status_code = 200
 
-        with mock.patch("swx.auth.token.requests.post", return_value=resp) as m:
+        with mock.patch("auth.token.requests.post", return_value=resp) as m:
             revoke_token("https://api.swx.mock","some-access-token", "client-id")
 
         expected_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -168,7 +168,7 @@ class TestToken(TestCase):
         resp.status_code = expected_status_code
         resp._content = json.dumps(expected_resp_payload).encode('utf-8')
 
-        with mock.patch("swx.auth.token.requests.post", return_value=resp) as m:
+        with mock.patch("auth.token.requests.post", return_value=resp) as m:
             with pytest.raises(OAuth2Error) as e:
                 revoke_token("https://api.swx.mock","some-access-token", "client-id", "invalid-client-secret")
 
@@ -193,7 +193,7 @@ class TestToken(TestCase):
         with pytest.raises(TokenRevokeError):
             Token().revoke()
 
-    @mock.patch("swx.auth.token.requests.post")
+    @mock.patch("auth.token.requests.post")
     def test_get_token_successfully_with_context_manager(self, m: mock.Mock):
         """
         Tests a successful token request and revoke using a Context Manager.

@@ -11,7 +11,7 @@ It contains the following parameters:
 - **scopes**:          List of scopes to request.**(required)**
 
 ```Python
-import swx.auth.token as auth
+import auth.token as auth
 
 token = auth.get_token("<host_url>", "<my_client_id>", "<my_client_secret>", ["<scope_1>", "<scope_2>", "<scope_3>"])
 ```
@@ -30,8 +30,8 @@ If we want to work over all the Things this parameter must be empty. **(optional
 
 
 ```Python
-import swx.auth.token as auth
-import swx.functions as api
+import auth.token as auth
+import functions as api
 
 token = auth.get_token("<host_url>", "<my_client_id>", "<my_client_secret>", ["<scope_1>", "<scope_2>", "<scope_3>"])
 
@@ -56,8 +56,8 @@ First of all we need to start a Thing instance, and with that we can work over t
 In this case the **thing_id** parameter is necessary.
 
 ```Python
-import swx.auth.token as auth
-import swx.functions as api
+import auth.token as auth
+import functions as api
 
 token = auth.get_token("<host_url>", "<my_client_id>", "<my_client_secret>", ["<scope_1>", "<scope_2>", "<scope_3>"])
 # get the Thing instance. Do not use get() function, because the class is needed, not the information retrieved.

@@ -19,4 +19,6 @@ class API:
         if not host:
             raise ValueError("empty host")
 
+        if not host.startswith("http://") and not host.startswith("https://"):
+            host = "https://" + host
         self.host = host

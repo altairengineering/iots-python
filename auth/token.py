@@ -3,7 +3,7 @@ from typing import Callable
 
 import requests
 
-from swx.errors import OAuth2Error, TokenRevokeError
+from errors import OAuth2Error, TokenRevokeError
 from urllib.parse import urljoin
 
 API_TOKEN_ENDPOINT = "/oauth2/token"

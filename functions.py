@@ -1,10 +1,9 @@
-import json
+from urllib.parse import urljoin
 
 import requests
 
-from urllib.parse import urljoin
-from swx.auth.token import Token
-from swx.errors import ResponseError
+from auth.token import Token
+from errors import ResponseError
 
 
 class Category:  # class to work with Categories
