@@ -18,12 +18,10 @@ class Category(APIObject):
         ...
 
     def things(self, thing_id: str = None):
-        stack = self._stack.copy()
-        stack.append(self)
         if thing_id is None:
-            return Things()._with_stack(stack)
+            return Things()._child_of(self)
         else:
-            return Thing(thing_id)._with_stack(stack)
+            return Thing(thing_id)._child_of(self)
 
     def _build_partial_path(self):
         return f"/categories/{self.name}"

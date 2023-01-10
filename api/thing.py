@@ -18,12 +18,10 @@ class Thing(APIObject):
         ...
 
     def properties(self, property_name: str = None):
-        stack = self._stack.copy()
-        stack.append(self)
         if property_name is None:
-            return Properties()._with_stack(stack)
+            return Properties()._child_of(self)
         else:
-            return Property(property_name)._with_stack(stack)
+            return Property(property_name)._child_of(self)
 
     def _build_partial_path(self):
         return f"/things/{self.thing_id}"
