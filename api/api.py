@@ -30,10 +30,14 @@ class API(_CategoriesMethod, _ThingsMethod):
 
     def make_request(self, method: str, path: str, headers: dict = None,
                      body=None, auth: bool = True):
+        if headers is None:
+            headers = {}
+
         if auth:
-            if headers is None:
-                headers = {}
             headers['Authorization'] = 'Bearer valid-token'
+
+        if isinstance(body, dict):
+            headers['Content-Type'] = 'application/json'
 
         resp = requests.request(method,
                                 self.host + path,
