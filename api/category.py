@@ -18,8 +18,8 @@ class Category(APIObject):
         ...
 
     def things(self, thing_id: str = None):
-        stack = self._stack
-        stack.push(self)
+        stack = self._stack.copy()
+        stack.append(self)
         if thing_id is None:
             return Things()._with_stack(stack)
         else:

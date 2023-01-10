@@ -3,7 +3,6 @@ import os
 from .obj import APIObject
 from .category import Category, Categories
 from .category import Thing, Things
-from .stack import Stack
 
 
 def get_host():
@@ -41,6 +40,4 @@ class API:
         return self._get(Things())
 
     def _get(self, obj: APIObject):
-        stack = Stack()
-        stack.push(self)
-        return obj._with_stack(stack)
+        return obj._with_stack([self])

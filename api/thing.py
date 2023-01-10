@@ -18,8 +18,8 @@ class Thing(APIObject):
         ...
 
     def properties(self, property_name: str = None):
-        stack = self._stack
-        stack.push(self)
+        stack = self._stack.copy()
+        stack.append(self)
         if property_name is None:
             return Properties()._with_stack(stack)
         else:

@@ -9,9 +9,7 @@ class Property(APIObject):
     name: str
 
     def get(self):
-        stack = self._stack
-        stack.push(self)
-        return stack.build_url()
+        return self.build_url()
 
     def _build_partial_path(self):
         return f"/properties/{self.name}"
@@ -22,9 +20,7 @@ class Properties(APIObject):
     properties: List[Property] = field(default_factory=list)
 
     def get(self):
-        stack = self._stack
-        stack.push(self)
-        return stack.build_url()
+        return self.build_url()
 
     def _build_partial_path(self):
         return f"/properties"
