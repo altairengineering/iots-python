@@ -1,5 +1,7 @@
 import os
 
+import requests
+
 from .category import _CategoriesMethod
 from .thing import _ThingsMethod
 
@@ -25,3 +27,21 @@ class API(_CategoriesMethod, _ThingsMethod):
         if not host.startswith("http://") and not host.startswith("https://"):
             host = "https://" + host
         self.host = host
+
+    def make_request(self, method: str, path: str, headers: dict = None,
+                     body=None, auth: bool = True):
+        if auth:
+            if headers is None:
+                headers = {}
+            headers['Authorization'] = 'Bearer valid-token'
+
+        resp = requests.request(method,
+                                self.host + path,
+                                headers=headers,
+                                data=body,
+                                timeout=3)
+
+        if resp.status_code >= 400:
+            raise Exception(f"API error: {resp.status_code} - {resp.text}")
+
+        return resp

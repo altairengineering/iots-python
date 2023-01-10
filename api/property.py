@@ -2,14 +2,15 @@ from dataclasses import dataclass, field
 from typing import List, overload
 
 from .obj import APIObject
+from models.property import PropertiesResp
 
 
 @dataclass
 class Property(APIObject):
     name: str
 
-    def get(self):
-        return self.build_url()
+    def get(self) -> PropertiesResp:
+        return PropertiesResp(self._make_request().json())
 
     def _build_partial_path(self):
         return f"/properties/{self.name}"

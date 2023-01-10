@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
+from requests import Response
+
 
 @dataclass
 class APIObject(ABC):
@@ -66,3 +68,11 @@ class APIObject(ABC):
                 path = path + obj._build_partial_path()
 
         return path + self._build_partial_path()
+
+    def _make_request(self, method="GET", body=None) -> Response:
+        from api.api import API
+        if len(self._stack) == 0 or not isinstance(self._stack[0], API):
+            raise Exception("API instance is missing in the stack")
+
+        api = self._stack[0]
+        return api.make_request(method, self.build_path(), body=body)
