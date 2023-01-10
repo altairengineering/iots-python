@@ -2,26 +2,12 @@ from dataclasses import dataclass, field
 from typing import List, overload
 
 from .obj import APIObject
-from .thing import Thing, Things
+from .thing import _ThingsMethod
 
 
 @dataclass
-class Category(APIObject):
+class Category(APIObject, _ThingsMethod):
     name: str
-
-    @overload
-    def things(self, thing_id: str) -> Thing:
-        ...
-
-    @overload
-    def things(self) -> Things:
-        ...
-
-    def things(self, thing_id: str = None):
-        if thing_id is None:
-            return Things()._child_of(self)
-        else:
-            return Thing(thing_id)._child_of(self)
 
     def _build_partial_path(self):
         return f"/categories/{self.name}"
@@ -33,3 +19,22 @@ class Categories(APIObject):
 
     def _build_partial_path(self):
         return f"/categories"
+
+
+class _CategoriesMethod:
+    """
+    This class declares and implements the `categories()` method.
+    """
+    @overload
+    def categories(self, property_name: str) -> Category:
+        ...
+
+    @overload
+    def categories(self) -> Categories:
+        ...
+
+    def categories(self, property_name: str = None):
+        if property_name is None:
+            return Categories()._child_of(self)
+        else:
+            return Category(property_name)._child_of(self)

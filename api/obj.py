@@ -29,15 +29,19 @@ class APIObject(ABC):
         self._stack = stack
         return self
 
-    def _child_of(self, obj: 'APIObject'):
+    def _child_of(self, obj):
         """
         Sets the stack of this instance to a copy of the given `APIObject`
         stack with the object itself added.
         This method is used when a new `APIObject` instance is created from
         another one.
         """
-        self._stack = obj._stack.copy()
-        self._stack.append(obj)
+        from api.api import API
+        if isinstance(obj, API):
+            self._stack = [obj]
+        else:
+            self._stack = obj._stack.copy()
+            self._stack.append(obj)
         return self
 
     def build_url(self) -> str:

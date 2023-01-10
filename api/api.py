@@ -1,8 +1,7 @@
 import os
 
-from .obj import APIObject
-from .category import Category, Categories
-from .category import Thing, Things
+from .category import _CategoriesMethod
+from .thing import _ThingsMethod
 
 
 def get_host():
@@ -13,7 +12,7 @@ def get_host():
     return os.getenv("SWX_API_URL")
 
 
-class API:
+class API(_CategoriesMethod, _ThingsMethod):
     """
     This is the top-level class used as an abstraction of the SmartWorks API.
     """
@@ -26,18 +25,3 @@ class API:
         if not host.startswith("http://") and not host.startswith("https://"):
             host = "https://" + host
         self.host = host
-
-    def category(self, name: str) -> Category:
-        return self._get(Category(name))
-
-    def categories(self) -> Categories:
-        return self._get(Categories())
-
-    def thing(self, thing_id: str) -> Thing:
-        return self._get(Thing(thing_id))
-
-    def things(self) -> Things:
-        return self._get(Things())
-
-    def _get(self, obj: APIObject):
-        return obj._with_stack([self])

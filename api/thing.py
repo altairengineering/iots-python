@@ -2,26 +2,11 @@ from dataclasses import dataclass, field
 from typing import List, overload
 
 from .obj import APIObject
-from .property import Property, Properties
-
+from .property import _PropertiesMethod
 
 @dataclass
-class Thing(APIObject):
+class Thing(APIObject, _PropertiesMethod):
     thing_id: str
-
-    @overload
-    def properties(self, property_name: str) -> Property:
-        ...
-
-    @overload
-    def properties(self) -> Properties:
-        ...
-
-    def properties(self, property_name: str = None):
-        if property_name is None:
-            return Properties()._child_of(self)
-        else:
-            return Property(property_name)._child_of(self)
 
     def _build_partial_path(self):
         return f"/things/{self.thing_id}"
@@ -33,3 +18,22 @@ class Things(APIObject):
 
     def _build_partial_path(self):
         return f"/things"
+
+
+class _ThingsMethod:
+    """
+    This class declares and implements the `things()` method.
+    """
+    @overload
+    def things(self, thing_id: str) -> Thing:
+        ...
+
+    @overload
+    def things(self) -> Things:
+        ...
+
+    def things(self, thing_id: str = None):
+        if thing_id is None:
+            return Things()._child_of(self)
+        else:
+            return Thing(thing_id)._child_of(self)

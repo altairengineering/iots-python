@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, overload
 
 from .obj import APIObject
 
@@ -24,3 +24,23 @@ class Properties(APIObject):
 
     def _build_partial_path(self):
         return f"/properties"
+
+
+class _PropertiesMethod:
+    """
+    This class declares and implements the `properties()` method.
+    """
+
+    @overload
+    def properties(self, property_name: str) -> Property:
+        ...
+
+    @overload
+    def properties(self) -> Properties:
+        ...
+
+    def properties(self, property_name: str = None):
+        if property_name is None:
+            return Properties()._child_of(self)
+        else:
+            return Property(property_name)._child_of(self)
