@@ -20,8 +20,8 @@ class Property(APIObject):
 class Properties(APIObject):
     properties: List[Property] = field(default_factory=list)
 
-    def get(self):
-        return self.build_url()
+    def get(self) -> PropertiesResp:
+        return PropertiesResp(self._make_request().json())
 
     def _build_partial_path(self):
         return f"/properties"
