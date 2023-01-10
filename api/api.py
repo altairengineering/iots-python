@@ -1,5 +1,10 @@
 import os
 
+from .obj import APIObject
+from .category import Category, Categories
+from .category import Thing, Things
+from .stack import Stack
+
 
 def get_host():
     """
@@ -22,3 +27,20 @@ class API:
         if not host.startswith("http://") and not host.startswith("https://"):
             host = "https://" + host
         self.host = host
+
+    def category(self, name: str) -> Category:
+        return self._get(Category(name))
+
+    def categories(self) -> Categories:
+        return self._get(Categories())
+
+    def thing(self, thing_id: str) -> Thing:
+        return self._get(Thing(thing_id))
+
+    def things(self) -> Things:
+        return self._get(Things())
+
+    def _get(self, obj: APIObject):
+        stack = Stack()
+        stack.push(self)
+        return obj._with_stack(stack)
