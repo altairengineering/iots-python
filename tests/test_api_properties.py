@@ -1,10 +1,8 @@
-import json
 from unittest import TestCase, mock
-
-from requests import Response
 
 from api.api import API
 from models.property import PropertiesResp
+from tests.common import make_json_response
 
 
 class TestAPIProperties(TestCase):
@@ -12,16 +10,11 @@ class TestAPIProperties(TestCase):
         """
         Tests a successful request to get a property value.
         """
-        expected_status_code = 200
-        expected_resp_payload = {
-            "temperature": 21.7
-        }
+        expected_resp_payload = {"temperature": 21.7}
 
-        resp = Response()
-        resp.status_code = expected_status_code
-        resp._content = json.dumps(expected_resp_payload).encode('utf-8')
+        expected_resp = make_json_response(200, expected_resp_payload)
 
-        with mock.patch("api.api.requests.request", return_value=resp) as m:
+        with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
             prop = (API(host="test-api.swx.altairone.com").
                     things("thing01").
                     properties("temperature").
@@ -40,17 +33,14 @@ class TestAPIProperties(TestCase):
         """
         Tests a successful request to list the property values of a Thing.
         """
-        expected_status_code = 200
         expected_resp_payload = {
             "temperature": 21.7,
             "humidity": 78
         }
 
-        resp = Response()
-        resp.status_code = expected_status_code
-        resp._content = json.dumps(expected_resp_payload).encode('utf-8')
+        expected_resp = make_json_response(200, expected_resp_payload)
 
-        with mock.patch("api.api.requests.request", return_value=resp) as m:
+        with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
             prop = (API(host="test-api.swx.altairone.com").
                     things("thing01").
                     properties().
