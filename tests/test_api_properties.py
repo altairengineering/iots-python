@@ -80,3 +80,33 @@ class TestAPIProperties(TestCase):
 
         assert prop == expected_resp_payload
         assert type(prop) == PropertiesResp
+
+    def test_update_multiple(self):
+        """
+        Tests a successful request to update multiple property values.
+        """
+        new_values = {
+            "temperature": 17.5,
+            "humidity": 78
+        }
+        expected_resp_payload = new_values
+
+        expected_resp = make_json_response(201, expected_resp_payload)
+
+        with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+            prop = (API(host="test-api.swx.altairone.com").
+                    things("thing01").
+                    properties().
+                    update(new_values))
+
+        m.assert_called_once_with("POST",
+                                  "https://test-api.swx.altairone.com/things/thing01/properties",
+                                  headers={
+                                      'Authorization': 'Bearer valid-token',
+                                      'Content-Type': 'application/json'
+                                  },
+                                  data=new_values,
+                                  timeout=3)
+
+        assert prop == expected_resp_payload
+        assert type(prop) == PropertiesResp

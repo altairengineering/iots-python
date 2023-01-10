@@ -27,6 +27,9 @@ class Properties(APIObject):
     def get(self) -> PropertiesResp:
         return PropertiesResp(self._make_request().json())
 
+    def update(self, values: dict) -> PropertiesResp:
+        return PropertiesResp(self._make_request("POST", values).json())
+
     def _build_partial_path(self):
         return f"/properties"
 
