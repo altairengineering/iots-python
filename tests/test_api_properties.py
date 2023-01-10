@@ -17,12 +17,13 @@ class TestAPIProperties(TestCase):
         with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
             prop = (API(host="test-api.swx.altairone.com").
                     token("valid-token").
+                    spaces("space01").
                     things("thing01").
                     properties("temperature").
                     get())
 
         m.assert_called_once_with("GET",
-                                  "https://test-api.swx.altairone.com/things/thing01/properties/temperature",
+                                  "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties/temperature",
                                   headers={'Authorization': 'Bearer valid-token'},
                                   data=None,
                                   timeout=3)
@@ -44,12 +45,13 @@ class TestAPIProperties(TestCase):
         with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
             prop = (API(host="test-api.swx.altairone.com").
                     token("valid-token").
+                    spaces("space01").
                     things("thing01").
                     properties().
                     get())
 
         m.assert_called_once_with("GET",
-                                  "https://test-api.swx.altairone.com/things/thing01/properties",
+                                  "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties",
                                   headers={'Authorization': 'Bearer valid-token'},
                                   data=None,
                                   timeout=3)
@@ -68,12 +70,13 @@ class TestAPIProperties(TestCase):
         with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
             prop = (API(host="test-api.swx.altairone.com").
                     token("valid-token").
+                    spaces("space01").
                     things("thing01").
                     properties("temperature").
                     update(17.5))
 
         m.assert_called_once_with("POST",
-                                  "https://test-api.swx.altairone.com/things/thing01/properties/temperature",
+                                  "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties/temperature",
                                   headers={
                                       'Authorization': 'Bearer valid-token',
                                       'Content-Type': 'application/json'
@@ -99,12 +102,13 @@ class TestAPIProperties(TestCase):
         with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
             prop = (API(host="test-api.swx.altairone.com").
                     token("valid-token").
+                    spaces("space01").
                     things("thing01").
                     properties().
                     update(new_values))
 
         m.assert_called_once_with("POST",
-                                  "https://test-api.swx.altairone.com/things/thing01/properties",
+                                  "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties",
                                   headers={
                                       'Authorization': 'Bearer valid-token',
                                       'Content-Type': 'application/json'

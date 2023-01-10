@@ -3,9 +3,8 @@ import os
 import requests
 
 from errors import ResponseError
-from .category import _CategoriesMethod
 from .errors import ExcMissingToken
-from .thing import _ThingsMethod
+from .space import _SpacesMethod
 
 
 def get_host():
@@ -16,7 +15,7 @@ def get_host():
     return os.getenv("SWX_API_URL")
 
 
-class API(_CategoriesMethod, _ThingsMethod):
+class API(_SpacesMethod):
     """
     This is the top-level class used as an abstraction of the SmartWorks API.
     """
