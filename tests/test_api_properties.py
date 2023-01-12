@@ -1,7 +1,7 @@
 from unittest import TestCase, mock
 
 from api.api import API
-from models.property import PropertiesResp
+from models.anythingdb import Properties
 from tests.common import make_json_response
 
 
@@ -28,8 +28,8 @@ class TestAPIProperties(TestCase):
                                   data=None,
                                   timeout=3)
 
-        assert prop == expected_resp_payload
-        assert type(prop) == PropertiesResp
+        assert prop.dict() == expected_resp_payload
+        assert type(prop) == Properties
 
     def test_list(self):
         """
@@ -57,7 +57,7 @@ class TestAPIProperties(TestCase):
                                   timeout=3)
 
         assert prop == expected_resp_payload
-        assert type(prop) == PropertiesResp
+        assert type(prop) == Properties
 
     def test_update_one(self):
         """
@@ -85,7 +85,7 @@ class TestAPIProperties(TestCase):
                                   timeout=3)
 
         assert prop == expected_resp_payload
-        assert type(prop) == PropertiesResp
+        assert type(prop) == Properties
 
     def test_update_multiple(self):
         """
@@ -117,4 +117,4 @@ class TestAPIProperties(TestCase):
                                   timeout=3)
 
         assert prop == expected_resp_payload
-        assert type(prop) == PropertiesResp
+        assert type(prop) == Properties

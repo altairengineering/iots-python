@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from typing import List, overload, Union
 
-from models.property import PropertiesReq, PropertiesResp
+from models.anythingdb import Properties as PropertiesModel
+
 from .obj import APIObject
 
 
@@ -9,24 +10,24 @@ from .obj import APIObject
 class Property(APIObject):
     name: str
 
-    def get(self) -> PropertiesResp:
+    def get(self) -> PropertiesModel:
         """
         Make a request to the server to get the value of the Property.
 
-        :return: A :class:`PropertiesResp` dict with the value of the Property.
+        :return: A :class:`PropertiesModel` dict with the value of the Property.
         """
-        return PropertiesResp(self._make_request().json())
+        return PropertiesModel.parse_obj(self._make_request().json())
 
-    def update(self, value) -> PropertiesResp:
+    def update(self, value) -> PropertiesModel:
         """
         Make a request to the server to update the value of the Property.
 
         :param value: The value to set on the Property.
-        :return: A :class:`PropertiesResp` dict with the new value of the
+        :return: A :class:`PropertiesModel` dict with the new value of the
             Property.
         """
         payload = {self.name: value}
-        return PropertiesResp(self._make_request("POST", payload).json())
+        return PropertiesModel.parse_obj(self._make_request("POST", payload).json())
 
     def _build_partial_path(self):
         return f"/properties/{self.name}"
@@ -36,24 +37,24 @@ class Property(APIObject):
 class Properties(APIObject):
     properties: List[Property] = field(default_factory=list)
 
-    def get(self) -> PropertiesResp:
+    def get(self) -> PropertiesModel:
         """
         Make a request to the server to list the value of all the Thing
         Properties.
 
-        :return: A :class:`PropertiesResp` dict with the values of all the
+        :return: A :class:`PropertiesModel` dict with the values of all the
             Thing Properties.
         """
-        return PropertiesResp(self._make_request().json())
+        return PropertiesModel.parse_obj(self._make_request().json())
 
-    def update(self, values: Union[dict, PropertiesReq]) -> PropertiesResp:
+    def update(self, values: Union[dict, PropertiesModel]) -> PropertiesModel:
         """
         Make a request to the server to update one or multiple Property values.
 
         :param values: A dictionary with the Property names and values to set.
-        :return: A :class:`PropertiesResp` dict with the new Property values.
+        :return: A :class:`PropertiesModel` dict with the new Property values.
         """
-        return PropertiesResp(self._make_request("POST", values).json())
+        return PropertiesModel.parse_obj(self._make_request("POST", values).json())
 
     def _build_partial_path(self):
         return f"/properties"
