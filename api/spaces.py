@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 from typing import List, overload
 
-from .category import _CategoriesMethod
+from .categories import _CategoriesMethod
 from .obj import APIObject
-from .thing import _ThingsMethod
+from .things import _ThingsMethod
 
 
 @dataclass

@@ -4,7 +4,7 @@ import requests
 
 from errors import ResponseError
 from .errors import ExcMissingToken
-from .space import _SpacesMethod
+from .spaces import _SpacesMethod
 
 
 def get_host():

@@ -4,7 +4,7 @@ from typing import List, overload
 from models.anythingdb import (Thing as ThingModel,
                                ThingList as ThingListModel)
 from .obj import APIObject
-from .property import _PropertiesMethod
+from .properties import _PropertiesMethod
 
 
 @dataclass
