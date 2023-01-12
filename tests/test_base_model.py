@@ -96,8 +96,7 @@ class TestIterBaseModel(TestCase):
         # iter
         res = [i for i in c]
         assert res == [27, 9]
-        res = [i for i in c.items()]
-        assert res == [27, 9]
+        assert not hasattr(c, 'items')
 
     def test_base_model_obj(self):
         """
@@ -149,5 +148,4 @@ class TestIterBaseModel(TestCase):
         # iter
         res = [k for k in c]
         assert res == [('name', 'Chloe'), ('age', 22), ('info', {'favourite_color': 'Yellow'})]
-        res = [(k, v) for k, v in c.items()]
-        assert res == [('name', 'Chloe'), ('age', 22), ('info', {'favourite_color': 'Yellow'})]
+        assert not hasattr(c, 'items')

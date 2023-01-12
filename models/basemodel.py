@@ -9,6 +9,10 @@ class IterBaseModel(BaseModel):
     dot and square-bracket notation, even when the __root__ element is a
     dictionary or a list.
     """
+    def __init__(self, **data):
+        super().__init__(**data)
+        if self._has_root(dict):
+            object.__setattr__(self, 'items', self._items)
 
     def _has_root(self, types):
         return '__root__' in self.__dict__ and isinstance(self.__root__, types)
@@ -76,7 +80,7 @@ class IterBaseModel(BaseModel):
             return self.__root__
         return super(IterBaseModel, self).dict(include=include, exclude=exclude, by_alias=by_alias, skip_defaults=skip_defaults, exclude_unset=exclude_unset, exclude_defaults=exclude_defaults, exclude_none=exclude_none)
 
-    def items(self):
+    def _items(self):
         if self._has_root(dict):
             return self.__root__.items()
         else:
