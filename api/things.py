@@ -3,12 +3,13 @@ from typing import List, overload
 
 from models.anythingdb import (Thing as ThingModel,
                                ThingList as ThingListModel)
+from .actions import _ActionsMethod
 from .obj import APIObject
 from .properties import _PropertiesMethod
 
 
 @dataclass
-class Thing(APIObject, _PropertiesMethod):
+class Thing(APIObject, _PropertiesMethod, _ActionsMethod):
     thing_id: str
 
     def get(self) -> ThingModel:
