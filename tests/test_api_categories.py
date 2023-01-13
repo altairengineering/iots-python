@@ -1,4 +1,4 @@
-from unittest import TestCase, mock
+from unittest import mock
 
 from api.api import API
 from models.anythingdb import Category, CategoryList
@@ -24,55 +24,55 @@ test_category02 = {
 }
 
 
-class TestAPICategories(TestCase):
-    def test_get(self):
-        """
-        Tests a successful request to get a Category.
-        """
-        expected_resp = make_json_response(200, test_category01)
+def test_get():
+    """
+    Tests a successful request to get a Category.
+    """
+    expected_resp = make_json_response(200, test_category01)
 
-        with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
-            cat = (API(host="test-api.swx.altairone.com").
-                   token("valid-token").
-                   spaces("space01").
-                   categories("category01").
-                   get())
+    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+        cat = (API(host="test-api.swx.altairone.com").
+               token("valid-token").
+               spaces("space01").
+               categories("category01").
+               get())
 
-        m.assert_called_once_with("GET",
-                                  "https://test-api.swx.altairone.com/spaces/space01/categories/category01",
-                                  headers={'Authorization': 'Bearer valid-token'},
-                                  data=None,
-                                  timeout=3)
+    m.assert_called_once_with("GET",
+                              "https://test-api.swx.altairone.com/spaces/space01/categories/category01",
+                              headers={'Authorization': 'Bearer valid-token'},
+                              data=None,
+                              timeout=3)
 
-        assert cat == Category.parse_obj(test_category01)
-        assert type(cat) == Category
+    assert cat == Category.parse_obj(test_category01)
+    assert type(cat) == Category
 
-    def test_list(self):
-        """
-        Tests a successful request to list Categories.
-        """
-        expected_resp_payload = {
-            "paging": {
-                "next_cursor": "",
-                "previous_cursor": ""
-            },
-            "data": [test_category01, test_category02]
-        }
 
-        expected_resp = make_json_response(200, expected_resp_payload)
+def test_list():
+    """
+    Tests a successful request to list Categories.
+    """
+    expected_resp_payload = {
+        "paging": {
+            "next_cursor": "",
+            "previous_cursor": ""
+        },
+        "data": [test_category01, test_category02]
+    }
 
-        with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
-            cat = (API(host="test-api.swx.altairone.com").
-                   token("valid-token").
-                   spaces("space01").
-                   categories().
-                   get())
+    expected_resp = make_json_response(200, expected_resp_payload)
 
-        m.assert_called_once_with("GET",
-                                  "https://test-api.swx.altairone.com/spaces/space01/categories",
-                                  headers={'Authorization': 'Bearer valid-token'},
-                                  data=None,
-                                  timeout=3)
+    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+        cat = (API(host="test-api.swx.altairone.com").
+               token("valid-token").
+               spaces("space01").
+               categories().
+               get())
 
-        assert cat == CategoryList.parse_obj(expected_resp_payload)
-        assert type(cat) == CategoryList
+    m.assert_called_once_with("GET",
+                              "https://test-api.swx.altairone.com/spaces/space01/categories",
+                              headers={'Authorization': 'Bearer valid-token'},
+                              data=None,
+                              timeout=3)
+
+    assert cat == CategoryList.parse_obj(expected_resp_payload)
+    assert type(cat) == CategoryList
