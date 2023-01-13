@@ -14,7 +14,7 @@ class Property(APIObject):
         """
         Make a request to the server to get the value of the Property.
 
-        :return: A :class:`PropertiesModel` dict with the value of the Property.
+        :return: A :class:`PropertiesModel` with the value of the Property.
         """
         return PropertiesModel.parse_obj(self._make_request().json())
 
@@ -23,7 +23,7 @@ class Property(APIObject):
         Make a request to the server to update the value of the Property.
 
         :param value: The value to set on the Property.
-        :return: A :class:`PropertiesModel` dict with the new value of the
+        :return: A :class:`PropertiesModel` with the new value of the
             Property.
         """
         payload = {self.name: value}
@@ -42,7 +42,7 @@ class Properties(APIObject):
         Make a request to the server to list the value of all the Thing
         Properties.
 
-        :return: A :class:`PropertiesModel` dict with the values of all the
+        :return: A :class:`PropertiesModel` with the values of all the
             Thing Properties.
         """
         return PropertiesModel.parse_obj(self._make_request().json())
@@ -52,7 +52,7 @@ class Properties(APIObject):
         Make a request to the server to update one or multiple Property values.
 
         :param values: A dictionary with the Property names and values to set.
-        :return: A :class:`PropertiesModel` dict with the new Property values.
+        :return: A :class:`PropertiesModel` with the new Property values.
         """
         return PropertiesModel.parse_obj(self._make_request("POST", values).json())
 
