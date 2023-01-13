@@ -11,16 +11,44 @@ class Action(APIObject):
 
     def create(self, action: Union[ActionRequest, dict]) -> ActionResponse:
         """
-        Make a request to the server to create a new Action.
+        Make a request to the server to create a new Action value.
 
-        :param action: The information of the new Action
+        :param action: The information of the new Action value
             (e.g. `{"delay": {"input": 5}}`).
-        :return: A :class:`ActionResponse` with the new Action.
+        :return: A :class:`ActionResponse` with the new Action value.
         """
         payload = action
         if isinstance(action, ActionRequest):
             payload = action.dict()
         return ActionResponse.parse_obj(self._make_request("POST", payload).json())
+
+    @overload
+    def get(self, action_name: str) -> ActionResponse:
+        ...
+
+    @overload
+    def get(self) -> ActionListResponse:
+        ...
+
+    def get(self, action_id: str = None):
+        """
+        Make a request to the server to get the history values of the Action.
+
+        :return: A :class:`ActionListResponse` with the value of the Action.
+        """
+        if action_id is None:
+            return ActionListResponse.parse_obj(self._make_request().json())
+        else:
+            action_value = ActionValue(action_id)._child_of(self)
+            return action_value.get()
+
+    def _build_partial_path(self):
+        return f"/actions/{self.name}"
+
+
+@dataclass
+class ActionValue(APIObject):
+    action_id: str
 
     def get(self) -> ActionResponse:
         """
@@ -31,7 +59,7 @@ class Action(APIObject):
         return ActionResponse.parse_obj(self._make_request().json())
 
     def _build_partial_path(self):
-        return f"/actions/{self.name}"
+        return "/" + self.action_id
 
 
 @dataclass

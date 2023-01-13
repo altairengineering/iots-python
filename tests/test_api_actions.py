@@ -8,9 +8,7 @@ from tests.common import make_json_response
 
 test_action01 = {
     "delay": {
-        "input": {
-            "delay": 5
-        },
+        "input": 5,
         "status": "pending",
         "timeRequested": "2022-06-02 15:37:46+0000",
         "href": "/beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR"
@@ -19,21 +17,68 @@ test_action01 = {
 
 test_action02 = {
     "delay": {
-        "input": {
-            "delay": 7
-        },
-        "status": "pending",
+        "input": 7,
+        "status": "completed",
         "timeRequested": "2022-06-02 15:39:54+0000",
+        "timeCompleted": "2022-06-01 15:45:32+0000",
         "href": "/beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E"
     }
 }
 
+test_action03 = {
+    "reboot": {
+        "status": "pending",
+        "timeRequested": "2022-06-02 15:56:12+0000",
+        "href": "/beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCCZYATJW1Z3D4T4BA4S2QH"
+    }
+}
 
-def test_get():
+
+@pytest.mark.parametrize("action_req", [
+    ActionRequest.parse_obj({"delay": {"input": 5}}),
+    {"delay": {"input": 5}},
+])
+def test_create(action_req):
     """
-    Tests a successful request to get an action info.
+    Tests a successful request to create an Action value.
     """
-    expected_resp = make_json_response(200, test_action01)
+    expected_resp_payload = test_action01
+    expected_resp = make_json_response(201, expected_resp_payload)
+
+    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+        action = (API(host="test-api.swx.altairone.com").
+                  token("valid-token").
+                  spaces("space01").
+                  things("thing01").
+                  actions("delay").
+                  create(action_req))
+
+    m.assert_called_once_with("POST",
+                              "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions/delay",
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Content-Type': 'application/json'
+                              },
+                              data=action_req,
+                              timeout=3)
+
+    assert action == ActionResponse.parse_obj(expected_resp_payload)
+    assert type(action) == ActionResponse
+
+
+def test_list_action():
+    """
+    Tests a successful request to list the history values of an Action.
+    """
+    expected_resp_payload = {
+        "paging": {
+            "next_cursor": "",
+            "previous_cursor": ""
+        },
+        "data": [test_action01, test_action02]
+    }
+
+    expected_resp = make_json_response(200, expected_resp_payload)
 
     with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
@@ -49,20 +94,20 @@ def test_get():
                               data=None,
                               timeout=3)
 
-    assert action == ActionResponse.parse_obj(test_action01)
-    assert type(action) == ActionResponse
+    assert action == ActionListResponse.parse_obj(expected_resp_payload)
+    assert type(action) == ActionListResponse
 
 
-def test_list():
+def test_list_all():
     """
-    Tests a successful request to list the actions of a Thing.
+    Tests a successful request to list all the Action values of a Thing.
     """
     expected_resp_payload = {
         "paging": {
             "next_cursor": "",
             "previous_cursor": ""
         },
-        "data": [test_action01, test_action02]
+        "data": [test_action01, test_action02, test_action03]
     }
 
     expected_resp = make_json_response(200, expected_resp_payload)
@@ -85,16 +130,11 @@ def test_list():
     assert type(actions) == ActionListResponse
 
 
-@pytest.mark.parametrize("action_req", [
-    ActionRequest.parse_obj({"delay": {"input": 5}}),
-    {"delay": {"input": 5}},
-])
-def test_create(action_req):
+def test_get_action_value():
     """
-    Tests a successful request to create an Action.
+    Tests a successful request to get an Action value.
     """
-    expected_resp_payload = test_action01
-    expected_resp = make_json_response(200, expected_resp_payload)
+    expected_resp = make_json_response(200, test_action02)
 
     with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
@@ -102,16 +142,14 @@ def test_create(action_req):
                   spaces("space01").
                   things("thing01").
                   actions("delay").
-                  create(action_req))
+                  get("01EDCB9FMD0Q3QR0YV4TWY4S3E"))
 
-    m.assert_called_once_with("POST",
-                              "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions/delay",
-                              headers={
-                                  'Authorization': 'Bearer valid-token',
-                                  'Content-Type': 'application/json'
-                              },
-                              data=action_req,
+    m.assert_called_once_with("GET",
+                              "https://test-api.swx.altairone.com/spaces/space01/things/thing01"
+                              "/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
+                              headers={'Authorization': 'Bearer valid-token'},
+                              data=None,
                               timeout=3)
 
-    assert action == ActionResponse.parse_obj(expected_resp_payload)
+    assert action == ActionResponse.parse_obj(test_action02)
     assert type(action) == ActionResponse
