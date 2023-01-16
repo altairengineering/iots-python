@@ -5,6 +5,10 @@ import pytest
 from models.basemodel import IterBaseModel
 
 
+class AClass(IterBaseModel):
+    value: Any
+
+
 def test_base_model_dict():
     """
     Tests an IterBaseModel with a dict as __root__.
@@ -27,6 +31,9 @@ def test_base_model_dict():
     # dict
     assert c.dict() == user_info
     assert c == user_info
+
+    c2 = DictClass.parse_obj({"foo": AClass(value=123)})
+    assert repr(c2.dict()) == repr({"foo": {"value": 123}})
 
     # contains
     assert "name" in c
@@ -66,13 +73,16 @@ def test_base_model_list():
     """
 
     class ListClass(IterBaseModel):
-        __root__: List[int]
+        __root__: List[Any]
 
     c = ListClass.parse_obj([27, 50, 9])
 
     # dict
     assert c.dict() == [27, 50, 9]
     assert c == [27, 50, 9]
+
+    c2 = ListClass.parse_obj([123, AClass(value=456)])
+    assert repr(c2.dict()) == repr([123, {"value": 456}])
 
     # contains
     assert 50 in c

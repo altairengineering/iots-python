@@ -9,6 +9,7 @@ class IterBaseModel(BaseModel):
     dot and square-bracket notation, even when the __root__ element is a
     dictionary or a list.
     """
+
     def __init__(self, **data):
         super().__init__(**data)
         if self._has_root(dict):
@@ -66,19 +67,27 @@ class IterBaseModel(BaseModel):
             return len(self.__dict__)
 
     def dict(
-        self,
-        *,
-        include: Optional[Union['typing.AbstractSetIntStr', 'typing.MappingIntStrAny']] = None,
-        exclude: Optional[Union['typing.AbstractSetIntStr', 'typing.MappingIntStrAny']] = None,
-        by_alias: bool = False,
-        skip_defaults: Optional[bool] = None,
-        exclude_unset: bool = False,
-        exclude_defaults: bool = False,
-        exclude_none: bool = False,
+            self,
+            *,
+            include: Optional[Union['typing.AbstractSetIntStr', 'typing.MappingIntStrAny']] = None,
+            exclude: Optional[Union['typing.AbstractSetIntStr', 'typing.MappingIntStrAny']] = None,
+            by_alias: bool = False,
+            skip_defaults: Optional[bool] = None,
+            exclude_unset: bool = False,
+            exclude_defaults: bool = False,
+            exclude_none: bool = False,
     ) -> 'typing.DictStrAny':
+        ret = super(IterBaseModel, self).dict(include=include,
+                                              exclude=exclude,
+                                              by_alias=by_alias,
+                                              skip_defaults=skip_defaults,
+                                              exclude_unset=exclude_unset,
+                                              exclude_defaults=exclude_defaults,
+                                              exclude_none=exclude_none)
         if self._has_root((dict, list)):
-            return self.__root__
-        return super(IterBaseModel, self).dict(include=include, exclude=exclude, by_alias=by_alias, skip_defaults=skip_defaults, exclude_unset=exclude_unset, exclude_defaults=exclude_defaults, exclude_none=exclude_none)
+            return ret['__root__']
+        else:
+            return ret
 
     def _items(self):
         if self._has_root(dict):
