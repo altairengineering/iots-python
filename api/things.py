@@ -37,7 +37,7 @@ class Things(APIObject):
         return ThingListModel.parse_obj(self._make_request().json())
 
     def _build_partial_path(self):
-        return f"/things"
+        return "/things"
 
 
 class _ThingsMethod:

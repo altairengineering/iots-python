@@ -57,7 +57,7 @@ class Properties(APIObject):
         return PropertiesModel.parse_obj(self._make_request("POST", values).json())
 
     def _build_partial_path(self):
-        return f"/properties"
+        return "/properties"
 
 
 class _PropertiesMethod:

@@ -19,7 +19,7 @@ class Spaces(APIObject):
     spaces: List[Space] = field(default_factory=list)
 
     def _build_partial_path(self):
-        return f"/spaces"
+        return "/spaces"
 
 
 class _SpacesMethod:

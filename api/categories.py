@@ -36,7 +36,7 @@ class Categories(APIObject):
         return CategoryListModel.parse_obj(self._make_request().json())
 
     def _build_partial_path(self):
-        return f"/categories"
+        return "/categories"
 
 
 class _CategoriesMethod:
