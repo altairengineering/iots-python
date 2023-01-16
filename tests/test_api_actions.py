@@ -3,8 +3,9 @@ from unittest import mock
 import pytest
 
 from api.api import API
-from models.anythingdb import ActionRequest, ActionResponse, ActionListResponse
-from tests.common import make_json_response
+from models.anythingdb import (ActionRequest, ActionResponse,
+                               ActionListResponse, ActionUpdateRequest)
+from tests.common import make_json_response, to_dict
 
 test_action01 = {
     "delay": {
@@ -59,7 +60,7 @@ def test_create(action_req):
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json'
                               },
-                              data=action_req,
+                              data=to_dict(action_req),
                               timeout=3)
 
     assert action == ActionResponse.parse_obj(expected_resp_payload)
@@ -130,7 +131,7 @@ def test_list_all():
     assert type(actions) == ActionListResponse
 
 
-def test_get_action_value():
+def test_get_action():
     """
     Tests a successful request to get an Action value.
     """
@@ -141,8 +142,8 @@ def test_get_action_value():
                   token("valid-token").
                   spaces("space01").
                   things("thing01").
-                  actions("delay").
-                  get("01EDCB9FMD0Q3QR0YV4TWY4S3E"))
+                  actions("delay", "01EDCB9FMD0Q3QR0YV4TWY4S3E").
+                  get())
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01"
@@ -152,4 +153,37 @@ def test_get_action_value():
                               timeout=3)
 
     assert action == ActionResponse.parse_obj(test_action02)
+    assert type(action) == ActionResponse
+
+
+@pytest.mark.parametrize("action_req", [
+    ActionUpdateRequest.parse_obj({"delay": {"status": "completed"}}),
+    {"delay": {"status": "completed"}},
+])
+def test_put_action(action_req):
+    """
+    Tests a successful request to update an Action value.
+    """
+    expected_resp_payload = test_action02
+    expected_resp = make_json_response(200, expected_resp_payload)
+
+    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+        action = (API(host="test-api.swx.altairone.com").
+                  token("valid-token").
+                  spaces("space01").
+                  things("thing01").
+                  actions("delay", "01EDCB9FMD0Q3QR0YV4TWY4S3E").
+                  update(action_req))
+
+    m.assert_called_once_with("PUT",
+                              "https://test-api.swx.altairone.com/spaces/space01/things/thing01"
+                              "/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Content-Type': 'application/json'
+                              },
+                              data=to_dict(action_req),
+                              timeout=3)
+
+    assert action == ActionResponse.parse_obj(expected_resp_payload)
     assert type(action) == ActionResponse
