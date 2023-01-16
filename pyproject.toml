@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "swxlibs"
+name = "swx"
 version = "0.1.0"
 description = ""
 authors = ["Daniel Sánchez Gallego <dsanchez@altair.com>"]
