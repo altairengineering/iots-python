@@ -2,9 +2,9 @@ from unittest import mock
 
 import pytest
 
-from api.api import API
-from models.anythingdb import (ActionCreateRequest, ActionUpdateRequest,
-                               ActionResponse, ActionListResponse)
+from swx.api import API
+from swx.models.anythingdb import (ActionCreateRequest, ActionListResponse,
+                                   ActionResponse, ActionUpdateRequest)
 from tests.common import make_json_response, to_dict
 
 test_action01 = {
@@ -46,7 +46,7 @@ def test_create(action_req):
     expected_resp_payload = test_action01
     expected_resp = make_json_response(201, expected_resp_payload)
 
-    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
                   token("valid-token").
                   spaces("space01").
@@ -81,7 +81,7 @@ def test_list_action():
 
     expected_resp = make_json_response(200, expected_resp_payload)
 
-    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
                   token("valid-token").
                   spaces("space01").
@@ -113,7 +113,7 @@ def test_list_all():
 
     expected_resp = make_json_response(200, expected_resp_payload)
 
-    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         actions = (API(host="test-api.swx.altairone.com").
                    token("valid-token").
                    spaces("space01").
@@ -137,7 +137,7 @@ def test_get_action():
     """
     expected_resp = make_json_response(200, test_action02)
 
-    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
                   token("valid-token").
                   spaces("space01").
@@ -167,7 +167,7 @@ def test_put_action(action_req):
     expected_resp_payload = test_action02
     expected_resp = make_json_response(200, expected_resp_payload)
 
-    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
                   token("valid-token").
                   spaces("space01").
@@ -195,7 +195,7 @@ def test_delete_action():
     """
     expected_resp = make_json_response(204)
 
-    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         (API(host="test-api.swx.altairone.com").
          token("valid-token").
          spaces("space01").

@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from typing import Callable
+from urllib.parse import urljoin
 
 import requests
 
-from errors import OAuth2Error, TokenRevokeError
-from urllib.parse import urljoin
+from .errors import OAuth2Error, TokenRevokeError
 
 API_TOKEN_ENDPOINT = "/oauth2/token"
 API_REVOKE_ENDPOINT = "/oauth2/revoke"

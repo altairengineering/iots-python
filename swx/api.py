@@ -2,8 +2,7 @@ import os
 
 import requests
 
-from errors import ResponseError
-from .errors import ExcMissingToken
+from .errors import ExcMissingToken, ResponseError
 from .spaces import _SpacesMethod
 
 

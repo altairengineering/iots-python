@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
 from typing import List, overload
 
-from models.anythingdb import (Thing as ThingModel,
-                               ThingList as ThingListModel)
 from .actions import _ActionsMethod
 from .events import _EventsMethod
+from .models.anythingdb import Thing as ThingModel
+from .models.anythingdb import ThingList as ThingListModel
 from .obj import APIObject
 from .properties import _PropertiesMethod
 

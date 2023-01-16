@@ -1,8 +1,7 @@
 from dataclasses import dataclass, field
-from typing import List, overload, Union
+from typing import List, Union, overload
 
-from models.anythingdb import Properties as PropertiesModel
-
+from .models.anythingdb import Properties as PropertiesModel
 from .obj import APIObject
 
 

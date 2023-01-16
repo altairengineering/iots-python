@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
-from typing import List, overload, Union
+from typing import List, Union, overload
 
-from models.anythingdb import EventCreateRequest, EventResponse, EventListResponse
+from .models.anythingdb import (EventCreateRequest, EventListResponse,
+                                EventResponse)
 from .obj import APIObject
 
 

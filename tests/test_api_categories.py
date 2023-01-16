@@ -1,7 +1,7 @@
 from unittest import mock
 
-from api.api import API
-from models.anythingdb import Category, CategoryList
+from swx.api import API
+from swx.models.anythingdb import Category, CategoryList
 from tests.common import make_json_response
 
 test_category01 = {
@@ -30,7 +30,7 @@ def test_get():
     """
     expected_resp = make_json_response(200, test_category01)
 
-    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         cat = (API(host="test-api.swx.altairone.com").
                token("valid-token").
                spaces("space01").
@@ -61,7 +61,7 @@ def test_list():
 
     expected_resp = make_json_response(200, expected_resp_payload)
 
-    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         cat = (API(host="test-api.swx.altairone.com").
                token("valid-token").
                spaces("space01").

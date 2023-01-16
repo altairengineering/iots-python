@@ -1,4 +1,4 @@
-from api.api import API
+from swx.api import API
 
 
 def test_build_url():

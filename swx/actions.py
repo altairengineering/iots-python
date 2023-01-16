@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
-from typing import List, overload, Union
+from typing import List, Union, overload
 
-from models.anythingdb import (ActionCreateRequest, ActionUpdateRequest,
-                               ActionResponse, ActionListResponse)
+from .models.anythingdb import (ActionCreateRequest, ActionListResponse,
+                                ActionResponse, ActionUpdateRequest)
 from .obj import APIObject
 
 

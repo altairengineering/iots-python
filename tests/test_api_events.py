@@ -2,8 +2,9 @@ from unittest import mock
 
 import pytest
 
-from api.api import API
-from models.anythingdb import EventCreateRequest, EventResponse, EventListResponse
+from swx.api import API
+from swx.models.anythingdb import (EventCreateRequest, EventListResponse,
+                                   EventResponse)
 from tests.common import make_json_response, to_dict
 
 test_event01 = {
@@ -42,7 +43,7 @@ def test_create(event_req):
     expected_resp_payload = test_event01
     expected_resp = make_json_response(201, expected_resp_payload)
 
-    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         event = (API(host="test-api.swx.altairone.com").
                  token("valid-token").
                  spaces("space01").
@@ -77,7 +78,7 @@ def test_list_event():
 
     expected_resp = make_json_response(200, expected_resp_payload)
 
-    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         event = (API(host="test-api.swx.altairone.com").
                  token("valid-token").
                  spaces("space01").
@@ -109,7 +110,7 @@ def test_list_all():
 
     expected_resp = make_json_response(200, expected_resp_payload)
 
-    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         events = (API(host="test-api.swx.altairone.com").
                   token("valid-token").
                   spaces("space01").
@@ -133,7 +134,7 @@ def test_get_event():
     """
     expected_resp = make_json_response(200, test_event02)
 
-    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         event = (API(host="test-api.swx.altairone.com").
                  token("valid-token").
                  spaces("space01").

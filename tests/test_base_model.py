@@ -1,8 +1,8 @@
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
 
 import pytest
 
-from models.basemodel import IterBaseModel
+from swx.models.basemodel import IterBaseModel
 
 
 class AClass(IterBaseModel):

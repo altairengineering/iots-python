@@ -38,7 +38,7 @@ class APIObject(ABC):
         This method is used when a new `APIObject` instance is created from
         another one.
         """
-        from api.api import API
+        from swx.api import API
         if isinstance(obj, API):
             self._stack = [obj]
         else:
@@ -52,7 +52,7 @@ class APIObject(ABC):
         The first item in the stack must be an `API` instance, and the rest
         must be `APIObject` instances.
         """
-        from api.api import API
+        from swx.api import API
         if len(self._stack) == 0 or not isinstance(self._stack[0], API):
             raise Exception("API instance is missing in the stack")
 
@@ -70,7 +70,7 @@ class APIObject(ABC):
         return path + self._build_partial_path()
 
     def _make_request(self, method="GET", body=None) -> Response:
-        from api.api import API
+        from swx.api import API
         if len(self._stack) == 0 or not isinstance(self._stack[0], API):
             raise Exception("API instance is missing in the stack")
 

@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from typing import List, overload
 
-from models.anythingdb import (Category as CategoryModel,
-                               CategoryList as CategoryListModel)
+from .models.anythingdb import Category as CategoryModel
+from .models.anythingdb import CategoryList as CategoryListModel
 from .obj import APIObject
 from .things import _ThingsMethod
 
