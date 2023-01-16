@@ -3,8 +3,8 @@ from unittest import mock
 import pytest
 
 from api.api import API
-from models.anythingdb import (ActionRequest, ActionResponse,
-                               ActionListResponse, ActionUpdateRequest)
+from models.anythingdb import (ActionCreateRequest, ActionUpdateRequest,
+                               ActionResponse, ActionListResponse)
 from tests.common import make_json_response, to_dict
 
 test_action01 = {
@@ -36,7 +36,7 @@ test_action03 = {
 
 
 @pytest.mark.parametrize("action_req", [
-    ActionRequest.parse_obj({"delay": {"input": 5}}),
+    ActionCreateRequest.parse_obj({"delay": {"input": 5}}),
     {"delay": {"input": 5}},
 ])
 def test_create(action_req):

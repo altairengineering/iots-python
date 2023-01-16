@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from typing import List, overload, Union
 
-from models.anythingdb import (ActionRequest, ActionResponse,
-                               ActionListResponse, ActionUpdateRequest)
+from models.anythingdb import (ActionCreateRequest, ActionUpdateRequest,
+                               ActionResponse, ActionListResponse)
 from .obj import APIObject
 
 
@@ -10,7 +10,7 @@ from .obj import APIObject
 class Action(APIObject):
     action_name: str
 
-    def create(self, action: Union[ActionRequest, dict]) -> ActionResponse:
+    def create(self, action: Union[ActionCreateRequest, dict]) -> ActionResponse:
         """
         Make a request to the server to create a new Action value.
 
@@ -19,7 +19,7 @@ class Action(APIObject):
         :return: A :class:`ActionResponse` with the new Action value.
         """
         payload = action
-        if isinstance(action, ActionRequest):
+        if isinstance(action, ActionCreateRequest):
             payload = action.dict()
         return ActionResponse.parse_obj(self._make_request("POST", payload).json())
 
