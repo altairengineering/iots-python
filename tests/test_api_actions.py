@@ -187,3 +187,25 @@ def test_put_action(action_req):
 
     assert action == ActionResponse.parse_obj(expected_resp_payload)
     assert type(action) == ActionResponse
+
+
+def test_delete_action():
+    """
+    Tests a successful request to delete an Action value.
+    """
+    expected_resp = make_json_response(204)
+
+    with mock.patch("api.api.requests.request", return_value=expected_resp) as m:
+        (API(host="test-api.swx.altairone.com").
+         token("valid-token").
+         spaces("space01").
+         things("thing01").
+         actions("delay", "01EDCB9FMD0Q3QR0YV4TWY4S3E").
+         delete())
+
+    m.assert_called_once_with("DELETE",
+                              "https://test-api.swx.altairone.com/spaces/space01/things/thing01"
+                              "/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
+                              headers={'Authorization': 'Bearer valid-token'},
+                              data=None,
+                              timeout=3)

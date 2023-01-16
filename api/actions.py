@@ -23,14 +23,6 @@ class Action(APIObject):
             payload = action.dict()
         return ActionResponse.parse_obj(self._make_request("POST", payload).json())
 
-    @overload
-    def get(self, action_name: str) -> ActionResponse:
-        ...
-
-    @overload
-    def get(self) -> ActionListResponse:
-        ...
-
     def get(self):
         """
         Make a request to the server to get the history values of the Action.
@@ -72,6 +64,12 @@ class ActionValue(APIObject):
         if isinstance(action, ActionUpdateRequest):
             payload = action.dict()
         return ActionResponse.parse_obj(self._make_request("PUT", payload).json())
+
+    def delete(self):
+        """
+        Make a request to the server to delete the Action value.
+        """
+        ActionResponse.parse_obj(self._make_request("DELETE").json())
 
     def _build_partial_path(self):
         return "/" + self.action_id
