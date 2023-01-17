@@ -1,0 +1,4883 @@
+openapi: 3.0.3
+info:
+  title: AnythingDB API reference
+  description: AnythingDB OpenAPI endpoints - OpenAPI 3.0
+  version: 1.0.0
+servers:
+  - url: 'https://api.swx.altairone.com'
+    description: SmartWorks
+tags:
+  - name: Categories
+    description: Operations on Categories
+  - name: Models
+    description: Operations on Models
+  - name: Model-Versions
+    description: Operations on Model-Versions
+  - name: Things
+    description: Operations on Things
+  - name: Things-Status
+    description: Operations on Things Status
+  - name: Thing Credentials
+    description: Operations on Things Credentials
+  - name: Actions
+    description: Operations on Thing Actions
+  - name: Events
+    description: Operations on Thing Events
+  - name: Properties
+    description: Operations on Thing Properties
+  - name: Properties History
+    description: Operations on Thing Properties History
+  - name: Query Cursors
+    description: Operations about database queries
+security:
+  - OAuth2AuthorizationCode: [ ]
+  - OAuth2ClientCredentials: [ ]
+  - AccessToken: [ ]
+paths:
+  /beta/spaces/{space}/categories:
+    post:
+      tags:
+        - Categories
+      summary: Create a Category
+      operationId: CreateCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+      requestBody:
+        description: Create a new Category in the platform
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreate'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Categories
+      summary: List categories
+      operationId: ListCategories
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+
+    get:
+      tags:
+        - Categories
+      summary: Get a Category
+      operationId: GetCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Categories
+      summary: Update a Category
+      operationId: UpdateCategory
+      requestBody:
+        description: Update an existent Category by name
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryUpdate'
+            example:
+              name: ElectronicBoards
+              description: My electronic boards category
+              model:
+                name: ArduinoModel
+                version: 2
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+              example:
+                name: ElectronicBoards
+                description: My electronic boards category
+                model:
+                  name: ArduinoModel
+                  version: 2
+                created: "2021-11-17T03:15:40Z"
+                modified: "2021-11-19T20:25:14Z"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags:
+        - Categories
+      summary: Delete a Category
+      operationId: DeleteCategory
+      responses:
+        204:
+          description: The resource was deleted successfully.
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/models:
+    post:
+      tags:
+        - Models
+      summary: Create a Model
+      operationId: CreateModel
+      parameters:
+        - $ref: '#/components/parameters/space'
+      requestBody:
+        description: Create a new Model in the platform
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelCreate'
+      responses:
+        201:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Models
+      summary: List Models
+      operationId: ListModels
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/models/{model-name}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/model-name'
+
+    get:
+      tags:
+        - Models
+      summary: Get a Model
+      operationId: GetModel
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Models
+      summary: Update a Model
+      operationId: UpdateModel
+      requestBody:
+        description: Update an existent Model by name
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelUpdate'
+            example:
+              name: RaspberryPiModel
+              description: My Raspberry Pi 4 Model
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+              example:
+                name: RaspberryPiModel
+                description: My Raspberry Pi 4 Model
+                created: "2021-11-17T10:08:31Z"
+                modified: "2021-11-17T11:45:07Z"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags:
+        - Models
+      summary: Delete a Model
+      operationId: DeleteModel
+      responses:
+        204:
+          description: The resource was deleted successfully.
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Forbidden'
+              examples:
+                insufficient_permissions:
+                  summary: Insufficient permissions
+                  value:
+                    error:
+                      status: 403
+                      message: Unauthorized
+                categories_associated:
+                  summary: Model is being used by Categories
+                  value:
+                    error:
+                      status: 403
+                      message: model cannot be deleted because there are categories using it
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/models/{model-name}/versions:
+    post:
+      tags:
+        - Model-Versions
+      summary: Create a Model Version
+      operationId: CreateVersion
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/model-name'
+      requestBody:
+        description: Create a new Model Version in the platform
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelVersionCreate'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelVersion'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Model-Versions
+      summary: List Versions of a Model
+      operationId: ListVersions
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/model-name'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelVersionList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/models/{model-name}/versions/{version-num}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/model-name'
+      - $ref: '#/components/parameters/version-num'
+
+    get:
+      tags:
+        - Model-Versions
+      summary: Get a Model Version
+      operationId: GetVersion
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelVersion'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things:
+    parameters:
+      - $ref: '#/components/parameters/space'
+
+    post:
+      tags:
+        - Things
+      summary: Add a Thing Description
+      description: Add a new Thing Description to the platform according to WoT specification.
+      operationId: CreateThing
+      requestBody:
+        description: Create a new Thing Description in the platform
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingCreate'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thing'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      parameters:
+        - $ref: '#/components/parameters/title'
+        - $ref: '#/components/parameters/type'
+        - $ref: '#/components/parameters/model'
+        - $ref: '#/components/parameters/version'
+        - $ref: '#/components/parameters/thing-ids'
+        - $ref: '#/components/parameters/category'
+        - $ref: '#/components/parameters/in_category'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sort_things'
+        - $ref: '#/components/parameters/properties'
+        - $ref: '#/components/parameters/links-rel'
+        - $ref: '#/components/parameters/links-href'
+      tags:
+        - Things
+      summary: List Thing Descriptions
+      description: List all Thing Descriptions in the Space
+      operationId: ListThings
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingList'
+          links:
+            pagingNextPage:
+              operationId: listThings
+              parameters:
+                next_cursor: '$response.body#/paging/next_cursor'
+            pagingPreviousPage:
+              operationId: listThings
+              parameters:
+                previous_cursor: '$response.body#/paging/previous_cursor'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/type'
+        - $ref: '#/components/parameters/thing-ids'
+        - $ref: '#/components/parameters/category'
+        - $ref: '#/components/parameters/properties'
+      tags:
+        - Things
+      summary: Delete Things
+      description: |
+        Deletes all the existing information (Things and history) from all the
+        Things matching the given filters. It will fail if no filters are provided.
+
+      operationId: DeleteThings
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingsDeleted'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things/{thing-id}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/thing-id'
+
+    get:
+      tags:
+        - Things
+      summary: Get Thing Description
+      description: Get the Thing Description from a Thing
+      operationId: GetThing
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thing'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Things
+      summary: Update Thing Description
+      description: Update the Thing Description from a Thing by ID. You need to include the whole Thing Description with the modifications to update it.
+      operationId: UpdateThing
+      requestBody:
+        description: Update an existent Thing Description by ID
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingUpdate'
+            example:
+              uid: '01FPSXTMN4CEGX09HF5RQ4RMY6'
+              title: Temperature Sensor
+              description: My update temperature sensor
+              categories: ["category1", "category2"]
+              properties:
+                cpu:
+                  title: "Temperature"
+                  description: "Temperature in degrees Celsius"
+                  type: "number"
+                  unit: "ºC"
+                  readOnly: true
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thing'
+              example:
+                uid: 01FPSXTMN4CEGX09HF5RQ4RMY6
+                id: 'https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+                title: Temperature Sensor
+                description: My update temperature sensor
+                categories: ["category1", "category2"]
+                model: null
+                properties:
+                  cpu:
+                    title: "Temperature"
+                    description: "Temperature in degrees Celsius"
+                    type: "number"
+                    unit: "ºC"
+                    readOnly: true
+                created: "2021-12-13T09:38:11Z"
+                modified: "2021-12-13T16:57:09Z"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags:
+        - Things
+      summary: Delete Thing
+      description: Deletes all the existing information from a Thing by ID. It deletes the Thing Description and the data history.
+      operationId: DeleteThing
+      responses:
+        204:
+          description: The resource was deleted successfully.
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+
+    post:
+      tags:
+        - Things
+      summary: Add a Thing Description into a Category
+      description: Add a new Thing Description into a Category according to WoT specification
+      operationId: CreateThingFromCategory
+      requestBody:
+        description:
+          Create a new Thing Description in the platform.
+          The `categories` attribute cannot be used in the request body.
+          The Thing will be added only to the Category used in the URL.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingCategoryCreate'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingCategory'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      parameters:
+        - $ref: '#/components/parameters/title'
+        - $ref: '#/components/parameters/type'
+        - $ref: '#/components/parameters/model'
+        - $ref: '#/components/parameters/version'
+        - $ref: '#/components/parameters/thing-ids'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sort_things'
+        - $ref: '#/components/parameters/properties'
+        - $ref: '#/components/parameters/links-rel'
+        - $ref: '#/components/parameters/links-href'
+      tags:
+        - Things
+      summary: List Thing Descriptions from a Category
+      description: List all Thing Descriptions in a Category
+      operationId: ListThingsFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingCategoryList'
+          links:
+            pagingNextPage:
+              operationId: listThings
+              parameters:
+                next_cursor: '$response.body#/paging/next_cursor'
+            pagingPreviousPage:
+              operationId: listThings
+              parameters:
+                previous_cursor: '$response.body#/paging/previous_cursor'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/type'
+        - $ref: '#/components/parameters/thing-ids'
+        - $ref: '#/components/parameters/properties'
+      tags:
+        - Things
+      summary: Delete Things from a Category
+      description: |
+        Deletes all the existing information (Things and history) from all the
+        Things in a Category matching the given filters.
+        
+        **WARNING**: All Things in the Category will be removed if no filters
+        are provided.
+
+      operationId: DeleteThingsFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingsDeleted'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+      - $ref: '#/components/parameters/thing-id'
+
+    get:
+      tags:
+        - Things
+      summary: Get Thing Description from a Category
+      description: Get the Thing Description from a Thing
+      operationId: GetThingFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingCategory'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Things
+      summary: Update Thing Description in a Category
+      description: Update the Thing Description from a Thing by ID. You need to include the whole Thing Description with the modifications to update it.
+      operationId: UpdateThingFromCategory
+      requestBody:
+        description:
+          Update an existent Thing Description by ID.
+          The `categories` attribute cannot be used in the request body.
+          Categories associations will not be changed.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingCategoryUpdate'
+            example:
+              uid: '01FPSXTMN4CEGX09HF5RQ4RMY6'
+              title: Temperature Sensor
+              description: My update temperature sensor
+              properties:
+                cpu:
+                  title: "Temperature"
+                  description: "Temperature in degrees Celsius"
+                  type: "number"
+                  unit: "ºC"
+                  readOnly: true
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingCategory'
+              example:
+                uid: 01FPSXTMN4CEGX09HF5RQ4RMY6
+                id: 'https://api.swx.altairone.com/beta/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+                title: Temperature Sensor
+                description: My update temperature sensor
+                model: null
+                properties:
+                  cpu:
+                    title: "Temperature"
+                    description: "Temperature in degrees Celsius"
+                    type: "number"
+                    unit: "ºC"
+                    readOnly: true
+                created: "2021-12-13T09:38:11Z"
+                modified: "2021-12-13T16:57:09Z"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags:
+        - Things
+      summary: Delete Thing
+      description:
+        Deletes all the existing information from a Thing by ID.
+        It completely deletes the Thing from all the Categories and all its data.
+      operationId: DeleteThingFromCategory
+      responses:
+        204:
+          description: The resource was deleted successfully.
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things-status:
+    parameters:
+      - $ref: '#/components/parameters/space'
+
+    post:
+      tags:
+        - Things-Status
+      summary: Add a Thing from a Thing Status
+      description: Add a new Thing to the platform using a Thing Status
+      operationId: CreateThingStatus
+      requestBody:
+        description: Create a new Thing in the platform using a Thing Status
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingStatusCreate'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingStatus'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      parameters:
+        - $ref: '#/components/parameters/title'
+        - $ref: '#/components/parameters/type'
+        - $ref: '#/components/parameters/model'
+        - $ref: '#/components/parameters/version'
+        - $ref: '#/components/parameters/thing-ids'
+        - $ref: '#/components/parameters/category'
+        - $ref: '#/components/parameters/in_category'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sort_things'
+        - $ref: '#/components/parameters/properties'
+        - $ref: '#/components/parameters/links-rel'
+        - $ref: '#/components/parameters/links-href'
+      tags:
+        - Things-Status
+      summary: List Things Status
+      description: List all Thing Status in the Space
+      operationId: ListThingsStatus
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingStatusList'
+          links:
+            pagingNextPage:
+              operationId: listThingsStatus
+              parameters:
+                next_cursor: '$response.body#/paging/next_cursor'
+            pagingPreviousPage:
+              operationId: listThingsStatus
+              parameters:
+                previous_cursor: '$response.body#/paging/previous_cursor'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things-status/{thing-id}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/thing-id'
+
+    get:
+      tags:
+        - Things-Status
+      summary: Get Thing Status
+      description: Get Thing Status
+      operationId: GetThingStatus
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingStatus'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Things-Status
+      summary: Update Thing Status
+      description: Update a Thing using a Thing Status.
+      operationId: UpdateThingStatus
+      requestBody:
+        description: Update an existent Thing using a Thing Status.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingStatusUpdate'
+            example:
+              uid: 01FPSXTMN4CEGX09HF5RQ4RMY6
+              title: SmartWorks Device
+              description: My connected SmartWorks device
+              categories:
+                - category1
+                - category2
+              model:
+                name: RaspberryPiModel
+                version: 1
+              properties:
+                cpu: 67.8
+                disk: 21.9
+                memory: 95
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingStatus'
+              example:
+                uid: 01FPSXTMN4CEGX09HF5RQ4RMY6
+                id: 'https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+                title: SmartWorks Device
+                description: My connected SmartWorks device
+                categories:
+                  - category1
+                  - category2
+                model:
+                  name: RaspberryPiModel
+                  version: 1
+                properties:
+                  cpu: 67.8
+                  disk: 21.9
+                  memory: 95
+                  mac: aa:bb:cc:dd:ee:ff
+                created: '2021-12-13T09:38:11Z'
+                modified: '2022-02-10T15:44:07Z'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things-status:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+
+    post:
+      tags:
+        - Things-Status
+      summary: Add a Thing from a Thing Status into a Category
+      description: Add a new Thing into a Category using a Thing Status
+      operationId: CreateThingStatusFromCategory
+      requestBody:
+        description:
+          Create a new Thing in the platform using a Thing Status.
+          The `categories` attribute cannot be used in the request body.
+          The Thing will be added only to the Category used in the URL.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingStatusCategoryCreate'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingStatusCategory'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      parameters:
+        - $ref: '#/components/parameters/title'
+        - $ref: '#/components/parameters/type'
+        - $ref: '#/components/parameters/model'
+        - $ref: '#/components/parameters/version'
+        - $ref: '#/components/parameters/thing-ids'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sort_things'
+        - $ref: '#/components/parameters/properties'
+        - $ref: '#/components/parameters/links-rel'
+        - $ref: '#/components/parameters/links-href'
+      tags:
+        - Things-Status
+      summary: List Things Status
+      description: List all Thing Status from a Category
+      operationId: ListThingsStatusFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingStatusCategoryList'
+          links:
+            pagingNextPage:
+              operationId: listThingsStatus
+              parameters:
+                next_cursor: '$response.body#/paging/next_cursor'
+            pagingPreviousPage:
+              operationId: listThingsStatus
+              parameters:
+                previous_cursor: '$response.body#/paging/previous_cursor'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things-status/{thing-id}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+      - $ref: '#/components/parameters/thing-id'
+
+    get:
+      tags:
+        - Things-Status
+      summary: Get Thing Status
+      description: Get Thing Status from a Category
+      operationId: GetThingStatusFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingStatusCategory'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Things-Status
+      summary: Update Thing Status in a Category
+      description: Update a Thing using a Thing Status.
+      operationId: UpdateThingStatusFromCategory
+      requestBody:
+        description:
+          Update an existent Thing using a Thing Status.
+          The `categories` attribute cannot be used in the request body.
+          Categories associations will not be changed.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingStatusCategoryUpdate'
+            example:
+              uid: 01FPSXTMN4CEGX09HF5RQ4RMY6
+              title: SmartWorks Device
+              description: My connected SmartWorks device
+              model:
+                name: RaspberryPiModel
+                version: 1
+              properties:
+                cpu: 67.8
+                disk: 21.9
+                memory: 95
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingStatusCategory'
+              example:
+                uid: 01FPSXTMN4CEGX09HF5RQ4RMY6
+                id: 'https://api.swx.altairone.com/beta/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+                title: SmartWorks Device
+                description: My connected SmartWorks device
+                model:
+                  name: RaspberryPiModel
+                  version: 1
+                properties:
+                  cpu: 67.8
+                  disk: 21.9
+                  memory: 95
+                  mac: aa:bb:cc:dd:ee:ff
+                created: '2021-12-13T09:38:11Z'
+                modified: '2022-02-10T15:44:07Z'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things/{thing-id}/reset-secret:
+    post:
+      tags:
+        - Thing Credentials
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+      summary: Reset the secret of the Thing's OAuth2 client
+      description: |
+        Reset the secret of the Thing's OAuth2 client. The client will be
+        created if it does not exist yet.
+      operationId: ThingResetSecret
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingOAuth2Credentials'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/reset-secret:
+    post:
+      tags:
+        - Thing Credentials
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+      summary: Reset the secret of the Thing's OAuth2 client
+      description: |
+        Reset the secret of the Thing's OAuth2 client using a Category the Thing
+        belongs to. The client will be created if it does not exist yet.
+      operationId: CategoryThingResetSecret
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingOAuth2Credentials'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things/{thing-id}/actions/{action-name}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/thing-id'
+      - $ref: '#/components/parameters/action-name'
+
+    post:
+      tags:
+        - Actions
+      summary: Create Thing Action
+      description: Create an Action for one Thing
+      operationId: CreateAction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionCreateRequest'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Actions
+      summary: List Thing Actions by name
+      description: List the queue of Actions for one Thing by name
+      operationId: ListActionsByName
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionListResponse'
+              example:
+                data:
+                  - delay:
+                      input:
+                        delay: 5
+                      status: pending
+                      timeRequested: '2022-06-02 15:37:46+0000'
+                      href: "/beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR"
+                  - delay:
+                      input:
+                        delay: 7
+                      status: pending
+                      timeRequested: '2022-06-02 15:39:54+0000'
+                      href: "/beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E"
+                paging:
+                  next_cursor: ''
+                  previous_cursor: ''
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things/{thing-id}/actions:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/thing-id'
+
+    get:
+      tags:
+        - Actions
+      summary: List Thing Actions
+      description: List the queue of Actions for one Thing
+      operationId: ListActions
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionListResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things/{thing-id}/actions/{action-name}/{action-id}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/thing-id'
+      - $ref: '#/components/parameters/action-name'
+      - $ref: '#/components/parameters/action-id'
+
+    get:
+      tags:
+        - Actions
+      summary: Show Thing Action
+      description: Show an Action for one Thing
+      operationId: ShowAction
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Actions
+      summary: Update Thing Action
+      description: Update an Actions for one Thing
+      operationId: UpdateAction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionUpdateRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResponse'
+              example:
+                delay:
+                  input:
+                    delay: 5
+                  status: completed
+                  timeRequested: "2022-06-02 15:37:46+0000"
+                  timeCompleted: "2022-06-02 15:39:25+0000"
+                  href: /spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags:
+        - Actions
+      summary: Delete Thing Action
+      description: Delete an Actions for one Thing
+      operationId: DeleteAction
+      responses:
+        204:
+          description: The resource was deleted successfully.
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/actions/{action-name}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+      - $ref: '#/components/parameters/thing-id'
+      - $ref: '#/components/parameters/action-name'
+
+    post:
+      tags:
+        - Actions
+      summary: Create Thing Action
+      description: Create an Action for one Thing
+      operationId: CreateActionFromCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionCreateRequest'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResponse'
+              example:
+                delay:
+                  input:
+                    delay: 5
+                  status: pending
+                  timeRequested: "2022-06-02 15:37:46+0000"
+                  href: /spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Actions
+      summary: List Thing Actions by name
+      description: List the queue of Actions for one Thing by name
+      operationId: ListActionsByNameFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionListResponse'
+              example:
+                data:
+                  - delay:
+                      input:
+                        delay: 5
+                      status: pending
+                      timeRequested: '2022-06-02 15:37:46+0000'
+                      href: "/beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR"
+                  - delay:
+                      input:
+                        delay: 7
+                      status: pending
+                      timeRequested: '2022-06-02 15:39:54+0000'
+                      href: "/beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E"
+                paging:
+                  next_cursor: ''
+                  previous_cursor: ''
+
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/actions:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+      - $ref: '#/components/parameters/thing-id'
+
+    get:
+      tags:
+        - Actions
+      summary: List Thing Actions
+      description: List the queue of Actions for one Thing
+      operationId: ListActionsFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionListResponse'
+              example:
+                data:
+                  - delay:
+                      input:
+                        delay: 5
+                      status: pending
+                      timeRequested: '2022-06-02 15:37:46+0000'
+                      href: "/beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR"
+                  - delay:
+                      input:
+                        delay: 7
+                      status: pending
+                      timeRequested: '2022-06-02 15:39:54+0000'
+                      href: "/beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E"
+                  - reboot:
+                      status: pending
+                      timeRequested: '2022-06-02 15:56:12+0000'
+                      href: "/beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCCZYATJW1Z3D4T4BA4S2QH"
+                paging:
+                  next_cursor: ''
+                  previous_cursor: ''
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/actions/{action-name}/{action-id}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+      - $ref: '#/components/parameters/thing-id'
+      - $ref: '#/components/parameters/action-name'
+      - $ref: '#/components/parameters/action-id'
+
+    get:
+      tags:
+        - Actions
+      summary: Show Thing Action
+      description: Show an Action for one Thing
+      operationId: ShowActionFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResponse'
+              example:
+                delay:
+                  input:
+                    delay: 5
+                  status: pending
+                  timeRequested: "2022-06-02 15:37:46+0000"
+                  href: /spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Actions
+      summary: Update Thing Action
+      description: Update an Actions for one Thing
+      operationId: UpdateActionFromCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionUpdateRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResponse'
+              example:
+                delay:
+                  input:
+                    delay: 5
+                  status: completed
+                  timeRequested: "2022-06-02 15:37:46+0000"
+                  timeCompleted: "2022-06-02 15:39:25+0000"
+                  href: /spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags:
+        - Actions
+      summary: Delete Thing Action
+      description: Delete an Actions for one Thing
+      operationId: DeleteActionCategory
+      responses:
+        204:
+          description: The resource was deleted successfully.
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things/{thing-id}/events/{event-name}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/thing-id'
+      - $ref: '#/components/parameters/event-name'
+
+    post:
+      tags:
+        - Events
+      summary: Create Thing Event
+      description: Create an Event for one Thing
+      operationId: CreateEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreateRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Events
+      summary: List Thing Events by name
+      description: List the queue of Events for one Thing by name
+      operationId: ListEventsByName
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventListResponse'
+              example:
+                data:
+                  - highCPU:
+                      data: 61
+                      timestamp: "2020-04-02 15:22:37+0000"
+                      href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+                  - highCPU:
+                      data: 85
+                      timestamp: "2020-04-02 15:26:42+0000"
+                      href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCGYKV4YQ1CY3QHHSX8J843
+                paging:
+                  next_cursor: ''
+                  previous_cursor: ''
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things/{thing-id}/events:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/thing-id'
+
+    get:
+      tags:
+        - Events
+      summary: List Thing Events
+      description: List the queue of Events for one Thing
+      operationId: ListEvents
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventListResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things/{thing-id}/events/{event-name}/{event-id}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/thing-id'
+      - $ref: '#/components/parameters/event-name'
+      - $ref: '#/components/parameters/event-id'
+
+    get:
+      tags:
+        - Events
+      summary: Show Thing Event
+      description: Show an Event for one Thing
+      operationId: ShowEvent
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/events/{event-name}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+      - $ref: '#/components/parameters/thing-id'
+      - $ref: '#/components/parameters/event-name'
+
+    post:
+      tags:
+        - Events
+      summary: Create Thing Event
+      description: Create an Event for one Thing
+      operationId: CreateEventFromCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreateRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponse'
+              example:
+                highCPU:
+                  data: 61
+                  timestamp: "2020-04-02 15:22:37+0000"
+                  href: /beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Events
+      summary: List Thing Events by name
+      description: List the queue of Events for one Thing by name
+      operationId: ListEventsByNameFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventListResponse'
+              example:
+                data:
+                  - highCPU:
+                      data: 61
+                      timestamp: "2020-04-02 15:22:37+0000"
+                      href: /spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+                  - highCPU:
+                      data: 85
+                      timestamp: "2020-04-02 15:26:42+0000"
+                      href: /spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCGYKV4YQ1CY3QHHSX8J843
+                paging:
+                  next_cursor: ''
+                  previous_cursor: ''
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/events:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+      - $ref: '#/components/parameters/thing-id'
+
+    get:
+      tags:
+        - Events
+      summary: List Thing Events
+      description: List the queue of Events for one Thing
+      operationId: ListEventsFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventListResponse'
+              example:
+                data:
+                  - highCPU:
+                      data: 61
+                      timestamp: "2020-04-02 15:22:37+0000"
+                      href: /beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+                  - highCPU:
+                      data: 85
+                      timestamp: "2020-04-02 15:26:42+0000"
+                      href: /beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCGYKV4YQ1CY3QHHSX8J843
+                  - lowDiskSpace:
+                      data: 95
+                      timestamp: "2020-04-03 07:12:55+0000"
+                      href: /beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/lowDiskSpace/01GPX7BR5X3YT5Y65ZMT24YT1N
+                paging:
+                  next_cursor: ''
+                  previous_cursor: ''
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/events/{event-name}/{event-id}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+      - $ref: '#/components/parameters/thing-id'
+      - $ref: '#/components/parameters/event-name'
+      - $ref: '#/components/parameters/event-id'
+
+    get:
+      tags:
+        - Events
+      summary: Show Thing Event
+      description: Show an Event for one Thing
+      operationId: ShowEventFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponse'
+              example:
+                highCPU:
+                  data: 61
+                  timestamp: "2020-04-02 15:22:37+0000"
+                  href: /beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things/{thing-id}/properties:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/thing-id'
+
+    post:
+      tags:
+        - Properties
+      summary: Create Thing Properties
+      description: Add new values for one or more Properties of a Thing
+      operationId: CreateProperties
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Properties'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Properties'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Properties
+      summary: List Thing Properties
+      description: List all the Properties from one Thing
+      operationId: ListProperties
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Properties'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things/{thing-id}/properties/{property}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/thing-id'
+      - $ref: '#/components/parameters/property'
+
+    post:
+      tags:
+        - Properties
+      summary: Create Thing property
+      description: Add a new value of a Property from one Thing
+      operationId: CreateProperty
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Property'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Property'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Properties
+      summary: Show Thing Property
+      description: Show a Property from one Thing
+      operationId: ShowProperty
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Property'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/properties:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+      - $ref: '#/components/parameters/thing-id'
+
+    post:
+      tags:
+        - Properties
+      summary: Create Thing Properties from a Category
+      description: Add new values for one or more Properties of a Thing from a Category
+      operationId: CreatePropertiesFromCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Properties'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Properties'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Properties
+      summary: List Thing Properties from a Category
+      description: List all the Properties of one Thing from a Category
+      operationId: ListPropertiesFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Properties'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/properties/{property}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+      - $ref: '#/components/parameters/thing-id'
+      - $ref: '#/components/parameters/property'
+
+    post:
+      tags:
+        - Properties
+      summary: Create Thing Property from a Category
+      description: Add a new value of a Property of one Thing from a Category
+      operationId: CreatePropertyFromCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Property'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Property'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Properties
+      summary: Show Thing Property from a Category
+      description: Show a Property of one Thing from a Category
+      operationId: ShowPropertyFromCategory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Property'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things/{thing-id}/properties-history:
+    post:
+      tags:
+        - Properties History
+      summary: Create historical values for any Thing's Property
+      description: Add historical values for one or more Properties of a Thing
+      operationId: CreatePropertiesHistoryValues
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/PropertyHistoryValue'
+                - $ref: '#/components/schemas/PropertyHistoryValues'
+            examples:
+              single_timestamp:
+                summary: Single timestamp
+                value:
+                  at: "2022-08-22T13:09:00Z"
+                  properties:
+                    memory: 69
+              multi_timestamp:
+                summary: Multiple timestamps
+                value:
+                  - at: "2022-08-22T13:10:00Z"
+                    properties:
+                      cpu: 43
+                      memory: 27
+                      disk: 19
+                  - at: "2022-08-22T13:09:00Z"
+                    properties:
+                      cpu: 87
+                      memory: 69
+                  - at: "2022-08-22T13:08:30Z"
+                    properties:
+                      disk: 17
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyHistoryValues'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/PropertyValueAlreadyExists'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Properties History
+      summary: List the historical values of any Thing's Property
+      description: List the historical Properties values from a Thing
+      operationId: ListPropertiesHistoryValues
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/at'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyHistoryValueList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/things/{thing-id}/properties-history/{property}:
+    post:
+      tags:
+        - Properties History
+      summary: Create historical values for a specific Thing's Property
+      description: Add historical values of a specific Thing's Property
+      operationId: CreatePropertyHistoryValues
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/property'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/PropertyHistoryValue'
+                - $ref: '#/components/schemas/PropertyHistoryValues'
+            examples:
+              single_timestamp:
+                summary: Single timestamp
+                value:
+                  at: "2022-08-22T13:09:00Z"
+                  properties:
+                    memory: 69
+              multi_timestamp:
+                summary: Multiple timestamps
+                value:
+                  - at: "2022-08-22T13:10:00Z"
+                    properties:
+                      memory: 27
+                  - at: "2022-08-22T13:09:00Z"
+                    properties:
+                      memory: 69
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyHistoryValues'
+              example:
+                - at: "2022-08-22T13:09:00Z"
+                  properties:
+                    memory: 69
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/PropertyValueAlreadyExists'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Properties History
+      summary: List the historical values of a specific Thing's Property
+      description: List the historical Property values of a specific Thing's Property
+      operationId: ListPropertyHistoryValues
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/at'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyHistoryValueList'
+              example:
+                paging:
+                  next_cursor: ''
+                  previous_cursor: ''
+                data:
+                  - at: "2022-08-22T13:10:00Z"
+                    properties:
+                      memory: 27
+                  - at: "2022-08-22T13:09:00Z"
+                    properties:
+                      memory: 69
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/properties-history:
+    post:
+      tags:
+        - Properties History
+      summary: Create historical values for any Property of a Thing that belongs to a Category
+      description: Add historical values for one or more Properties of a Thing that belongs to a Category
+      operationId: CreateCategoryPropertiesHistoryValues
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/PropertyHistoryValue'
+                - $ref: '#/components/schemas/PropertyHistoryValues'
+            examples:
+              single_timestamp:
+                summary: Single timestamp
+                value:
+                  at: "2022-08-22T13:09:00Z"
+                  properties:
+                    memory: 69
+              multi_timestamp:
+                summary: Multiple timestamps
+                value:
+                  - at: "2022-08-22T13:10:00Z"
+                    properties:
+                      cpu: 43
+                      memory: 27
+                      disk: 19
+                  - at: "2022-08-22T13:09:00Z"
+                    properties:
+                      cpu: 87
+                      memory: 69
+                  - at: "2022-08-22T13:08:30Z"
+                    properties:
+                      disk: 17
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyHistoryValues'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/PropertyValueAlreadyExists'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Properties History
+      summary: List the historical values of any Property of a Thing that belongs to a Category
+      description: List the historical Properties values from a Thing that belongs to a Category
+      operationId: ListCategoryPropertiesHistoryValues
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/at'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyHistoryValueList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/properties-history/{property}:
+    post:
+      tags:
+        - Properties History
+      summary: Create historical values for a specific Property of a Thing that belongs to a Category
+      description: Add historical values of a specific Property of a Thing that belongs to a Category
+      operationId: CreateCategoryPropertyHistoryValues
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/property'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/PropertyHistoryValue'
+                - $ref: '#/components/schemas/PropertyHistoryValues'
+            examples:
+              single_timestamp:
+                summary: Single timestamp
+                value:
+                  at: "2022-08-22T13:09:00Z"
+                  properties:
+                    memory: 69
+              multi_timestamp:
+                summary: Multiple timestamps
+                value:
+                  - at: "2022-08-22T13:10:00Z"
+                    properties:
+                      memory: 27
+                  - at: "2022-08-22T13:09:00Z"
+                    properties:
+                      memory: 69
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyHistoryValues'
+              example:
+                - at: "2022-08-22T13:09:00Z"
+                  properties:
+                    memory: 69
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/PropertyValueAlreadyExists'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Properties History
+      summary: List the historical values of a specific Property of a Thing that belongs to a Category
+      description: List the historical Property values of a specific Property of a Thing that belongs to a Category
+      operationId: ListCategoryPropertyHistoryValues
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/at'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyHistoryValueList'
+              example:
+                paging:
+                  next_cursor: ''
+                  previous_cursor: ''
+                data:
+                  - at: "2022-08-22T13:10:00Z"
+                    properties:
+                      memory: 27
+                  - at: "2022-08-22T13:09:00Z"
+                    properties:
+                      memory: 69
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/query/cursor:
+    parameters:
+      - $ref: '#/components/parameters/space'
+    post:
+      description: |+
+        This endpoint allows to perform custom read-only queries directly on AnythingDB.
+        AnythingDB relies on [**ArangoDB**](https://www.arangodb.com/), so this endpoint
+        allows to set a custom AQL query that will run in a sandboxed ArangoDB database
+        where the AnythingDB's Space information is stored.
+        
+        This endpoint is compatible with the [`/_api/cursor`](https://www.arangodb.com/docs/stable/http/aql-query-cursor-accessing-cursors.html#create-cursor)
+        in the ArangoDB REST API.
+
+        **A JSON object with these properties is required:**
+
+          - **query**: contains the query string to be executed. **Note: Only read-only queries are allowed.**
+          - **count**: indicates whether the number of documents in the result set should be returned in
+           the "count" attribute of the result.
+           Calculating the "count" attribute might have a performance impact for some queries
+           in the future so this option is turned off by default, and "count"
+           is only returned when requested.
+          - **batchSize**: maximum number of result documents to be transferred from
+           the server to the client in one roundtrip. If this attribute is
+           not set, a server-controlled default value will be used. A *batchSize* value of
+           *0* is disallowed. **Note: the server will set a maximum value.**
+          - **ttl**: The time-to-live for the cursor (in seconds). If the result set is small enough
+           (less than or equal to `batchSize`) then results are returned right away.
+           Otherwise they are stored in memory and will be accessible via the cursor with
+           respect to the `ttl`. The cursor will be removed on the server automatically
+           after the specified amount of time. This is useful to ensure garbage collection
+           of cursors that are not fully fetched by clients. If not set, a server-defined
+           value will be used (default: 30 seconds). **Note: the server will set a maximum value.**
+          - **cache**: flag to determine whether the AQL query results cache
+           shall be used. **Note: This value is fixed to *false*.**
+          - **memoryLimit**: the maximum number of memory (measured in bytes) that the query is allowed to
+           use. If set, then the query will fail with error "resource limit exceeded" in
+           case it allocates too much memory. A value of *0* indicates that there is no
+           memory limit. **Note: the server will set a maximum value.**
+          - **bindVars** (object): key/value pairs representing the bind parameters.
+          - **options**: key/value object with extra options for the query.
+           **Note: options will be ignored.**
+
+
+        The query details include the query string plus optional query options and
+        bind parameters. These values need to be passed in a JSON representation in
+        the body of the POST request.
+
+
+        **HTTP 201**
+        *A json document with these Properties is returned:*
+
+        is returned if the result set can be created by the server.
+
+        - **error**: A flag to indicate that an error occurred (*false* in this case)
+        - **code**: the HTTP status code
+        - **result** (anonymous json object): an array of result documents (might be empty if query has no results)
+        - **hasMore**: A boolean indicator whether there are more results
+        available for the cursor on the server
+        - **count**: the total number of result documents available (only
+        available if the query was executed with the *count* attribute set)
+        - **id**: id of temporary cursor created on the server (optional, see above)
+        - **extra**: an optional JSON object with extra information about the query result
+        contained in its *stats* sub-attribute. For data-modification queries, the
+        *extra.stats* sub-attribute will contain the number of modified documents and
+        the number of documents that could not be modified
+        due to an error (if *ignoreErrors* query option is specified)
+        - **cached**: a boolean flag indicating whether the query result was served
+        from the query cache or not. If the query result is served from the query
+        cache, the *extra* return attribute will not contain any *stats* sub-attribute
+        and no *profile* sub-attribute.
+
+
+        **HTTP 400**
+        *A json document with these Properties is returned:*
+
+        is returned if the JSON representation is malformed or the query specification is
+        missing from the request.
+        If the JSON representation is malformed or the query specification is
+        missing from the request, the server will respond with *HTTP 400*.
+        The body of the response will contain a JSON object with additional error
+        details, that will be available in the `details` attribute of an standard SmartWorks API error.
+        The error object has the following attributes:
+
+        - **error**: boolean flag to indicate that an error occurred (*true* in this case)
+        - **code**: the HTTP status code
+        - **errorNum**: the server error number
+        - **errorMessage**: a descriptive error message<br>
+        If the query specification is complete, the server will process the query. If an
+        error occurs during query processing, the server will respond with *HTTP 400*.
+        Again, the body of the response will contain details about the error.
+
+      summary: Create cursor
+      tags:
+        - Query Cursors
+      operationId: createQueryCursor
+      requestBody:
+        description: Create a new read-only query cursor
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostAPICursor'
+      responses:
+        201:
+          description: |+
+            is returned if the result set can be created by the server.
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostAPICursorResponse'
+        400:
+          description: |+
+            is returned if the JSON representation is malformed or the query specification is
+            missing from the request.
+
+            If the JSON representation is malformed or the query specification is
+            missing from the request, the server will respond with *HTTP 400*.
+
+            The body of the response will contain a JSON object with additional error
+            details. The object has the following attributes:
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  status: 400
+                  message: "AQL: syntax error"
+                  details:
+                    code: 400
+                    error: true
+                    errorMessage: "AQL: syntax error"
+                    errorNum: 1501
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          description: |+
+            The server will respond with *HTTP 404* in case a non-existing collection is
+            accessed in the query.
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  status: 404
+                  message: "AQL: collection or view not found: foo (while parsing)"
+                  details:
+                    code: 404
+                    error: true
+                    errorMessage: "AQL: collection or view not found: foo (while parsing)"
+                    errorNum: 1203
+        405:
+          description: |+
+            The server will respond with *HTTP 405* if an unsupported HTTP method is used.
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /beta/spaces/{space}/query/cursor/{cursor-id}:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - description: The name of the cursor
+        in: path
+        name: cursor-id
+        required: true
+        schema:
+          type: string
+          example: 1234567
+    post:
+      description: |+
+
+        If the cursor is still alive, returns an object with the following
+        attributes:
+
+        - *id*: the *cursor-identifier*
+        - *result*: a list of documents for the current batch
+        - *hasMore*: *false* if this was the last batch
+        - *count*: if present the total number of elements
+
+        Note that even if *hasMore* returns *true*, the next call might
+        still return no documents. If, however, *hasMore* is *false*, then
+        the cursor is exhausted.  Once the *hasMore* attribute has a value of
+        *false*, the client can stop.
+        
+        This endpoint is compatible with the [`/_api/cursor/{cursor-identifier}`](https://www.arangodb.com/docs/stable/http/aql-query-cursor-accessing-cursors.html#read-next-batch-from-cursor)
+        in the ArangoDB REST API.
+
+      summary: Read next batch from cursor
+      tags:
+        - Query Cursors
+      operationId: modifyQueryCursorPost
+      responses:
+        '200':
+          description: |+
+            The server will respond with *HTTP 200* in case of success.
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostAPICursorResponse'
+        '400':
+          description: |+
+            If the cursor identifier is omitted, the server will respond with *HTTP 404*.
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          description: |+
+            If no cursor with the specified identifier can be found, the server will respond
+            with *HTTP 404*.
+        405:
+          description: |+
+            The server will respond with *HTTP 405* if an unsupported HTTP method is used.
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /spaces/{space}/categories/{category-name}/mqtt-credentials:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+    post:
+      tags:
+        - Categories MQTT-credentials
+      summary: Create MQTT Categories credentials
+      description: Create an new MQTT Categories credentials.
+      operationId: createMQTTCategoriesCredentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MQTTCategoryForm'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MQTTCategoryDocument'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    get:
+      tags:
+        - Categories MQTT-credentials
+      summary: Show MQTT Categories credentials
+      description: Show the specific MQTT Category credentials
+      operationId: ShowMQTTCategoriesCredentials
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MQTTCategoryDocument'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    put:
+      tags:
+        - Categories MQTT-credentials
+      summary: Update MQTT Categories credentials
+      description: Update an existing MQTT Categories credentials. If you send an empty body, a random password will be generated
+      operationId: updateMQTTCategoriesCredentials
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MQTTCategoryForm'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MQTTCategoryDocument'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    delete:
+      tags:
+        - Categories MQTT-credentials
+      summary: Delete MQTT Categories credentials
+      description: Delete an existing MQTT Categories credentials.
+      operationId: deleteMQTTCategoriesCredentials
+      responses:
+        '204':
+          description: The resource was deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/mqtt-credentials:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/category-name'
+      - $ref: '#/components/parameters/thing-id'
+    post:
+      tags:
+        - Categories Things MQTT-credentials
+      summary: Create MQTT Categories Things credentials
+      description: Create an new MQTT Categories Things credentials.
+      operationId: createMQTTCategoriesThingsCredentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MQTTCategoryForm'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MQTTCategoryDocument'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    get:
+      tags:
+        - Categories Things MQTT-credentials
+      summary: Show MQTT Categories Things credentials
+      description: Show the specific MQTT Categories Things credentials
+      operationId: ShowMQTTCategoriesThingsCredentials
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MQTTThingsDocumentShow'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    put:
+      tags:
+        - Categories Things MQTT-credentials
+      summary: Update MQTT Categories Things credentials
+      description: Update an existing MQTT Categories Things credentials. If you send an empty body, a random password will be generated
+      operationId: updateMQTTCategoriesThingsCredentials
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MQTTCategoryForm'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MQTTThingsDocumentShow'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    delete:
+      tags:
+        - Categories Things MQTT-credentials
+      summary: Delete MQTT Categories Things credentials
+      description: Delete an existing MQTT Categories Things credentials.
+      operationId: deleteMQTTCategoriesThingsCredentials
+      responses:
+        '204':
+          description: The resource was deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /spaces/{space}/things/{thing-id}/mqtt-credentials:
+    parameters:
+      - $ref: '#/components/parameters/space'
+      - $ref: '#/components/parameters/thing-id'
+    post:
+      tags:
+        - Things MQTT-credentials
+      summary: Create MQTT Things credentials
+      description: Create an new MQTT Things credentials.
+      operationId: createMQTTThingsCredentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MQTTThingForm'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MQTTCategoryDocument'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    get:
+      tags:
+        - Things MQTT-credentials
+      summary: Show MQTT Things credentials
+      description: Show the specific MQTT Things credentials
+      operationId: ShowMQTTThingsCredentials
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MQTTThingsDocumentShow'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    put:
+      tags:
+        - Things MQTT-credentials
+      summary: Update MQTT Things credentials
+      description: Update an existing MQTT Things credentials. If you send an empty body, a random password will be generated
+      operationId: updateMQTTThingsCredentials
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MQTTCategoryForm'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MQTTThingsDocumentShow'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    delete:
+      tags:
+        - Things MQTT-credentials
+      summary: Delete MQTT Things credentials
+      description: Delete an existing MQTT Things credentials.
+      operationId: deleteMQTTThingsCredentials
+      responses:
+        '204':
+          description: The resource was deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: "Authenticate going to the login page."
+      flows:
+        authorizationCode:
+          authorizationUrl: https://api.swx.altairone.com/oauth2/auth
+          tokenUrl: https://api.swx.altairone.com/oauth2/token
+          refreshUrl: https://api.swx.altairone.com/oauth2/token
+          scopes:
+            offline: Offline scope
+            category: Category scope
+            model: Model scope
+            thing: Thing scope
+    OAuth2ClientCredentials:
+      type: oauth2
+      description: "Authenticate using the credentials of an OAuth2 Client."
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.swx.altairone.com/oauth2/token
+          refreshUrl: https://api.swx.altairone.com/oauth2/token
+          scopes:
+            category: Category scope
+            model: Model scope
+            thing: Thing scope
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: Opaque JWT
+      description: "Authenticate using an access token already granted."
+
+  parameters:
+    space:
+      in: path
+      name: space
+      required: true
+      schema:
+        type: string
+        example: altair
+
+    category-name:
+      in: path
+      name: category-name
+      required: true
+      schema:
+        type: string
+        example: ElectronicBoards
+
+    thing-id:
+      in: path
+      name: thing-id
+      required: true
+      schema:
+        type: string
+        format: ulid
+        example: 01FPSXTMN4CEGX09HF5RQ4RMY6
+
+    action-name:
+      in: path
+      name: action-name
+      required: true
+      schema:
+        type: string
+        example: delay
+
+    action-id:
+      in: path
+      name: action-id
+      required: true
+      schema:
+        type: string
+        format: ulid
+        example: 01EDCAQE78A7CP6REXV5J8BAKR
+
+    event-name:
+      in: path
+      name: event-name
+      required: true
+      schema:
+        type: string
+        example: highCPU
+
+    event-id:
+      in: path
+      name: event-id
+      required: true
+      schema:
+        type: string
+        format: ulid
+        example: 01EDCEZDTJX50SQTCJST5EW5NX
+
+    property:
+      in: path
+      name: property
+      required: true
+      schema:
+        type: string
+        example: memory
+
+    model-name:
+      in: path
+      name: model-name
+      required: true
+      schema:
+        type: string
+        example: RaspberryPiModel
+
+    version-num:
+      in: path
+      name: version-num
+      required: true
+      schema:
+        type: integer
+        example: 2
+
+    title:
+      in: query
+      name: title
+      schema:
+        type: string
+      description: Filter by title
+      example: MainThing
+
+    "type":
+      in: query
+      name: "@type"
+      schema:
+        type: string
+      description: Filter by @type
+      example: cluster
+
+    model:
+      in: query
+      name: model
+      schema:
+        type: string
+      description: Filter by Model name
+      example: RaspberryPiModel
+
+    version:
+      in: query
+      name: version
+      schema:
+        type: integer
+      description: Filter by Version number. `model` query parameter must be also present.
+      example: 1
+
+    thing-ids:
+      in: query
+      name: "thingID[]"
+      schema:
+        type: array
+        items:
+          type: string
+      description: Filter by multiple Thing IDs
+      examples:
+        oneId:
+          summary: Example of a single thingID
+          value: [ "01EDVJEMFD24360JT7434A6GS8" ] # ?thingID[]=01EDVJEMFD24360JT7434A6GS8
+        multipleIds:
+          summary: Example of multiple thingID
+          value: [ "01EDVJEMFD24360JT7434A6GS8", "01F53PMHJGCPSZX95QFJJEADS4" ] # ?thingID[]=01EDVJEMFD24360JT7434A6GS8&thingID[]=01F53PMHJGCPSZX95QFJJEADS4
+
+    category:
+      in: query
+      name: "category[]"
+      schema:
+        type: array
+        items:
+          type: string
+      description: Filter by multiple Category names
+      examples:
+        oneId:
+          summary: Example of a single Category
+          value: [ "ElectronicBoards" ] # ?category[]=ElectronicBoards
+        multipleIds:
+          summary: Example of multiple Categories
+          value: [ "ElectronicBoards", "ElectronicComponents" ] # ?category[]=ElectronicBoards&category[]=ElectronicComponents
+
+    in_category:
+      in: query
+      name: "in_category"
+      schema:
+        type: boolean
+      description:
+        If `true`, only Things within some Category will be listed.
+        If `false`, only Things not associated to any Category will be listed.
+        If omitted, all Things will be listed.
+      example: false
+
+    next_cursor:
+      in: query
+      name: "next_cursor"
+      schema:
+        type: string
+      description: Next cursor used to go to the next page of results
+      example: WyIwMUY1M1BNSEpHQ1BTWlg5NVFGSkpFQURTNCJd
+
+    previous_cursor:
+      in: query
+      name: "previous_cursor"
+      schema:
+        type: string
+      description: Previous cursor used to go to the previous page of results
+      example: WyIwMUY1M1BNSEpHQ1BTWlg5NVFGSkpFQURTNCJd
+
+    limit:
+      in: query
+      name: "limit"
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+        default: 50
+      description: The numbers of items to return
+      example: 50
+
+    sort_things:
+      in: query
+      name: "sort"
+      schema:
+        type: array
+        items:
+          type: string
+      explode: false
+      style: form
+      description: |
+        Sort items by one or more fields in any order.
+        
+        For example, using `sort=uid,+title,-created` will return the results
+        ordered by ascending `uid`, ascending `title` and descending `created`
+        (having `uid` the highest priority and `created` the lowest).
+      examples:
+        oneId:
+          summary: Example of a single sort field
+          value: [ "+title" ]   # ?sort=+title
+        multipleIds:
+          summary: Example of multiple sort fields
+          value: [ "+title", "-uid" ]   # ?sort=+title,-uid
+
+    properties: # see https://github.com/OAI/OpenAPI-Specification/issues/1706
+      in: query
+      name: property
+      schema:
+        type: object
+      explode: true
+      example: '{"property:temp":"gt:20", "property:dim": 80}'
+      description: |
+        Schema:
+
+            {"property:<property_name>":"<operator>:<value>"}
+
+        Supported value operators:
+          * eq  == (operator by default)
+          * neq !=
+          * gt  >
+          * gte >=
+          * lt  <
+          * lte <=
+
+    links-rel:
+      in: query
+      name: links.rel
+      schema:
+        type: string
+      description: Filter by type of link relationship
+      example: controlledBy
+
+    links-href:
+      in: query
+      name: links.href
+      schema:
+        type: string
+      description: Filter by link href
+      example: https://www.w3.org/TR/wot-thing-description/
+
+    at:
+      in: query
+      name: "at"
+      schema:
+        type: string
+      description: |+
+        This parameter can be used as a datetime or as a datetime range value.
+        
+        Using a date-time value:
+         - This allows to get the Property value(s) that a Thing had at this
+           date and time. <br>Example: *2022-05-31T01:23:45Z*
+        
+        Using a date-time range:
+         - This allows to get the Property value(s) that a Thing had in a datetime
+           range, using the `|` separator to specify start and end date-times.
+           <br>Example: *2022-08-01T00:00:00Z|2022-09-01T00:00:00Z*
+        
+        If `at` is omitted, it will default to the current date and time.
+      examples:
+        at:
+          value: '2022-05-31T01:23:45Z'
+          summary: At
+        from_to:
+          value: '2022-08-01T00:00:00Z|2022-09-01T00:00:00Z'
+          summary: From-To
+
+
+  schemas:
+    AnyValue:
+      description: "Can be any value - string, number, boolean, array or object."
+
+    ErrorResponse:
+      title: Error Response
+      type: object
+      properties:
+        error:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              format: int64
+              example: 400
+            message:
+              type: string
+              example: invalid id
+            details:
+              type: object
+              additionalProperties: {}
+              description: Key/value object with extra information about the error.
+
+    DataSchema:
+      type: object
+      properties:
+        "@type":
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        description:
+          type: string
+        title:
+          type: string
+        readOnly:
+          type: boolean
+        oneOf:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataSchema'
+        unit:
+          type: string
+        enum:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items: {}
+        const: {}
+        type:
+          type: string
+          enum:
+            - boolean
+            - integer
+            - number
+            - string
+            - object
+            - array
+            - 'null'
+        items:
+          oneOf:
+            - $ref: '#/components/schemas/DataSchema'
+            - type: array
+              items:
+                $ref: '#/components/schemas/DataSchema'
+        maxItems:
+          type: integer
+          minimum: 0
+        minItems:
+          type: integer
+          minimum: 0
+        minimum:
+          type: number
+        maximum:
+          type: number
+        properties:
+          additionalProperties:
+            $ref: '#/components/schemas/DataSchema'
+        required:
+          type: array
+          items:
+            type: string
+      additionalProperties: false
+
+    InteractionAffordance:
+      type: object
+      properties:
+        '@type':
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        title:
+          type: string
+        description:
+          type: string
+    #        forms:
+    #          type: array
+    #          items:
+    #            type: Form
+
+    PropertyAffordance:
+      allOf:
+        - $ref: '#/components/schemas/InteractionAffordance'
+        - type: object
+          properties:
+            observable:
+              type: boolean
+
+    ActionAffordance:
+      allOf:
+        - $ref: '#/components/schemas/InteractionAffordance'
+        - type: object
+          properties:
+            input:
+              allOf:
+                - $ref: '#/components/schemas/DataSchema'
+            output:
+              allOf:
+                - $ref: '#/components/schemas/DataSchema'
+            safe:
+              type: boolean
+            idempotent:
+              type: boolean
+
+    EventAffordance:
+      allOf:
+        - $ref: '#/components/schemas/InteractionAffordance'
+        - type: object
+          properties:
+            subscription:
+              allOf:
+                - $ref: '#/components/schemas/DataSchema'
+            data:
+              allOf:
+                - $ref: '#/components/schemas/DataSchema'
+            cancellation:
+              allOf:
+                - $ref: '#/components/schemas/DataSchema'
+
+    CategoryBase:
+      title: Category Base
+      type: object
+      properties:
+        name:
+          type: string
+          pattern: '^[a-zA-Z0-9_:-]{1,26}$'
+          example: ElectronicBoards
+          description: Name of the Category that will be used as a unique identifier.
+        description:
+          type: string
+          example: My category
+        model:
+          allOf:
+            - $ref: '#/components/schemas/ModelDescriptionCategory'
+          default: null
+        validators:
+          type: object
+          x-omitempty: true
+          properties:
+            links:
+              type: array
+              items:
+                type: object
+                properties:
+                  href_pattern:
+                    type: string
+                    example: /spaces/myspace/categories/cpus/things/+
+                  rel_pattern:
+                    type: string
+                    example: '*'
+                  multiple:
+                    type: boolean
+                    example: false
+                  optional:
+                    type: boolean
+                    example: false
+
+    CategoryCreate:
+      title: Category Creation Request
+      required:
+        - name
+      allOf:
+        - $ref: '#/components/schemas/CategoryBase'
+
+    CategoryUpdate:
+      title: Category Update Request
+      required:
+        - name
+      allOf:
+        - $ref: '#/components/schemas/CategoryBase'
+
+    Category:
+      title: Category
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CategoryBase'
+        - type: object
+          properties:
+            created:
+              type: string
+              format: date-time
+              example: "2021-11-17T03:15:40Z"
+            modified:
+              type: string
+              format: date-time
+              example: "2021-11-17T03:15:40Z"
+
+    CategoryList:
+      title: Category List
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        paging:
+          type: object
+          properties:
+            next_cursor:
+              type: string
+              example: ''
+            previous_cursor:
+              type: string
+              example: ''
+      example:
+        paging:
+          next_cursor: ''
+          previous_cursor: ''
+        data:
+          - name: ElectronicBoards
+            description: My category
+            model:
+              name: RaspberryPiModel
+              version: 1
+            created: "2021-11-17T03:15:40Z"
+            modified: "2021-11-17T03:15:40Z"
+          - name: ElectronicComponents
+            description: My electronic components category
+            model: null
+            created: "2021-11-19T11:19:09Z"
+            modified: "2021-11-21T20:33:51Z"
+
+    ModelBase:
+      title: Model Base
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          pattern: '^[a-zA-Z0-9_:-]{1,26}$'
+          example: RaspberryPiModel
+          description: Name of the Model that will be used as a unique identifier.
+        description:
+          type: string
+          example: My Raspberry Pi Model
+
+    ModelCreate:
+      title: Model Creation Request
+      required:
+        - name
+      allOf:
+        - $ref: '#/components/schemas/ModelBase'
+
+    ModelUpdate:
+      title: Model Update Request
+      required:
+        - name
+      allOf:
+        - $ref: '#/components/schemas/ModelBase'
+
+    Model:
+      title: Model
+      type: object
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+              example: 01FPT3MJBRBMA5462PEE57FRKB
+        - $ref: '#/components/schemas/ModelBase'
+        - type: object
+          properties:
+            created:
+              type: string
+              format: date-time
+              example: "2021-11-17T10:08:31Z"
+            modified:
+              type: string
+              format: date-time
+              example: "2021-11-17T10:08:31Z"
+
+    ModelList:
+      title: Model List
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Model'
+        paging:
+          type: object
+          properties:
+            next_cursor:
+              type: string
+              example: ''
+            previous_cursor:
+              type: string
+              example: ''
+      example:
+        paging:
+          next_cursor: ''
+          previous_cursor: ''
+        data:
+          - name: RaspberryPiModel
+            description: My Raspberry Pi Model
+            created: "2021-11-17T10:08:31Z"
+            modified: "2021-11-17T10:08:31Z"
+          - name: ArduinoModel
+            description: My Arduino Model
+            created: "2021-11-21T14:31:22Z"
+            modified: "2021-11-23T08:05:17Z"
+
+    LinkValidator:
+      title: Link Validator
+      description: Define a validator for Thing's links.
+      type: object
+      properties:
+        href_pattern:
+          type: string
+          description:
+            A URL expression to be checked against each `href` in Thing's links.
+            URL expressions allow `+` (single level) and `#` (multi level) wildcards.
+        rel_pattern:
+          type: string
+          description:
+            A regex to be checked against each `rel` in Thing's links.
+        multiple:
+          type: boolean
+          default: true
+          description: If `true`, more than one Thing's link in a Category can meet the criteria of this link validator.
+        optional:
+          type: boolean
+          default: true
+          description: If `true`, a Thing will not need to have a link meeting the `href` and `rel` criteria of this link validator.
+
+    ModelVersionBase:
+      title: Model-Version Base
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Version 1"
+        description:
+          type: string
+          example: "Version 1 of RaspberryPiModel"
+        template:
+          properties:
+            title:
+              type: string
+              example: SmartWorks Device
+            description:
+              type: string
+              example: My connected SmartWorks device
+            properties:
+              type: object
+              additionalProperties: {}
+              example:
+                cpu:
+                  title: "CPU %"
+                  description: "Device CPU usage in percent"
+                  type: "number"
+                  unit: "percent"
+                  readOnly: false
+            actions:
+              type: object
+              additionalProperties: {}
+              example:
+                delay:
+                  title: "Delay"
+                  description: "Change sending frequency"
+                  input:
+                    properties:
+                      input:
+                        maximum: 100
+                        minimum: 3
+                        type: "number"
+            events:
+              type: object
+              additionalProperties: {}
+              example:
+                highCPU:
+                  title: "High CPU"
+                  description: "The CPU usage is over 50%"
+                  data:
+                    type: "number"
+                    unit: "percent"
+            links:
+              type: array
+              items:
+                type: object
+                additionalProperties: {}
+                example:
+                  href: "www.altair.com"
+                  rel: "Company"
+
+    ModelVersionCreate:
+      title: Model-Version Creation Request
+      allOf:
+        - $ref: '#/components/schemas/ModelVersionBase'
+
+    ModelVersion:
+      title: Model-Version
+      allOf:
+        - type: object
+          properties:
+            version:
+              type: integer
+              example: 1
+        - $ref: '#/components/schemas/ModelVersionBase'
+        - type: object
+          properties:
+            created:
+              type: string
+              format: date-time
+              example: "2021-11-23T21:11:37Z"
+
+    ModelVersionList:
+      title: Model-Version List
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelVersion'
+        paging:
+          type: object
+          properties:
+            next_cursor:
+              type: string
+              example: ''
+            previous_cursor:
+              type: string
+              example: ''
+
+    ModelDescription:
+      title: Model Description for Things
+      type: object
+      description: |
+        Model name and Version number applied to a Thing.
+        Can be null (or omitted) if no Model is associated or it must be
+        inferred from the Categories the Thing belongs to.
+      properties:
+        name:
+          type: string
+          description: Model name.
+          example: RaspberryPiModel
+        version:
+          type: integer
+          description: Version number.
+          example: 1
+
+    ModelDescriptionCategory:
+      title: Model Description for Categories
+      type: object
+      description: |
+        Model name and Version number applied to a Category.
+        Can be null (or omitted) if no Model is associated to the Category.
+        If not null, Version number can be omitted to only apply the Model to
+        the Things in the Category.
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Model name.
+          example: RaspberryPiModel
+        version:
+          type: integer
+          description: Version number.
+          example: 1
+
+    ThingBase:
+      title: Thing Base
+      type: object
+      properties:
+        title:
+          type: string
+          example: SmartWorks Device
+        description:
+          type: string
+          example: My connected SmartWorks device
+        '@type':
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+          example: ["Light", "OnOffSwitch"]
+        model:
+          allOf:
+            - $ref: '#/components/schemas/ModelDescription'
+        properties:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/PropertyAffordance'
+          example:
+            cpu:
+              title: "CPU %"
+              description: "Device CPU usage in percent"
+              type: "number"
+              unit: "percent"
+              readOnly: false
+            disk:
+              title: "Disk %"
+              description: "Device Disk usage in percent"
+              type: "number"
+              unit: "percent"
+              readOnly: false
+            memory:
+              title: "Memory %"
+              description: "Device Memory usage in percent"
+              type: "number"
+              unit: "percent"
+              readOnly: false
+        actions:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ActionAffordance'
+          example:
+            delay:
+              title: "Delay"
+              description: "Change sending frequency"
+              input:
+                properties:
+                  input:
+                    maximum: 100
+                    minimum: 3
+                    type: "number"
+            reboot:
+              title: "Reboot"
+              description: "Reboot device"
+        events:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/EventAffordance'
+          example:
+            highCPU:
+              title: "High CPU"
+              description: "The CPU usage is over 50%"
+              data:
+                type: "number"
+                unit: "percent"
+
+    ThingCreate:
+      title: Thing Creation Request
+      allOf:
+        - type: object
+          properties:
+            categories:
+              type: array
+              items:
+                type: string
+              example: [ 'category1', 'category2' ]
+        - $ref: '#/components/schemas/ThingBase'
+
+    ThingCategoryCreate:
+      title: Thing Creation Request in a Category
+      allOf:
+        - $ref: '#/components/schemas/ThingBase'
+
+    ThingUpdate:
+      title: Thing Update Request
+      allOf:
+        - type: object
+          properties:
+            uid:
+              type: string
+              example: 01FPSXTMN4CEGX09HF5RQ4RMY6
+            id:
+              type: string
+              example: 'https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+        - type: object
+          properties:
+            categories:
+              type: array
+              items:
+                type: string
+              example: [ 'category1', 'category2' ]
+        - $ref: '#/components/schemas/ThingBase'
+
+    ThingCategoryUpdate:
+      title: Thing Update Request in a Category
+      allOf:
+        - type: object
+          properties:
+            uid:
+              type: string
+              example: 01FPSXTMN4CEGX09HF5RQ4RMY6
+            id:
+              type: string
+              example: 'https://api.swx.altairone.com/beta/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+        - $ref: '#/components/schemas/ThingBase'
+
+    Thing:
+      title: Thing
+      allOf:
+        - type: object
+          properties:
+            uid:
+              type: string
+              example: 01FPSXTMN4CEGX09HF5RQ4RMY6
+            id:
+              type: string
+              example: 'https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+        - type: object
+          properties:
+            categories:
+              type: array
+              items:
+                type: string
+              example: [ 'category1', 'category2' ]
+        - $ref: '#/components/schemas/ThingBase'
+        - type: object
+          properties:
+            created:
+              type: string
+              format: date-time
+              example: "2021-12-13T09:38:11Z"
+            modified:
+              type: string
+              format: date-time
+              example: "2021-12-13T09:38:11Z"
+
+    ThingCategory:
+      title: Thing from a Category
+      allOf:
+        - type: object
+          properties:
+            uid:
+              type: string
+              example: 01FPSXTMN4CEGX09HF5RQ4RMY6
+            id:
+              type: string
+              example: 'https://api.swx.altairone.com/beta/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+        - $ref: '#/components/schemas/ThingBase'
+        - type: object
+          properties:
+            created:
+              type: string
+              format: date-time
+              example: "2021-12-13T09:38:11Z"
+            modified:
+              type: string
+              format: date-time
+              example: "2021-12-13T09:38:11Z"
+
+    ThingList:
+      title: Thing List
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Thing'
+        paging:
+          type: object
+          properties:
+            next_cursor:
+              type: string
+              example: ''
+            previous_cursor:
+              type: string
+              example: ''
+
+    ThingCategoryList:
+      title: Thing List from a Category
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ThingCategory'
+        paging:
+          type: object
+          properties:
+            next_cursor:
+              type: string
+              example: ''
+            previous_cursor:
+              type: string
+              example: ''
+
+    ThingsDeleted:
+      title: Things Deleted
+      description: List of IDs of the deleted Things.
+      type: array
+      items:
+        type: string
+      example: ["01GM38SSQC0X32YQSXZYFJPGGC", "01GM38T332KMGEXJZNB6VYTRBM"]
+
+    ThingOAuth2Credentials:
+      title: Thing OAuth2 Credentials
+      properties:
+        client_id:
+          type: string
+          description: The Client ID of the Thing's OAuth2 client.
+          example: "altair::01GJCPZPVCZKD9GDV4A51NT27H"
+        client_secret:
+          type: string
+          description: The Client secret of the Thing's OAuth2 client.
+          example: "MSivCvI71kHEAo0tXY6edIhTsQl12n"
+
+    ActionValue:
+      type: object
+      properties:
+        input:
+          $ref: '#/components/schemas/AnyValue'
+        status:
+          type: string
+        timeRequested:
+          type: string
+          format: date-time
+        timeCompleted:
+          type: string
+          format: date-time
+        href:
+          type: string
+      example:
+        delay: 5
+
+    ActionCreateRequest:
+      type: object
+      additionalProperties:
+        properties:
+          input:
+            $ref: '#/components/schemas/AnyValue'
+      example:
+        delay:
+          input:
+            delay: 5
+
+    ActionResponse:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/ActionValue'
+      example:
+        delay:
+          input:
+            delay: 5
+          status: pending
+          timeRequested: "2022-06-02 15:37:46+0000"
+          href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR
+
+    ActionListResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActionResponse'
+          example:
+            - delay:
+                input:
+                  delay: 5
+                status: pending
+                timeRequested: "2022-06-02 15:37:46+0000"
+                href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR
+            - delay:
+                input:
+                  delay: 7
+                status: pending
+                timeRequested: "2022-06-02 15:39:54+0000"
+                href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E
+            - reboot:
+                status: pending
+                timeRequested: "2022-06-02 15:56:12+0000"
+                href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCCZYATJW1Z3D4T4BA4S2QH
+        paging:
+          type: object
+          properties:
+            next_cursor:
+              type: string
+              example: ''
+            previous_cursor:
+              type: string
+              example: ''
+
+    ActionUpdateRequest:
+      type: object
+      additionalProperties:
+        properties:
+          output:
+            $ref: '#/components/schemas/AnyValue'
+          status:
+            type: string
+      example:
+        delay:
+          status: "completed"
+
+    EventValue:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/AnyValue'
+        href:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+      example:
+        delay: 5
+
+    EventCreateRequest:
+      type: object
+      additionalProperties:
+        properties:
+          data:
+            $ref: '#/components/schemas/AnyValue'
+      example:
+        highCPU:
+          data: 61
+
+    EventResponse:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/EventValue'
+      example:
+        highCPU:
+          data: 61
+          timestamp: "2020-04-02 15:22:37+0000"
+          href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+
+    EventListResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventResponse'
+          example:
+            - highCPU:
+                data: 61
+                timestamp: "2020-04-02 15:22:37+0000"
+                href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+            - highCPU:
+                data: 85
+                timestamp: "2020-04-02 15:26:42+0000"
+                href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCGYKV4YQ1CY3QHHSX8J843
+            - lowDiskSpace:
+                data: 95
+                timestamp: "2020-04-03 07:12:55+0000"
+                href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/lowDiskSpace/01GPX7BR5X3YT5Y65ZMT24YT1N
+        paging:
+          type: object
+          properties:
+            next_cursor:
+              type: string
+              example: ''
+            previous_cursor:
+              type: string
+              example: ''
+
+    Properties:
+      type: object
+      additionalProperties: {}
+      example:
+        cpu: 22
+        disk: 18
+        memory: 67
+
+    Property:
+      type: object
+      additionalProperties: {}
+      example:
+        memory: 67
+
+    PropertyValues:
+      type: object
+      description: Map of property names/values.
+      additionalProperties: {}
+      example:
+        cpu: 22.1
+        disk: 18.7
+        memory: 67
+        mac: 'aa:bb:cc:dd:ee:ff'
+
+    PropertyHistoryValue:
+      title: Property History Value
+      description: Represents one or more Property values along with the date and time they were recorded.
+      type: object
+      required:
+        - at
+        - properties
+      properties:
+        at:
+          type: string
+          format: date-time
+          description: Date and time the values were recorded.
+          example: "2022-08-22T13:10:00Z"
+        properties:
+          $ref: '#/components/schemas/PropertyValues'
+      example:
+        at: "2022-08-22T13:10:00Z"
+        properties:
+          cpu: 43
+          memory: 27
+          disk: 19
+
+    PropertyHistoryValues:
+      title: Property History Values
+      description: List of historical Property values.
+      type: array
+      items:
+        $ref: '#/components/schemas/PropertyHistoryValue'
+      example:
+        - at: "2022-08-22T13:10:00Z"
+          properties:
+            cpu: 43
+            memory: 27
+            disk: 19
+        - at: "2022-08-22T13:09:00Z"
+          properties:
+            cpu: 87
+            memory: 69
+        - at: "2022-08-22T13:08:30Z"
+          properties:
+            disk: 17
+
+    PropertyHistoryValueList:
+      title: Property History Value List
+      description: Paginated list of historical Property values.
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyHistoryValue'
+        paging:
+          type: object
+          properties:
+            next_cursor:
+              type: string
+              example: ''
+            previous_cursor:
+              type: string
+              example: ''
+      example:
+        paging:
+          next_cursor: ''
+          previous_cursor: ''
+        data:
+          - at: "2022-08-22T13:10:00Z"
+            properties:
+              cpu: 43
+              memory: 27
+              disk: 19
+          - at: "2022-08-22T13:09:00Z"
+            properties:
+              cpu: 87
+              memory: 69
+          - at: "2022-08-22T13:08:30Z"
+            properties:
+              disk: 17
+
+    ThingStatusBase:
+      title: Thing Status Base
+      type: object
+      properties:
+        title:
+          type: string
+          example: SmartWorks Device
+        description:
+          type: string
+          example: My connected SmartWorks device
+        '@type':
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+          example: ["Light", "OnOffSwitch"]
+        model:
+          allOf:
+            - $ref: '#/components/schemas/ModelDescription'
+        properties:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/PropertyValues'
+
+    ThingStatusCreate:
+      title: Thing Status Creation Request
+      allOf:
+        - type: object
+          properties:
+            categories:
+              type: array
+              items:
+                type: string
+              example: [ 'category1', 'category2' ]
+        - $ref: '#/components/schemas/ThingStatusBase'
+
+    ThingStatusCategoryCreate:
+      title: Thing Status Creation Request in a Category
+      allOf:
+        - $ref: '#/components/schemas/ThingStatusBase'
+
+    ThingStatusUpdate:
+      title: Thing Status Update Request
+      allOf:
+        - type: object
+          properties:
+            uid:
+              type: string
+              example: 01FPSXTMN4CEGX09HF5RQ4RMY6
+            id:
+              type: string
+              example: 'https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+        - type: object
+          properties:
+            categories:
+              type: array
+              items:
+                type: string
+              example: [ 'category1', 'category2' ]
+        - $ref: '#/components/schemas/ThingStatusBase'
+
+    ThingStatusCategoryUpdate:
+      title: Thing Status Update Request in a Category
+      allOf:
+        - type: object
+          properties:
+            uid:
+              type: string
+              example: 01FPSXTMN4CEGX09HF5RQ4RMY6
+            id:
+              type: string
+              example: 'https://api.swx.altairone.com/beta/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+        - $ref: '#/components/schemas/ThingStatusBase'
+
+    ThingStatus:
+      title: Thing Status
+      description: Summarized version of a Thing with the values of all its Properties.
+      allOf:
+        - type: object
+          properties:
+            uid:
+              type: string
+              example: 01FPSXTMN4CEGX09HF5RQ4RMY6
+            id:
+              type: string
+              example: 'https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+        - type: object
+          properties:
+            categories:
+              type: array
+              items:
+                type: string
+              example: [ 'category1', 'category2' ]
+        - $ref: '#/components/schemas/ThingStatusBase'
+        - type: object
+          properties:
+            created:
+              type: string
+              format: date-time
+              example: "2021-12-13T09:38:11Z"
+            modified:
+              type: string
+              format: date-time
+              example: "2021-12-13T09:38:11Z"
+
+    ThingStatusCategory:
+      title: Thing Status from a Category
+      description: Summarized version of a Thing with the values of all its Properties.
+      allOf:
+        - type: object
+          properties:
+            uid:
+              type: string
+              example: 01FPSXTMN4CEGX09HF5RQ4RMY6
+            id:
+              type: string
+              example: 'https://api.swx.altairone.com/beta/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+        - $ref: '#/components/schemas/ThingStatusBase'
+        - type: object
+          properties:
+            created:
+              type: string
+              format: date-time
+              example: "2021-12-13T09:38:11Z"
+            modified:
+              type: string
+              format: date-time
+              example: "2021-12-13T09:38:11Z"
+
+    ThingStatusList:
+      title: Thing Status List
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ThingStatus'
+        paging:
+          type: object
+          properties:
+            next_cursor:
+              type: string
+              example: ''
+            previous_cursor:
+              type: string
+              example: ''
+
+    ThingStatusCategoryList:
+      title: Thing Status List from a Category
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ThingStatusCategory'
+        paging:
+          type: object
+          properties:
+            next_cursor:
+              type: string
+              example: ''
+            previous_cursor:
+              type: string
+              example: ''
+
+    PostAPICursor:
+      title: Query Payload
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          description: |+
+            Contains the query string to be executed
+          type: string
+        count:
+          description: |+
+            Indicates whether the number of documents in the result set should be returned in
+            the "count" attribute of the result.
+            Calculating the "count" attribute might have a performance impact for some queries
+            in the future so this option is turned off by default, and "count"
+            is only returned when requested.
+          format: ''
+          type: boolean
+        batchSize:
+          description: |+
+            Maximum number of result documents to be transferred from
+            the server to the client in one roundtrip. If this attribute is
+            not set, a server-controlled default value will be used. A *batchSize* value of
+            *0* is disallowed.
+          format: int64
+          type: integer
+        ttl:
+          description: |+
+            The time-to-live for the cursor (in seconds). If the result set is small enough
+            (less than or equal to `batchSize`) then results are returned right away.
+            Otherwise they are stored in memory and will be accessible via the cursor with
+            respect to the `ttl`. The cursor will be removed on the server automatically
+            after the specified amount of time. This is useful to ensure garbage collection
+            of cursors that are not fully fetched by clients. If not set, a server-defined
+            value will be used (default: 30 seconds).
+          format: int64
+          type: integer
+        cache:
+          description: |+
+            Flag to determine whether the AQL query results cache
+            shall be used. If set to *false*, then any query cache lookup will be skipped
+            for the query. If set to *true*, it will lead to the query cache being checked
+            for the query if the query cache mode is either *on* or *demand*.
+          format: ''
+          type: boolean
+        memoryLimit:
+          description: |+
+            The maximum number of memory (measured in bytes) that the query is allowed to
+            use. If set, then the query will fail with error "resource limit exceeded" in
+            case it allocates too much memory. A value of *0* indicates that there is no
+            memory limit.
+          format: int64
+          type: integer
+        bindVars:
+          description: |+
+            Key/value pairs representing the bind parameters.
+          items:
+            additionalProperties: {}
+            type: object
+          type: array
+        options:
+          description: |+
+            This attribute is currently ignored.
+          type: object
+      example:
+        query: "FOR i IN RANGE(@min,@max) RETURN i"
+        count: true
+        batchSize: 2
+        bindVars:
+          min: 0
+          max: 5
+
+    PostAPICursorResponse:
+      title: Query Response
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          description: |+
+            A flag to indicate that an error occurred (*false* in this case)
+
+          format: ''
+          type: boolean
+        code:
+          description: |+
+            the HTTP status code
+
+          type: integer
+        result:
+          description: |+
+            an array of result documents (might be empty if query has no results)
+
+          items: {}
+          type: array
+        hasMore:
+          description: |+
+            A boolean indicator whether there are more results
+            available for the cursor on the server
+
+          format: ''
+          type: boolean
+        count:
+          description: |+
+            the total number of result documents available (only
+            available if the query was executed with the *count* attribute set)
+
+          format: int64
+          type: integer
+        id:
+          description: |+
+            id of temporary cursor created on the server (optional, see above)
+
+          type: string
+        extra:
+          additionalProperties: {}
+          description: |+
+            an optional JSON object with extra information about the query result
+            contained in its *stats* sub-attribute. For data-modification queries, the
+            *extra.stats* sub-attribute will contain the number of modified documents and
+            the number of documents that could not be modified
+            due to an error (if *ignoreErrors* query option is specified)
+
+          type: object
+        cached:
+          description: |+
+            a boolean flag indicating whether the query result was served
+            from the query cache or not. If the query result is served from the query
+            cache, the *extra* return attribute will not contain any *stats* sub-attribute
+            and no *profile* sub-attribute.
+
+          format: ''
+          type: boolean
+      example:
+        result:
+          - 0
+          - 1
+        hasMore: true
+        id: '1234567'
+        count: 6
+        extra:
+          stats:
+            executionTime: 0.00011064599675592035
+        error: false
+        code: 201
+
+    ID:
+      type: string
+      format: ulid
+      example: 01FPJGR4TWXHH23EHEKT4HEN6F
+
+    MQTTForm:
+      properties:
+        enabled:
+          type: boolean
+          example: true
+        username:
+          type: string
+          example: myusername
+        password:
+          type: string
+          example: MyPa$$word123
+        description:
+          type: string
+          example: MyCredential
+
+    MQTTThingForm:
+      allOf:
+        - $ref: '#/components/schemas/MQTTForm'
+
+    MQTTCategoryForm:
+      allOf:
+        - $ref: '#/components/schemas/MQTTForm'
+      properties:
+        collection_name:
+          type: string
+          example: MyCollection
+
+    MQTTThingDocumentACL:
+      properties:
+        acl:
+          type: object
+          properties:
+            publish:
+              type: array
+              items:
+                type: object
+                properties:
+                  pattern:
+                    type: string
+                    example: altair/collections/my_collection/things/01FWDZKSRZFGDACF4N7E3VSBBZ/data
+            subscribe:
+              type: array
+              items:
+                type: object
+                properties:
+                  pattern:
+                    type: string
+                    example: altair/collections/my_collection/things/01FWDZKSRZFGDACF4N7E3VSBBZ/data
+
+    MQTTThingsDocument:
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        created:
+          type: string
+          example: 2022-02-08T14:41:49.270946386+01:00,
+      allOf:
+        - $ref: '#/components/schemas/MQTTThingForm'
+
+    MQTTCategoryDocument:
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        created:
+          type: string
+          example: 2022-02-08T14:41:49.270946386+01:00,
+      allOf:
+        - $ref: '#/components/schemas/MQTTCategoryForm'
+
+    MQTTThingsDocumentShow:
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        created:
+          type: string
+          example: 2022-02-08T14:41:49.270946386+01:00,
+        topics:
+          $ref: '#/components/schemas/MQTTThingDocumentACL'
+      allOf:
+        - $ref: '#/components/schemas/MQTTThingForm'
+
+    MQTTThingsDocumentList:
+      properties:
+        data:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/MQTTThingsDocumentShow'
+        paging:
+          type: object
+          properties:
+            next_cursor:
+              type: string
+              example: ''
+            previous_cursor:
+              type: string
+              example: ''
+
+  responses:
+    BadRequest:
+      description: Bad Request (payload format error or invalid field values)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              status: 400
+              message: malformed body
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            error1:
+              summary: Unauthenticated (token expired or invalid)
+              value:
+                error:
+                  status: 401
+                  message: Unauthenticated
+            error2:
+              summary: No token provided
+              value:
+                error:
+                  status: 401
+                  message: No token provided
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              status: 403
+              message: Unauthorized
+
+    Conflict:
+      description: Already Exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              status: 400
+              message: This item already exists
+
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              status: 404
+              message: Item not found
+
+    PropertyValueAlreadyExists:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              status: 409
+              message: The property already has a value with the same timestamp
+
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              status: 500
+              message: Something went wrong
