@@ -15,7 +15,7 @@ def test_get():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         prop = (API(host="test-api.swx.altairone.com").
-                token("valid-token").
+                set_token("valid-token").
                 spaces("space01").
                 things("thing01").
                 properties("temperature").
@@ -44,7 +44,7 @@ def test_list():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         prop = (API(host="test-api.swx.altairone.com").
-                token("valid-token").
+                set_token("valid-token").
                 spaces("space01").
                 things("thing01").
                 properties().
@@ -70,7 +70,7 @@ def test_update_one():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         prop = (API(host="test-api.swx.altairone.com").
-                token("valid-token").
+                set_token("valid-token").
                 spaces("space01").
                 things("thing01").
                 properties("temperature").
@@ -103,7 +103,7 @@ def test_update_multiple():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         prop = (API(host="test-api.swx.altairone.com").
-                token("valid-token").
+                set_token("valid-token").
                 spaces("space01").
                 things("thing01").
                 properties().

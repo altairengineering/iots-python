@@ -48,7 +48,7 @@ def test_create(action_req):
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
-                  token("valid-token").
+                  set_token("valid-token").
                   spaces("space01").
                   things("thing01").
                   actions("delay").
@@ -83,7 +83,7 @@ def test_list_action():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
-                  token("valid-token").
+                  set_token("valid-token").
                   spaces("space01").
                   things("thing01").
                   actions("delay").
@@ -115,7 +115,7 @@ def test_list_all():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         actions = (API(host="test-api.swx.altairone.com").
-                   token("valid-token").
+                   set_token("valid-token").
                    spaces("space01").
                    things("thing01").
                    actions().
@@ -139,7 +139,7 @@ def test_get_action():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
-                  token("valid-token").
+                  set_token("valid-token").
                   spaces("space01").
                   things("thing01").
                   actions("delay", "01EDCB9FMD0Q3QR0YV4TWY4S3E").
@@ -169,7 +169,7 @@ def test_put_action(action_req):
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
-                  token("valid-token").
+                  set_token("valid-token").
                   spaces("space01").
                   things("thing01").
                   actions("delay", "01EDCB9FMD0Q3QR0YV4TWY4S3E").
@@ -197,7 +197,7 @@ def test_delete_action():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         (API(host="test-api.swx.altairone.com").
-         token("valid-token").
+         set_token("valid-token").
          spaces("space01").
          things("thing01").
          actions("delay", "01EDCB9FMD0Q3QR0YV4TWY4S3E").

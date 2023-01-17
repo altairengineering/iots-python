@@ -32,7 +32,7 @@ def test_get():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         cat = (API(host="test-api.swx.altairone.com").
-               token("valid-token").
+               set_token("valid-token").
                spaces("space01").
                categories("category01").
                get())
@@ -63,7 +63,7 @@ def test_list():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         cat = (API(host="test-api.swx.altairone.com").
-               token("valid-token").
+               set_token("valid-token").
                spaces("space01").
                categories().
                get())

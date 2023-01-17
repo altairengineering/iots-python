@@ -45,7 +45,7 @@ def test_create(event_req):
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         event = (API(host="test-api.swx.altairone.com").
-                 token("valid-token").
+                 set_token("valid-token").
                  spaces("space01").
                  things("thing01").
                  events("delay").
@@ -80,7 +80,7 @@ def test_list_event():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         event = (API(host="test-api.swx.altairone.com").
-                 token("valid-token").
+                 set_token("valid-token").
                  spaces("space01").
                  things("thing01").
                  events("delay").
@@ -112,7 +112,7 @@ def test_list_all():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         events = (API(host="test-api.swx.altairone.com").
-                  token("valid-token").
+                  set_token("valid-token").
                   spaces("space01").
                   things("thing01").
                   events().
@@ -136,7 +136,7 @@ def test_get_event():
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
         event = (API(host="test-api.swx.altairone.com").
-                 token("valid-token").
+                 set_token("valid-token").
                  spaces("space01").
                  things("thing01").
                  events("delay", "01EDCB9FMD0Q3QR0YV4TWY4S3E").

@@ -1,9 +1,11 @@
 import os
+from contextlib import contextmanager
 
 import requests
 
 from .errors import ExcMissingToken, ResponseError
 from .spaces import _SpacesMethod
+from .token import get_token, revoke_token
 
 
 def get_host():
@@ -16,7 +18,7 @@ def get_host():
 
 class API(_SpacesMethod):
     """
-    This is the top-level class used as an abstraction of the SmartWorks API.
+    The top-level class used as an abstraction of the SmartWorks API.
     """
 
     def __init__(self, host: str = "", token: str = ""):
@@ -30,19 +32,40 @@ class API(_SpacesMethod):
         self.host = host
         self._token = token
 
-    def token(self, token: str):
+    def set_token(self, token: str):
         """
-        Set the bearer token used for API authentication.
+        Sets the bearer token used for API authentication.
 
         :param token: Access token.
         """
         self._token = token
         return self
 
+    def get_token(self, client_id: str, client_secret: str, scopes: list):
+        """
+        Returns a :class:`CredentialsAPI` instance that automatically requests
+        an OAuth 2.0 Bearer Token from SmartWorks using the client_credentials
+        grant. If the request fails, an OAuth2Error will be raised.
+
+        This method can be used as a context manager to automatically revoke
+        the access token after the `with` block. Example:
+
+        .. code-block:: python
+
+            with API().get_token(client_id, client_secret, ["thing"]) as api:
+                categories = api.categories()
+
+        :param client_id:       Client ID.
+        :param client_secret:   Client Secret.
+        :param scopes:          List of scopes to request.
+        :return:                :class:`CredentialsAPI` instance.
+        """
+        return CredentialsAPI(self.host, client_id, client_secret, scopes)
+
     def make_request(self, method: str, url: str, headers: dict = None,
                      body=None, auth: bool = True) -> requests.Response:
         """
-        Make a request to the API server.
+        Makes a request to the API server.
 
         :param method: HTTP request method used (`GET`, `OPTIONS`, `HEAD`,
             `POST`, `PUT`, `PATCH`, or `DELETE`).
@@ -78,3 +101,41 @@ class API(_SpacesMethod):
             raise ResponseError.parse(resp.json())
 
         return resp
+
+
+class CredentialsAPI(API):
+    """
+    An API instance that handles authentication by getting and revoking access
+    tokens.
+    """
+    def __init__(self, host: str, client_id: str, client_secret: str, scopes: list):
+        super().__init__(host)
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.scopes = scopes
+
+        self.renew_token()
+
+    def __enter__(self):
+        if not self._token:
+            self.renew_token()
+        return self
+
+    def __exit__(self, *exc):
+        self.revoke_token()
+
+    def renew_token(self):
+        """
+        Revokes the old access token and gets a new one.
+        """
+        self.revoke_token()
+        token = get_token(self.host, self.client_id, self.client_secret, self.scopes)
+        self._token = token.access_token
+
+    def revoke_token(self):
+        """
+        Revokes the access token.
+        """
+        if self._token:
+            revoke_token(self.host, self._token, self.client_id, self.client_secret)
+            self._token = None

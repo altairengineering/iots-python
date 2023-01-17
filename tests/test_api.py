@@ -5,6 +5,7 @@ import pytest
 
 from swx.api import API
 from swx.errors import APIException, ExcMissingToken, ResponseError
+from swx.token import Token
 from tests.common import make_json_response
 
 
@@ -34,6 +35,78 @@ def test_missing_host():
         API()
 
 
+def test_set_token():
+    """
+    Sets a token in an API instance.
+    """
+    api = API(host="api.swx.mock").set_token("valid-token")
+    assert api._token == "valid-token"
+
+
+def test_get_token():
+    """
+    Creates an API instance that handles authentication using OAuth2 credentials
+    and revokes the token.
+    """
+    expected_token = Token(
+        host="https://api.swx.mock",
+        access_token="valid-token",
+        expires_in=604799,
+        scope="app function",
+        token_type="bearer"
+    )
+
+    client_id = "test-client-id"
+    client_secret = "test-client-secret"
+    scopes = ["app", "function"]
+
+    with mock.patch("swx.api.get_token", return_value=expected_token) as mock_get_token:
+        api = API(host="api.swx.mock").get_token(
+            client_id=client_id,
+            client_secret=client_secret,
+            scopes=scopes)
+
+    assert api._token == expected_token.access_token
+
+    with mock.patch("swx.api.revoke_token", return_value=None) as mock_revoke_token:
+        api.revoke_token()
+
+    assert api._token is None
+
+    mock_get_token.assert_called_once_with("https://api.swx.mock", client_id, client_secret, scopes)
+    mock_revoke_token.assert_called_once_with("https://api.swx.mock", "valid-token", client_id, client_secret)
+
+
+def test_get_token_with():
+    """
+    Creates an API instance that handles authentication using OAuth2 credentials
+    and revokes the token automatically using a context manager (with).
+    """
+    expected_token = Token(
+        host="https://api.swx.mock",
+        access_token="valid-token",
+        expires_in=604799,
+        scope="app function",
+        token_type="bearer"
+    )
+
+    client_id = "test-client-id"
+    client_secret = "test-client-secret"
+    scopes = ["app", "function"]
+
+    with mock.patch("swx.api.get_token", return_value=expected_token) as mock_get_token:
+        with mock.patch("swx.api.revoke_token", return_value=None) as mock_revoke_token:
+            with API(host="api.swx.mock").get_token(client_id=client_id,
+                                                    client_secret=client_secret,
+                                                    scopes=scopes) as api:
+                assert api._token == expected_token.access_token
+
+    assert api._token is None
+
+    mock_get_token.assert_called_once_with("https://api.swx.mock", client_id, client_secret, scopes)
+    mock_revoke_token.assert_called_once_with("https://api.swx.mock", "valid-token", client_id, client_secret)
+
+
 def test_make_request():
     """
     Makes an authenticated request to the API successfully.
@@ -48,7 +121,7 @@ def test_make_request():
 
     with mock.patch("requests.request", return_value=expected_resp) as m:
         resp = (API(host="test-api.swx.altairone.com").
-                token("valid-token").
+                set_token("valid-token").
                 make_request("POST", "/info", body=req_payload))
 
     m.assert_called_once_with("POST",
