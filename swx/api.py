@@ -1,5 +1,4 @@
 import os
-from contextlib import contextmanager
 
 import requests
 
@@ -119,6 +118,7 @@ class CredentialsAPI(API):
     An API instance that handles authentication by getting and revoking access
     tokens.
     """
+
     def __init__(self, host: str, client_id: str, client_secret: str, scopes: list):
         super().__init__(host)
         self.client_id = client_id

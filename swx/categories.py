@@ -3,12 +3,12 @@ from typing import List, overload
 
 from .models.anythingdb import Category as CategoryModel
 from .models.anythingdb import CategoryList as CategoryListModel
-from .obj import APIObject
+from .internal.resource import APIResource
 from .things import _ThingsMethod
 
 
 @dataclass
-class Category(APIObject, _ThingsMethod):
+class Category(APIResource, _ThingsMethod):
     name: str
 
     def get(self) -> CategoryModel:
@@ -24,7 +24,7 @@ class Category(APIObject, _ThingsMethod):
 
 
 @dataclass
-class Categories(APIObject):
+class Categories(APIResource):
     categories: List[Category] = field(default_factory=list)
 
     def get(self) -> CategoryListModel:

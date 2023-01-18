@@ -5,12 +5,12 @@ from .actions import _ActionsMethod
 from .events import _EventsMethod
 from .models.anythingdb import Thing as ThingModel
 from .models.anythingdb import ThingList as ThingListModel
-from .obj import APIObject
+from .internal.resource import APIResource
 from .properties import _PropertiesMethod
 
 
 @dataclass
-class Thing(APIObject, _PropertiesMethod, _ActionsMethod, _EventsMethod):
+class Thing(APIResource, _PropertiesMethod, _ActionsMethod, _EventsMethod):
     thing_id: str
 
     def get(self) -> ThingModel:
@@ -26,7 +26,7 @@ class Thing(APIObject, _PropertiesMethod, _ActionsMethod, _EventsMethod):
 
 
 @dataclass
-class Things(APIObject):
+class Things(APIResource):
     things: List[Thing] = field(default_factory=list)
 
     def get(self) -> ThingListModel:

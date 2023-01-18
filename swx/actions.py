@@ -3,11 +3,11 @@ from typing import List, Union, overload
 
 from .models.anythingdb import (ActionCreateRequest, ActionListResponse,
                                 ActionResponse, ActionUpdateRequest)
-from .obj import APIObject
+from .internal.resource import APIResource
 
 
 @dataclass
-class Action(APIObject):
+class Action(APIResource):
     action_name: str
 
     def create(self, action: Union[ActionCreateRequest, dict]) -> ActionResponse:
@@ -40,7 +40,7 @@ class ActionUpdateResponse:
 
 
 @dataclass
-class ActionValue(APIObject):
+class ActionValue(APIResource):
     action_id: str
 
     def get(self) -> ActionResponse:
@@ -76,7 +76,7 @@ class ActionValue(APIObject):
 
 
 @dataclass
-class Actions(APIObject):
+class Actions(APIResource):
     actions: List[Action] = field(default_factory=list)
 
     def get(self) -> ActionListResponse:

@@ -3,11 +3,11 @@ from typing import List, Union, overload
 
 from .models.anythingdb import (EventCreateRequest, EventListResponse,
                                 EventResponse)
-from .obj import APIObject
+from .internal.resource import APIResource
 
 
 @dataclass
-class Event(APIObject):
+class Event(APIResource):
     event_name: str
 
     def create(self, event: Union[EventCreateRequest, dict]) -> EventResponse:
@@ -40,7 +40,7 @@ class EventUpdateResponse:
 
 
 @dataclass
-class EventValue(APIObject):
+class EventValue(APIResource):
     event_id: str
 
     def get(self) -> EventResponse:
@@ -56,7 +56,7 @@ class EventValue(APIObject):
 
 
 @dataclass
-class Events(APIObject):
+class Events(APIResource):
     events: List[Event] = field(default_factory=list)
 
     def get(self) -> EventListResponse:

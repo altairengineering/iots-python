@@ -5,7 +5,7 @@ from requests import Response
 
 
 @dataclass
-class APIObject(ABC):
+class APIResource(ABC):
     """
     Abstract class to represent a part of an API call.
     This must be inherited by any class implementing an API operation.
@@ -20,7 +20,7 @@ class APIObject(ABC):
     Items in the stack can be:
     - One (and only one) `API` instance. This must be the first item in the
       stack.
-    - A number of `APIObject` building the request.
+    - A number of `APIResource` building the request.
     """
 
     @abstractmethod
@@ -33,9 +33,9 @@ class APIObject(ABC):
 
     def _child_of(self, obj):
         """
-        Sets the stack of this instance to a copy of the given `APIObject`
+        Sets the stack of this instance to a copy of the given `APIResource`
         stack with the object itself added.
-        This method is used when a new `APIObject` instance is created from
+        This method is used when a new `APIResource` instance is created from
         another one.
         """
         from swx.api import API
@@ -50,7 +50,7 @@ class APIObject(ABC):
         """
         Builds and returns the URL using all the stack information.
         The first item in the stack must be an `API` instance, and the rest
-        must be `APIObject` instances.
+        must be `APIResource` instances.
         """
         from swx.api import API
         if len(self._stack) == 0 or not isinstance(self._stack[0], API):
@@ -60,11 +60,11 @@ class APIObject(ABC):
 
     def build_path(self) -> str:
         """
-        Builds the URL path using all the `APIObject` instances in the stack.
+        Builds the URL path using all the `APIResource` instances in the stack.
         """
         path = ""
         for obj in self._stack:
-            if isinstance(obj, APIObject):
+            if isinstance(obj, APIResource):
                 path = path + obj._build_partial_path()
 
         return path + self._build_partial_path()

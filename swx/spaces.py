@@ -2,12 +2,12 @@ from dataclasses import dataclass, field
 from typing import List, overload
 
 from .categories import _CategoriesMethod
-from .obj import APIObject
+from .internal.resource import APIResource
 from .things import _ThingsMethod
 
 
 @dataclass
-class Space(APIObject, _CategoriesMethod, _ThingsMethod):
+class Space(APIResource, _CategoriesMethod, _ThingsMethod):
     name: str
 
     def _build_partial_path(self):
@@ -15,7 +15,7 @@ class Space(APIObject, _CategoriesMethod, _ThingsMethod):
 
 
 @dataclass
-class Spaces(APIObject):
+class Spaces(APIResource):
     spaces: List[Space] = field(default_factory=list)
 
     def _build_partial_path(self):

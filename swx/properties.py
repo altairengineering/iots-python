@@ -2,11 +2,11 @@ from dataclasses import dataclass, field
 from typing import List, Union, overload
 
 from .models.anythingdb import Properties as PropertiesModel
-from .obj import APIObject
+from .internal.resource import APIResource
 
 
 @dataclass
-class Property(APIObject):
+class Property(APIResource):
     name: str
 
     def get(self) -> PropertiesModel:
@@ -33,7 +33,7 @@ class Property(APIObject):
 
 
 @dataclass
-class Properties(APIObject):
+class Properties(APIResource):
     properties: List[Property] = field(default_factory=list)
 
     def get(self) -> PropertiesModel:
