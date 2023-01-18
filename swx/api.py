@@ -8,21 +8,28 @@ from .spaces import _SpacesMethod
 from .token import get_token, revoke_token
 
 
-def get_host():
-    """
-    Returns the default SmartWorks host URL from the `SWX_API_URL` environment
-    variable. If the variable is not found, None is returned.
-    """
-    return os.getenv("SWX_API_URL")
-
-
 class API(_SpacesMethod):
     """
     The top-level class used as an abstraction of the SmartWorks API.
     """
 
     def __init__(self, host: str = "", token: str = "", beta: bool = False):
-        host = host if host else get_host()
+        """
+        Creates a new API instance.
+
+        :param host: (optional) SmartWorks API host name
+            (e.g. https://api.swx.altairone.com). If not set, it will try to
+            get the host from the `SWX_API_URL` environment variable.
+            If the host is not set and the environment variable does not exist,
+            it will raise a ValueError.
+        :param token: (optional) Access token used for API authentication.
+            It can also be set using :func:`~API.set_token` or setting the
+            client credentials with :func:`~API.get_token`.
+        :param beta: (optional) If True, a `/beta` prefix will be added to the
+            path of all the requests made to the SmartWorks API. It is needed
+            to make requests to components in beta stage.
+        """
+        host = host if host else os.getenv("SWX_API_URL")
         if not host:
             raise ValueError("empty host")
 
