@@ -21,7 +21,7 @@ class API(_SpacesMethod):
     The top-level class used as an abstraction of the SmartWorks API.
     """
 
-    def __init__(self, host: str = "", token: str = ""):
+    def __init__(self, host: str = "", token: str = "", beta: bool = False):
         host = host if host else get_host()
         if not host:
             raise ValueError("empty host")
@@ -31,6 +31,7 @@ class API(_SpacesMethod):
 
         self.host = host
         self._token = token
+        self.beta = beta
 
     def set_token(self, token: str):
         """
@@ -92,7 +93,10 @@ class API(_SpacesMethod):
             headers['Content-Type'] = 'application/json'
 
         if not url.startswith(self.host):
-            url = self.host + url
+            if self.beta:
+                url = self.host + "/beta" + url
+            else:
+                url = self.host + url
 
         resp = requests.request(method, url,
                                 headers=headers, data=body, timeout=3)
