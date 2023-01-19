@@ -27,7 +27,6 @@ class Thing(APIResource, _PropertiesMethod, _ActionsMethod, _EventsMethod):
 
 @dataclass
 class Things(APIResource):
-    things: List[Thing] = field(default_factory=list)
 
     def get(self) -> ThingListModel:
         """

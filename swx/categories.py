@@ -25,7 +25,6 @@ class Category(APIResource, _ThingsMethod):
 
 @dataclass
 class Categories(APIResource):
-    categories: List[Category] = field(default_factory=list)
 
     def get(self) -> CategoryListModel:
         """

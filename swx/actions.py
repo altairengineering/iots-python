@@ -1,9 +1,9 @@
-from dataclasses import dataclass, field
-from typing import List, Union, overload
+from dataclasses import dataclass
+from typing import Union, overload
 
+from .internal.resource import APIResource
 from .models.anythingdb import (ActionCreateRequest, ActionListResponse,
                                 ActionResponse, ActionUpdateRequest)
-from .internal.resource import APIResource
 
 
 @dataclass
@@ -33,10 +33,6 @@ class Action(APIResource):
 
     def _build_partial_path(self):
         return f"/actions/{self.action_name}"
-
-
-class ActionUpdateResponse:
-    pass
 
 
 @dataclass
@@ -77,7 +73,6 @@ class ActionValue(APIResource):
 
 @dataclass
 class Actions(APIResource):
-    actions: List[Action] = field(default_factory=list)
 
     def get(self) -> ActionListResponse:
         """

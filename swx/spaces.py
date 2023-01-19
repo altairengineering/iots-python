@@ -16,7 +16,6 @@ class Space(APIResource, _CategoriesMethod, _ThingsMethod):
 
 @dataclass
 class Spaces(APIResource):
-    spaces: List[Space] = field(default_factory=list)
 
     def _build_partial_path(self):
         return "/spaces"

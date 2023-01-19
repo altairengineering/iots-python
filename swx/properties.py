@@ -34,7 +34,6 @@ class Property(APIResource):
 
 @dataclass
 class Properties(APIResource):
-    properties: List[Property] = field(default_factory=list)
 
     def get(self) -> PropertiesModel:
         """

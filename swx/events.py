@@ -1,9 +1,9 @@
-from dataclasses import dataclass, field
-from typing import List, Union, overload
+from dataclasses import dataclass
+from typing import Union, overload
 
+from .internal.resource import APIResource
 from .models.anythingdb import (EventCreateRequest, EventListResponse,
                                 EventResponse)
-from .internal.resource import APIResource
 
 
 @dataclass
@@ -35,10 +35,6 @@ class Event(APIResource):
         return f"/events/{self.event_name}"
 
 
-class EventUpdateResponse:
-    pass
-
-
 @dataclass
 class EventValue(APIResource):
     event_id: str
@@ -57,7 +53,6 @@ class EventValue(APIResource):
 
 @dataclass
 class Events(APIResource):
-    events: List[Event] = field(default_factory=list)
 
     def get(self) -> EventListResponse:
         """
