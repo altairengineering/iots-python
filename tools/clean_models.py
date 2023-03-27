@@ -54,5 +54,5 @@ def format_file(filename: str):
 if __name__ == '__main__':
     filename = sys.argv[1]
     print(f"Removing unused class in '{filename}'...")
-    remove_count = remove_unused_classes("swx/models/anythingdb.py", ['.'], 10)
+    remove_count = remove_unused_classes(filename, ['.'], 10)
     print(f"  {remove_count} unused classes removed!")
