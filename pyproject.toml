@@ -9,7 +9,7 @@ python = "^3.7"
 requests = "^2.28.1"
 pydantic = "^1.10.4"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
 datamodel-code-generator = "^0.15.0"
@@ -17,6 +17,11 @@ autoflake = "^2.0.0"
 isort = "^5.11.4"
 vulture = "^2.7"
 black = "^22.12.0"
+sphinx = "5.3.0"
+sphinx_rtd_theme = "^1.1.1"
+autodoc_pydantic = "^1.8.0"
+typed-ast = "^1.5.4"
+m2r = "^0.3.1"
 
 [build-system]
 requires = ["poetry>=0.12"]
