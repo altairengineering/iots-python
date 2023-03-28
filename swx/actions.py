@@ -16,7 +16,8 @@ class Action(APIResource):
 
         :param action: The information of the new Action value
             (e.g. `{"delay": {"input": 5}}`).
-        :return: A :class:`ActionResponse` with the new Action value.
+        :return: A :class:`~swx.models.anythingdb.ActionResponse` with the new
+            Action value.
         """
         payload = action
         if isinstance(action, ActionCreateRequest):
@@ -27,7 +28,8 @@ class Action(APIResource):
         """
         Make a request to the server to get the history values of the Action.
 
-        :return: A :class:`ActionListResponse` with the value of the Action.
+        :return: A :class:`~swx.models.anythingdb.ActionListResponse` with the
+            value of the Action.
         """
         return ActionListResponse.parse_obj(self._make_request().json())
 
@@ -43,7 +45,8 @@ class ActionValue(APIResource):
         """
         Make a request to the server to get the value of the Action.
 
-        :return: A :class:`ActionResponse` with the value of the Action.
+        :return: A :class:`~swx.models.anythingdb.ActionResponse` with the
+            value of the Action.
         """
         return ActionResponse.parse_obj(self._make_request().json())
 
@@ -53,8 +56,8 @@ class ActionValue(APIResource):
 
         :param action: The information of the updated Action value
             (e.g. `{"delay": {"status": "completed"}}`).
-        :return: A :class:`ActionResponse` with the returned value of the
-            Action.
+        :return: An :class:`~swx.models.anythingdb.ActionResponse` with the
+            returned value of the Action.
         """
         payload = action
         if isinstance(action, ActionUpdateRequest):
@@ -79,8 +82,8 @@ class Actions(APIResource):
         Make a request to the server to list the value of all the Thing
         Actions.
 
-        :return: A :class:`ActionListResponse` with the values of all the
-            Thing Actions.
+        :return: An :class:`~swx.models.anythingdb.ActionListResponse` with the
+            values of all the Thing Actions.
         """
         return ActionListResponse.parse_obj(self._make_request().json())
 

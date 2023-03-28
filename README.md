@@ -1,11 +1,13 @@
-# SmartWorks API Client
+# SmartWorks API Client <!-- NODOC -->
 
-**A Python client for the SmartWorks API**
+**A Python client for the SmartWorks API** <!-- NODOC -->
+
+## Introduction
 
 This library allows you to interact with the SmartWorks API using Python.
 The current implementation has support for:
-- Categories API **(only `GET` methods)**
-- Things API **(only `GET` methods)**
+- Categories API <b>(only <code>GET</code> methods)</b>
+- Things API <b>(only <code>GET</code> methods)</b>
 - Properties API
 - Actions API
 - Events API
@@ -20,9 +22,7 @@ $ pip install swx
 
 This library officially supports Python 3.7+.
 
-## How do I use it?
-
-### The API class
+## The API class
 
 All the requests are made using an instance of the `API` class. There are
 multiple ways to deal with authentication:
@@ -65,7 +65,7 @@ multiple ways to deal with authentication:
       # or if the function returns or raises an exception
   ```
 
-### Using the API
+## Using the API
 
 The `API` class uses a nested syntax to allow accessing the API resources,
 setting the request information with the same structure order that the one used
@@ -101,7 +101,7 @@ The models used by the API for request and response data can be found in the
 > how to use the API and the data models to define input data or
 > access response data.
 
-## 🔮 Future features:
+## 🔮 Future features
 - Iterate pagination results.
 - List filters.
 - Auto-refresh access token.

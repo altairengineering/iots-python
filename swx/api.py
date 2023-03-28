@@ -84,7 +84,8 @@ class API(_SpacesMethod):
         :param auth: (optional) If True (default), the authentication token will
             be sent in the request. An exception will be raised if no token is set.
         :return: A :class:`request.Response`. If the response returns with a
-            status code >= 400, a :class:`ResponseError` exception will be raised.
+            status code >= 400, a :class:`~.errors.ResponseError` exception will
+            be raised.
         """
         if headers is None:
             headers = {}
