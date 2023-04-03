@@ -1,8 +1,13 @@
 [tool.poetry]
 name = "swx"
 version = "0.1.0"
-description = ""
+description = "A Python client for the Altair SmartWorks API"
 authors = ["Daniel Sánchez Gallego <dsanchez@altair.com>"]
+readme = "README.md"
+documentation = "https://python-api-client.readthedocs.io/en/latest/swx.html"
+repository = "https://github.com/flusflas-testorg/python-api-client"
+keywords = ["iot", "altair", "smartcore", "api", "client", "library"]
+classifiers = ["Topic :: Software Development :: Libraries"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
