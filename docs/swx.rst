@@ -15,10 +15,17 @@ swx.actions module
 swx.api module
 --------------
 
-.. automodule:: swx.api
+.. autoclass:: swx.api.API
    :members:
    :undoc-members:
    :show-inheritance:
+   :class-doc-from: init
+
+.. autoclass:: swx.api.CredentialsAPI
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :class-doc-from: init
 
 swx.categories module
 ---------------------

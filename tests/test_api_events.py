@@ -55,7 +55,8 @@ def test_create(event_req):
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events/delay",
                               headers={
                                   'Authorization': 'Bearer valid-token',
-                                  'Content-Type': 'application/json'
+                                  'Content-Type': 'application/json',
+                                  'Prefer': 'preview=2023.1',
                               },
                               data=to_dict(event_req),
                               timeout=3)
@@ -88,7 +89,10 @@ def test_list_event():
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events/delay",
-                              headers={'Authorization': 'Bearer valid-token'},
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Prefer': 'preview=2023.1',
+                              },
                               data=None,
                               timeout=3)
 
@@ -120,7 +124,10 @@ def test_list_all():
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events",
-                              headers={'Authorization': 'Bearer valid-token'},
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Prefer': 'preview=2023.1',
+                              },
                               data=None,
                               timeout=3)
 
@@ -145,7 +152,10 @@ def test_get_event():
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01"
                               "/events/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
-                              headers={'Authorization': 'Bearer valid-token'},
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Prefer': 'preview=2023.1',
+                              },
                               data=None,
                               timeout=3)
 

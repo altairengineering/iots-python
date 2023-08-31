@@ -23,7 +23,10 @@ def test_get():
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties/temperature",
-                              headers={'Authorization': 'Bearer valid-token'},
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Prefer': 'preview=2023.1',
+                              },
                               data=None,
                               timeout=3)
 
@@ -52,7 +55,10 @@ def test_list():
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties",
-                              headers={'Authorization': 'Bearer valid-token'},
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Prefer': 'preview=2023.1',
+                              },
                               data=None,
                               timeout=3)
 
@@ -80,7 +86,8 @@ def test_update_one():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties/temperature",
                               headers={
                                   'Authorization': 'Bearer valid-token',
-                                  'Content-Type': 'application/json'
+                                  'Content-Type': 'application/json',
+                                  'Prefer': 'preview=2023.1',
                               },
                               data={"temperature": 17.5},
                               timeout=3)
@@ -113,7 +120,8 @@ def test_update_multiple():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties",
                               headers={
                                   'Authorization': 'Bearer valid-token',
-                                  'Content-Type': 'application/json'
+                                  'Content-Type': 'application/json',
+                                  'Prefer': 'preview=2023.1',
                               },
                               data=new_values,
                               timeout=3)

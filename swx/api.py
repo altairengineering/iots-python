@@ -12,7 +12,7 @@ class API(_SpacesMethod):
     The top-level class used as an abstraction of the SmartWorks API.
     """
 
-    def __init__(self, host: str = "", token: str = "", beta: bool = False):
+    def __init__(self, host: str = "", token: str = "", beta: bool = True):
         """
         Creates a new API instance.
 
@@ -24,9 +24,9 @@ class API(_SpacesMethod):
         :param token: (optional) Access token used for API authentication.
             It can also be set using :func:`~API.set_token` or setting the
             client credentials with :func:`~API.get_token`.
-        :param beta: (optional) If True, a `/beta` prefix will be added to the
-            path of all the requests made to the SmartWorks API. It is needed
-            to make requests to components in beta stage.
+        :param beta: (optional) If True, a special header will be added to all
+            the requests made to the SmartWorks API to use features in beta
+            stage.
         """
         host = host if host else os.getenv("SWX_API_URL")
         if not host:
@@ -37,7 +37,10 @@ class API(_SpacesMethod):
 
         self.host = host
         self._token = token
-        self.beta = beta
+        self._beta = beta
+        self.headers = {}
+        if beta:
+            self.headers['Prefer'] = "preview=2023.1"
 
     def set_token(self, token: str):
         """
@@ -67,7 +70,10 @@ class API(_SpacesMethod):
         :param scopes:          List of scopes to request.
         :return:                :class:`CredentialsAPI` instance.
         """
-        return CredentialsAPI(self.host, client_id, client_secret, scopes)
+        api = CredentialsAPI(self.host, client_id, client_secret, scopes,
+                             self._beta)
+        api.headers = self.headers
+        return api
 
     def make_request(self, method: str, url: str, headers: dict = None,
                      body=None, auth: bool = True) -> requests.Response:
@@ -90,6 +96,8 @@ class API(_SpacesMethod):
         if headers is None:
             headers = {}
 
+        headers.update(self.headers)
+
         if auth:
             if not self._token:
                 raise ExcMissingToken
@@ -99,13 +107,7 @@ class API(_SpacesMethod):
         if isinstance(body, dict):
             headers['Content-Type'] = 'application/json'
 
-        if not url.startswith(self.host):
-            if self.beta:
-                url = self.host + "/beta" + url
-            else:
-                url = self.host + url
-
-        resp = requests.request(method, url,
+        resp = requests.request(method, self.host + url,
                                 headers=headers, data=body, timeout=3)
 
         if resp.status_code >= 400:
@@ -116,12 +118,27 @@ class API(_SpacesMethod):
 
 class CredentialsAPI(API):
     """
-    An API instance that handles authentication by getting and revoking access
-    tokens.
+    An API instance that handles authentication using the OAuth2 Client
+    Credentials flow by getting and revoking access tokens.
     """
 
-    def __init__(self, host: str, client_id: str, client_secret: str, scopes: list):
-        super().__init__(host)
+    def __init__(self, host: str, client_id: str, client_secret: str, scopes: list, beta: bool = True):
+        """
+        Creates a new CredentialsAPI instance.
+
+        :param host: (optional) SmartWorks API host name
+            (e.g. https://api.swx.altairone.com). If not set, it will try to
+            get the host from the `SWX_API_URL` environment variable.
+            If the host is not set and the environment variable does not exist,
+            it will raise a ValueError.
+        :param client_id:       Client ID.
+        :param client_secret:   Client Secret.
+        :param scopes:          List of scopes to request.
+        :param beta: (optional) If True, a special header will be added to all
+            the requests made to the SmartWorks API to use features in beta
+            stage.
+        """
+        super().__init__(host, beta=beta)
         self.client_id = client_id
         self.client_secret = client_secret
         self.scopes = scopes

@@ -128,7 +128,55 @@ def test_make_request():
                               "https://test-api.swx.altairone.com/info",
                               headers={
                                   'Authorization': 'Bearer valid-token',
-                                  'Content-Type': 'application/json'
+                                  'Content-Type': 'application/json',
+                                  'Prefer': 'preview=2023.1',
+                              },
+                              data=req_payload,
+                              timeout=3)
+
+    assert resp.status_code == 200
+    assert resp.json() == expected_resp_payload
+
+
+def test_make_request_get_token():
+    """
+    Makes an authenticated request to the API successfully using a
+    CredentialsAPI.
+    """
+    expected_token = Token(
+        host="https://api.swx.mock",
+        access_token="valid-token",
+        expires_in=604799,
+        scope="app function",
+        token_type="bearer"
+    )
+
+    client_id = "test-client-id"
+    client_secret = "test-client-secret"
+    scopes = ["app", "function"]
+
+    req_payload = {"foo": "bar"}
+    expected_resp_payload = {
+        "key1": 123,
+        "key2": "hey!"
+    }
+
+    expected_resp = make_json_response(200, expected_resp_payload)
+
+    with mock.patch("requests.request", return_value=expected_resp) as m:
+        with mock.patch("swx.api.get_token", return_value=expected_token):
+            resp = (API(host="test-api.swx.altairone.com").
+                    get_token(client_id=client_id,
+                              client_secret=client_secret,
+                              scopes=scopes).
+                    make_request("POST", "/info", body=req_payload))
+
+    m.assert_called_once_with("POST",
+                              "https://test-api.swx.altairone.com/info",
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Content-Type': 'application/json',
+                                  'Prefer': 'preview=2023.1',
                               },
                               data=req_payload,
                               timeout=3)
@@ -156,7 +204,7 @@ def test_make_request_unauthenticated():
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/info",
-                              headers={},
+                              headers={'Prefer': 'preview=2023.1'},
                               data=None,
                               timeout=3)
 
@@ -174,19 +222,19 @@ def test_make_request_missing_token():
     assert e.value == ExcMissingToken
 
 
-def test_beta_request():
+def test_beta_disabled_request():
     """
-    Makes a request with beta option enabled.
+    Makes a request with beta option disabled.
     """
     expected_resp = make_json_response(200, None)
 
     with mock.patch("requests.request", return_value=expected_resp) as m:
-        resp = (API(host="test-api.swx.altairone.com", beta=True).
+        resp = (API(host="test-api.swx.altairone.com", beta=False).
                 set_token("valid-token").
                 make_request("GET", "/info", body=None))
 
     m.assert_called_once_with("GET",
-                              "https://test-api.swx.altairone.com/beta/info",
+                              "https://test-api.swx.altairone.com/info",
                               headers={'Authorization': 'Bearer valid-token'},
                               data=None,
                               timeout=3)
