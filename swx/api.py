@@ -4,7 +4,7 @@ import requests
 
 from .errors import ExcMissingToken, ResponseError
 from .spaces import _SpacesMethod
-from .token import get_token, revoke_token
+from .auth.token import get_token, revoke_token
 
 
 class API(_SpacesMethod):

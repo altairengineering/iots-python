@@ -68,10 +68,10 @@ swx.things module
    :undoc-members:
    :show-inheritance:
 
-swx.token module
-----------------
+swx.auth.token module
+---------------------
 
-.. automodule:: swx.token
+.. automodule:: swx.auth.token
    :members:
    :undoc-members:
    :show-inheritance:

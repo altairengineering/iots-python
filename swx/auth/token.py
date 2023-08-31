@@ -4,7 +4,7 @@ from urllib.parse import urljoin
 
 import requests
 
-from .errors import OAuth2Error, TokenRevokeError
+from ..errors import OAuth2Error, TokenRevokeError
 
 API_TOKEN_ENDPOINT = "/oauth2/token"
 API_REVOKE_ENDPOINT = "/oauth2/revoke"

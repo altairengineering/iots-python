@@ -5,7 +5,7 @@ import pytest
 
 from swx.api import API
 from swx.errors import APIException, ExcMissingToken, ResponseError
-from swx.token import Token
+from swx.auth.token import Token
 from tests.common import make_json_response
 
 

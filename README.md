@@ -17,7 +17,7 @@ The current implementation has support for:
 From PyPI:
 
 ```shell
-$ pip install swx
+pip install swx
 ```
 
 This library officially supports Python 3.7+.

@@ -22,7 +22,7 @@ From PyPI:
 
 .. code-block:: shell
 
-   $ pip install swx
+   pip install swx
 
 This library officially supports Python 3.7+.
 
