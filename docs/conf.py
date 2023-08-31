@@ -20,6 +20,7 @@ extensions = [
     'sphinx.ext.duration',
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
+    'sphinx_copybutton',
 ]
 
 templates_path = ['_templates']
