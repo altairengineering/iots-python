@@ -49,10 +49,11 @@ def test_create(event_req):
                  spaces("space01").
                  things("thing01").
                  events("delay").
-                 create(event_req))
+                 create(event_req, params={'foo': 'bar'}))
 
     m.assert_called_once_with("POST",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events/delay",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
@@ -85,10 +86,11 @@ def test_list_event():
                  spaces("space01").
                  things("thing01").
                  events("delay").
-                 get())
+                 get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events/delay",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Prefer': 'preview=2023.1',
@@ -120,10 +122,11 @@ def test_list_all():
                   spaces("space01").
                   things("thing01").
                   events().
-                  get())
+                  get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Prefer': 'preview=2023.1',
@@ -147,11 +150,12 @@ def test_get_event():
                  spaces("space01").
                  things("thing01").
                  events("delay", "01EDCB9FMD0Q3QR0YV4TWY4S3E").
-                 get())
+                 get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01"
                               "/events/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Prefer': 'preview=2023.1',

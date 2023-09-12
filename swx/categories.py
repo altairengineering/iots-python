@@ -11,13 +11,13 @@ from .things import _ThingsMethod
 class Category(APIResource, _ThingsMethod):
     name: str
 
-    def get(self) -> CategoryModel:
+    def get(self, **kwargs) -> CategoryModel:
         """
         Make a request to the server to get the Category info.
 
         :return: A :class:`CategoryModel` with the Category info.
         """
-        return CategoryModel.parse_obj(self._make_request().json())
+        return CategoryModel.parse_obj(self._make_request(**kwargs).json())
 
     def _build_partial_path(self):
         return f"/categories/{self.name}"
@@ -26,13 +26,13 @@ class Category(APIResource, _ThingsMethod):
 @dataclass
 class Categories(APIResource):
 
-    def get(self) -> CategoryListModel:
+    def get(self, **kwargs) -> CategoryListModel:
         """
         Make a request to the server to list the Categories info.
 
         :return: A :class:`CategoryListModel` with the Categories info.
         """
-        return CategoryListModel.parse_obj(self._make_request().json())
+        return CategoryListModel.parse_obj(self._make_request(**kwargs).json())
 
     def _build_partial_path(self):
         return "/categories"

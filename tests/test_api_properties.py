@@ -19,10 +19,11 @@ def test_get():
                 spaces("space01").
                 things("thing01").
                 properties("temperature").
-                get())
+                get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties/temperature",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Prefer': 'preview=2023.1',
@@ -51,10 +52,11 @@ def test_list():
                 spaces("space01").
                 things("thing01").
                 properties().
-                get())
+                get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Prefer': 'preview=2023.1',
@@ -80,10 +82,11 @@ def test_update_one():
                 spaces("space01").
                 things("thing01").
                 properties("temperature").
-                update(17.5))
+                update(17.5, params={'foo': 'bar'}))
 
     m.assert_called_once_with("POST",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties/temperature",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
@@ -114,10 +117,11 @@ def test_update_multiple():
                 spaces("space01").
                 things("thing01").
                 properties().
-                update(new_values))
+                update(new_values, params={'foo': 'bar'}))
 
     m.assert_called_once_with("POST",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',

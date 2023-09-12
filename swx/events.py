@@ -10,7 +10,7 @@ from .models.anythingdb import (EventCreateRequest, EventListResponse,
 class Event(APIResource):
     event_name: str
 
-    def create(self, event: Union[EventCreateRequest, dict]) -> EventResponse:
+    def create(self, event: Union[EventCreateRequest, dict], **kwargs) -> EventResponse:
         """
         Make a request to the server to create a new Event value.
 
@@ -21,15 +21,15 @@ class Event(APIResource):
         payload = event
         if isinstance(event, EventCreateRequest):
             payload = event.dict()
-        return EventResponse.parse_obj(self._make_request("POST", payload).json())
+        return EventResponse.parse_obj(self._make_request("POST", payload, **kwargs).json())
 
-    def get(self):
+    def get(self, **kwargs):
         """
         Make a request to the server to get the history values of the Event.
 
         :return: A :class:`EventListResponse` with the value of the Event.
         """
-        return EventListResponse.parse_obj(self._make_request().json())
+        return EventListResponse.parse_obj(self._make_request(**kwargs).json())
 
     def _build_partial_path(self):
         return f"/events/{self.event_name}"
@@ -39,13 +39,13 @@ class Event(APIResource):
 class EventValue(APIResource):
     event_id: str
 
-    def get(self) -> EventResponse:
+    def get(self, **kwargs) -> EventResponse:
         """
         Make a request to the server to get the value of the Event.
 
         :return: A :class:`EventResponse` with the value of the Event.
         """
-        return EventResponse.parse_obj(self._make_request().json())
+        return EventResponse.parse_obj(self._make_request(**kwargs).json())
 
     def _build_partial_path(self):
         return "/" + self.event_id
@@ -54,7 +54,7 @@ class EventValue(APIResource):
 @dataclass
 class Events(APIResource):
 
-    def get(self) -> EventListResponse:
+    def get(self, **kwargs) -> EventListResponse:
         """
         Make a request to the server to list the value of all the Thing
         Events.
@@ -62,7 +62,7 @@ class Events(APIResource):
         :return: A :class:`EventListResponse` with the values of all the
             Thing Events.
         """
-        return EventListResponse.parse_obj(self._make_request().json())
+        return EventListResponse.parse_obj(self._make_request(**kwargs).json())
 
     def _build_partial_path(self):
         return "/events"

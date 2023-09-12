@@ -69,10 +69,10 @@ class APIResource(ABC):
 
         return path + self._build_partial_path()
 
-    def _make_request(self, method="GET", body=None) -> Response:
+    def _make_request(self, method="GET", body=None, **kwargs) -> Response:
         from swx.api import API
         if len(self._stack) == 0 or not isinstance(self._stack[0], API):
             raise Exception("API instance is missing in the stack")
 
         api = self._stack[0]
-        return api.make_request(method, self.build_path(), body=body)
+        return api.make_request(method, self.build_path(), body=body, **kwargs)

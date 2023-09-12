@@ -52,10 +52,11 @@ def test_create(action_req):
                   spaces("space01").
                   things("thing01").
                   actions("delay").
-                  create(action_req))
+                  create(action_req, params={'foo': 'bar'}))
 
     m.assert_called_once_with("POST",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions/delay",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
@@ -88,10 +89,11 @@ def test_list_action():
                   spaces("space01").
                   things("thing01").
                   actions("delay").
-                  get())
+                  get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions/delay",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Prefer': 'preview=2023.1',
@@ -123,10 +125,11 @@ def test_list_all():
                    spaces("space01").
                    things("thing01").
                    actions().
-                   get())
+                   get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Prefer': 'preview=2023.1',
@@ -150,11 +153,12 @@ def test_get_action():
                   spaces("space01").
                   things("thing01").
                   actions("delay", "01EDCB9FMD0Q3QR0YV4TWY4S3E").
-                  get())
+                  get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01"
                               "/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Prefer': 'preview=2023.1',
@@ -183,11 +187,12 @@ def test_put_action(action_req):
                   spaces("space01").
                   things("thing01").
                   actions("delay", "01EDCB9FMD0Q3QR0YV4TWY4S3E").
-                  update(action_req))
+                  update(action_req, params={'foo': 'bar'}))
 
     m.assert_called_once_with("PUT",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01"
                               "/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
@@ -212,11 +217,12 @@ def test_delete_action():
          spaces("space01").
          things("thing01").
          actions("delay", "01EDCB9FMD0Q3QR0YV4TWY4S3E").
-         delete())
+         delete(params={'foo': 'bar'}))
 
     m.assert_called_once_with("DELETE",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01"
                               "/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Prefer': 'preview=2023.1',

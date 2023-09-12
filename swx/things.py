@@ -13,13 +13,13 @@ from .properties import _PropertiesMethod
 class Thing(APIResource, _PropertiesMethod, _ActionsMethod, _EventsMethod):
     thing_id: str
 
-    def get(self) -> ThingModel:
+    def get(self, **kwargs) -> ThingModel:
         """
         Make a request to the server to get the Thing info.
 
         :return: A :class:`ThingModel` with the Thing info.
         """
-        return ThingModel.parse_obj(self._make_request().json())
+        return ThingModel.parse_obj(self._make_request(**kwargs).json())
 
     def _build_partial_path(self):
         return f"/things/{self.thing_id}"
@@ -28,13 +28,13 @@ class Thing(APIResource, _PropertiesMethod, _ActionsMethod, _EventsMethod):
 @dataclass
 class Things(APIResource):
 
-    def get(self) -> ThingListModel:
+    def get(self, **kwargs) -> ThingListModel:
         """
         Make a request to the server to list the Things info.
 
         :return: A :class:`ThingListModel` with the Things info.
         """
-        return ThingListModel.parse_obj(self._make_request().json())
+        return ThingListModel.parse_obj(self._make_request(**kwargs).json())
 
     def _build_partial_path(self):
         return "/things"

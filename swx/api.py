@@ -75,18 +75,20 @@ class API(_SpacesMethod):
         api.headers = self.headers
         return api
 
-    def make_request(self, method: str, url: str, headers: dict = None,
-                     body=None, auth: bool = True) -> requests.Response:
+    def make_request(self, method: str, path: str, body=None, params=None,
+                     headers: dict = None, auth: bool = True) -> requests.Response:
         """
         Makes a request to the API server.
 
         :param method: HTTP request method used (`GET`, `OPTIONS`, `HEAD`,
             `POST`, `PUT`, `PATCH`, or `DELETE`).
-        :param url: Request URL. It can be a relative path or a full URL (the
+        :param path: Request URL. It can be a relative path or a full URL (the
             host used must be the same as the host in this :class:`API` instance).
-        :param headers: (optional) Dictionary of HTTP headers to send.
         :param body: (optional) Dictionary, list of tuples, bytes, or file-like
             object to send in the body of the request.
+        :param params: (optional) Dictionary, list of tuples or bytes to send
+            in the query string for the :class:`Request`.
+        :param headers: (optional) Dictionary of HTTP headers to send.
         :param auth: (optional) If True (default), the authentication token will
             be sent in the request. An exception will be raised if no token is set.
         :return: A :class:`request.Response`. If the response returns with a
@@ -107,7 +109,7 @@ class API(_SpacesMethod):
         if isinstance(body, dict):
             headers['Content-Type'] = 'application/json'
 
-        resp = requests.request(method, self.host + url,
+        resp = requests.request(method, self.host + path, params=params,
                                 headers=headers, data=body, timeout=3)
 
         if resp.status_code >= 400:

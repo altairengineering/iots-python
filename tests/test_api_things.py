@@ -96,10 +96,11 @@ def test_get():
                set_token("valid-token").
                spaces("space01").
                things("thing01").
-               get())
+               get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Prefer': 'preview=2023.1',
@@ -130,10 +131,11 @@ def test_list():
                set_token("valid-token").
                spaces("space01").
                things().
-               get())
+               get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things",
+                              params={'foo': 'bar'},
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Prefer': 'preview=2023.1',

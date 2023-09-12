@@ -10,7 +10,7 @@ from .models.anythingdb import (ActionCreateRequest, ActionListResponse,
 class Action(APIResource):
     action_name: str
 
-    def create(self, action: Union[ActionCreateRequest, dict]) -> ActionResponse:
+    def create(self, action: Union[ActionCreateRequest, dict], **kwargs) -> ActionResponse:
         """
         Make a request to the server to create a new Action value.
 
@@ -22,16 +22,16 @@ class Action(APIResource):
         payload = action
         if isinstance(action, ActionCreateRequest):
             payload = action.dict()
-        return ActionResponse.parse_obj(self._make_request("POST", payload).json())
+        return ActionResponse.parse_obj(self._make_request("POST", payload, **kwargs).json())
 
-    def get(self):
+    def get(self, **kwargs):
         """
         Make a request to the server to get the history values of the Action.
 
         :return: A :class:`~swx.models.anythingdb.ActionListResponse` with the
             value of the Action.
         """
-        return ActionListResponse.parse_obj(self._make_request().json())
+        return ActionListResponse.parse_obj(self._make_request(**kwargs).json())
 
     def _build_partial_path(self):
         return f"/actions/{self.action_name}"
@@ -41,16 +41,16 @@ class Action(APIResource):
 class ActionValue(APIResource):
     action_id: str
 
-    def get(self) -> ActionResponse:
+    def get(self, **kwargs) -> ActionResponse:
         """
         Make a request to the server to get the value of the Action.
 
         :return: A :class:`~swx.models.anythingdb.ActionResponse` with the
             value of the Action.
         """
-        return ActionResponse.parse_obj(self._make_request().json())
+        return ActionResponse.parse_obj(self._make_request(**kwargs).json())
 
-    def update(self, action: Union[ActionUpdateRequest, dict]) -> ActionResponse:
+    def update(self, action: Union[ActionUpdateRequest, dict], **kwargs) -> ActionResponse:
         """
         Make a request to the server to update the value of the Action.
 
@@ -62,13 +62,13 @@ class ActionValue(APIResource):
         payload = action
         if isinstance(action, ActionUpdateRequest):
             payload = action.dict()
-        return ActionResponse.parse_obj(self._make_request("PUT", payload).json())
+        return ActionResponse.parse_obj(self._make_request("PUT", payload, **kwargs).json())
 
-    def delete(self):
+    def delete(self, **kwargs):
         """
         Make a request to the server to delete the Action value.
         """
-        ActionResponse.parse_obj(self._make_request("DELETE").json())
+        ActionResponse.parse_obj(self._make_request("DELETE", **kwargs).json())
 
     def _build_partial_path(self):
         return "/" + self.action_id
@@ -77,7 +77,7 @@ class ActionValue(APIResource):
 @dataclass
 class Actions(APIResource):
 
-    def get(self) -> ActionListResponse:
+    def get(self, **kwargs) -> ActionListResponse:
         """
         Make a request to the server to list the value of all the Thing
         Actions.
@@ -85,7 +85,7 @@ class Actions(APIResource):
         :return: An :class:`~swx.models.anythingdb.ActionListResponse` with the
             values of all the Thing Actions.
         """
-        return ActionListResponse.parse_obj(self._make_request().json())
+        return ActionListResponse.parse_obj(self._make_request(**kwargs).json())
 
     def _build_partial_path(self):
         return "/actions"

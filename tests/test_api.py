@@ -126,6 +126,7 @@ def test_make_request():
 
     m.assert_called_once_with("POST",
                               "https://test-api.swx.altairone.com/info",
+                              params=None,
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
@@ -173,6 +174,7 @@ def test_make_request_get_token():
 
     m.assert_called_once_with("POST",
                               "https://test-api.swx.altairone.com/info",
+                              params=None,
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
@@ -204,6 +206,7 @@ def test_make_request_unauthenticated():
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/info",
+                              params=None,
                               headers={'Prefer': 'preview=2023.1'},
                               data=None,
                               timeout=3)
@@ -235,6 +238,7 @@ def test_beta_disabled_request():
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/info",
+                              params=None,
                               headers={'Authorization': 'Bearer valid-token'},
                               data=None,
                               timeout=3)
