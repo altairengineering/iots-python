@@ -1,8 +1,6 @@
-import os
-
 import requests
 
-from consts import DEFAULT_SWX_API_HOST
+from .consts import DEFAULT_SWX_API_HOST
 from .errors import ExcMissingToken, ResponseError
 from .spaces import _SpacesMethod
 from .auth.token import get_token, revoke_token

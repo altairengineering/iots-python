@@ -83,6 +83,14 @@ swx.auth.token module
    :undoc-members:
    :show-inheritance:
 
+swx.consts module
+---------------
+
+.. automodule:: swx.consts
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

@@ -59,7 +59,7 @@ multiple ways to deal with authentication:
      my_client_id = "some-client-id"
      my_client_secret = "the-client-secret"
      my_scopes = ["category", "thing"]
-     api = API(host="api.swx.altairone.com").credentials(my_client_id, my_client_secret, my_scopes)
+     api = API(host="api.swx.altairone.com").get_token(my_client_id, my_client_secret, my_scopes)
 
      # ...
 
@@ -70,7 +70,7 @@ multiple ways to deal with authentication:
 
   .. code-block:: python
 
-     with API(host="api.swx.altairone.com").credentials(my_client_id, my_client_secret, my_scopes) as api:
+     with API(host="api.swx.altairone.com").get_token(my_client_id, my_client_secret, my_scopes) as api:
          # ...
          # The token will be revoked when the 'with' block ends
          # or if the function returns or raises an exception
@@ -93,6 +93,9 @@ by the API endpoints. Some examples:
    # List Things inside a Category
    things = api.categories("Sensors").things().get()
 
+   # List Things with query parameters
+   things = api.things().get(params={"property:temperature": "gt:20"})
+
    # Get all the Property values of a Thing
    properties = api.things("01GQ2E9M2Y45BX9EW0F2BM032Q").properties().get()
 
@@ -111,16 +114,29 @@ The models used by the API for request and response data can be found in the
 ..
 
    **Note:** The API resources use type hints that should help to understand
-   how to use the API and the data models to define input data or
-   access response data.
+   how to use the API and the data models to define input data or access
+   response data.
 
+
+Query parameters
+^^^^^^^^^^^^^^^^
+
+To add any query parameter to a request, use the ``param`` argument with a
+dictionary of parameters:
+
+.. code-block:: python
+
+   # Return up to 100 Things that have a "temperature" Property with value >= 20
+   thing = api.things().get(params={
+     'property:temperature': 'gte:20',
+     'limit': 100,
+   })
 
 🔮 Future features
 ------------------
 
 
 * Iterate pagination results.
-* List filters.
 * Auto-refresh access token.
 * Support create, update and delete methods in Categories and Things APIs.
 * Add more API resource components.

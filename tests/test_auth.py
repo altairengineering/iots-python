@@ -121,8 +121,13 @@ def test_revoke_token_without_secret_successfully():
     """
     expected_resp = make_json_response(200)
 
+    token = Token(
+        host="https://api.swx.mock",
+        access_token="some-access-token",
+    )
+
     with mock.patch("swx.auth.token.requests.post", return_value=expected_resp) as m:
-        revoke_token("some-access-token", "client-id", host="https://api.swx.mock")
+        revoke_token(token, "client-id", host="https://api.swx.mock")
 
     expected_req_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     expected_req_payload = 'token=some-access-token&' \
