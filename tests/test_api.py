@@ -3,6 +3,7 @@ from unittest import mock
 
 import pytest
 
+import swx.api
 from swx.api import API
 from swx.errors import APIException, ExcMissingToken, ResponseError
 from swx.auth.token import Token
@@ -15,24 +16,14 @@ def test_create_successfully():
     assert api.host == "https://test-api.swx.altairone.com"
 
 
-def test_default_host():
-    """
-    Creates an API instance taking the host from the default environment
-    variable.
-    """
-    os.environ["SWX_API_URL"] = "https://test-api.swx.altairone.com"
-    api = API()
-    assert api.host == "https://test-api.swx.altairone.com"
-
-
 def test_missing_host():
     """
     Creates an API instance taking the host from the default environment
     variable, but the variable is not set.
     """
-    os.environ.pop("SWX_API_URL")
-    with pytest.raises(ValueError):
-        API()
+    os.environ.pop("SWX_API_URL", None)
+    api = API()
+    assert api.host == "https://api.swx.altairone.com"
 
 
 def test_set_token():
@@ -73,8 +64,8 @@ def test_get_token():
 
     assert api._token is None
 
-    mock_get_token.assert_called_once_with("https://api.swx.mock", client_id, client_secret, scopes)
-    mock_revoke_token.assert_called_once_with("https://api.swx.mock", "valid-token", client_id, client_secret)
+    mock_get_token.assert_called_once_with(client_id, client_secret, scopes, host="https://api.swx.mock")
+    mock_revoke_token.assert_called_once_with("valid-token", client_id, client_secret, host="https://api.swx.mock")
 
 
 def test_get_token_with():
@@ -83,7 +74,7 @@ def test_get_token_with():
     and revokes the token automatically using a context manager (with).
     """
     expected_token = Token(
-        host="https://api.swx.mock",
+        host="https://api.swx.altairone.com",
         access_token="valid-token",
         expires_in=604799,
         scope="app function",
@@ -96,15 +87,17 @@ def test_get_token_with():
 
     with mock.patch("swx.api.get_token", return_value=expected_token) as mock_get_token:
         with mock.patch("swx.api.revoke_token", return_value=None) as mock_revoke_token:
-            with API(host="api.swx.mock").get_token(client_id=client_id,
-                                                    client_secret=client_secret,
-                                                    scopes=scopes) as api:
+            with API().get_token(client_id=client_id,
+                                 client_secret=client_secret,
+                                 scopes=scopes) as api:
                 assert api._token == expected_token.access_token
 
     assert api._token is None
 
-    mock_get_token.assert_called_once_with("https://api.swx.mock", client_id, client_secret, scopes)
-    mock_revoke_token.assert_called_once_with("https://api.swx.mock", "valid-token", client_id, client_secret)
+    mock_get_token.assert_called_once_with(client_id, client_secret, scopes,
+                                           host="https://api.swx.altairone.com")
+    mock_revoke_token.assert_called_once_with("valid-token", client_id, client_secret,
+                                              host="https://api.swx.altairone.com")
 
 
 def test_make_request():

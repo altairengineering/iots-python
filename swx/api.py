@@ -2,6 +2,7 @@ import os
 
 import requests
 
+from consts import DEFAULT_SWX_API_HOST
 from .errors import ExcMissingToken, ResponseError
 from .spaces import _SpacesMethod
 from .auth.token import get_token, revoke_token
@@ -20,7 +21,7 @@ class API(_SpacesMethod):
             (e.g. https://api.swx.altairone.com). If not set, it will try to
             get the host from the `SWX_API_URL` environment variable.
             If the host is not set and the environment variable does not exist,
-            it will raise a ValueError.
+            it will default to https://api.swx.altairone.com.
         :param token: (optional) Access token used for API authentication.
             It can also be set using :func:`~API.set_token` or setting the
             client credentials with :func:`~API.get_token`.
@@ -28,10 +29,7 @@ class API(_SpacesMethod):
             the requests made to the SmartWorks API to use features in beta
             stage.
         """
-        host = host if host else os.getenv("SWX_API_URL")
-        if not host:
-            raise ValueError("empty host")
-
+        host = host or DEFAULT_SWX_API_HOST
         if not host.startswith("http://") and not host.startswith("https://"):
             host = "https://" + host
 
@@ -160,7 +158,8 @@ class CredentialsAPI(API):
         Revokes the old access token and gets a new one.
         """
         self.revoke_token()
-        token = get_token(self.host, self.client_id, self.client_secret, self.scopes)
+        token = get_token(self.client_id, self.client_secret, self.scopes,
+                          host=self.host)
         self._token = token.access_token
 
     def revoke_token(self):
@@ -168,5 +167,6 @@ class CredentialsAPI(API):
         Revokes the access token.
         """
         if self._token:
-            revoke_token(self.host, self._token, self.client_id, self.client_secret)
+            revoke_token(self._token, self.client_id, self.client_secret,
+                         host=self.host)
             self._token = None

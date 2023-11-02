@@ -21,8 +21,8 @@ def test_get_and_revoke_token_successfully():
     expected_resp = make_json_response(200, expected_resp_payload)
 
     with mock.patch("swx.auth.token.requests.post", return_value=expected_resp) as m:
-        actual_token = get_token("https://api.swx.mock", "client-id", "client-secret",
-                                 ["app", "function"])
+        actual_token = get_token("client-id", "client-secret",
+                                 ["app", "function"], host="https://api.swx.mock")
 
     expected_req_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     expected_req_payload = 'grant_type=client_credentials&' \
@@ -72,8 +72,8 @@ def test_get_token_invalid_request_data():
 
     with mock.patch("swx.auth.token.requests.post", return_value=expected_resp) as m:
         with pytest.raises(OAuth2Error) as e:
-            get_token("https://api.swx.mock", "client-id", "invalid-client-secret",
-                      ["app", "function"])
+            get_token("client-id", "invalid-client-secret",
+                      ["app", "function"], "https://api.swx.mock")
 
     expected_req_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     expected_req_payload = 'grant_type=client_credentials&' \
@@ -93,7 +93,7 @@ def test_get_token_invalid_request_data():
 def test_get_token_network_error():
     """ Tests a failing token request due to an invalid url. """
     with pytest.raises(MissingSchema):
-        get_token("", "client-id", "client-secret", ["app", "function"])
+        get_token("client-id", "client-secret", ["app", "function"], host="-")
 
 
 def test_revoke_token_successfully():
@@ -101,14 +101,14 @@ def test_revoke_token_successfully():
     expected_resp = make_json_response(204)
 
     with mock.patch("swx.auth.token.requests.post", return_value=expected_resp) as m:
-        revoke_token("https://api.swx.mock", "some-access-token", "client-id", "client-secret")
+        revoke_token("some-access-token", "client-id", "client-secret")
 
     expected_req_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     expected_req_payload = 'token=some-access-token&' \
                            'client_id=client-id&' \
                            'client_secret=client-secret'
 
-    m.assert_called_once_with("https://api.swx.mock/oauth2/revoke",
+    m.assert_called_once_with("https://api.swx.altairone.com/oauth2/revoke",
                               headers=expected_req_headers,
                               data=expected_req_payload,
                               timeout=DEFAULT_TIMEOUT)
@@ -122,7 +122,7 @@ def test_revoke_token_without_secret_successfully():
     expected_resp = make_json_response(200)
 
     with mock.patch("swx.auth.token.requests.post", return_value=expected_resp) as m:
-        revoke_token("https://api.swx.mock", "some-access-token", "client-id")
+        revoke_token("some-access-token", "client-id", host="https://api.swx.mock")
 
     expected_req_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     expected_req_payload = 'token=some-access-token&' \
@@ -154,7 +154,8 @@ def test_revoke_token_invalid_request_data():
 
     with mock.patch("swx.auth.token.requests.post", return_value=expected_resp) as m:
         with pytest.raises(OAuth2Error) as e:
-            revoke_token("https://api.swx.mock", "some-access-token", "client-id", "invalid-client-secret")
+            revoke_token("some-access-token", "client-id",
+                         "invalid-client-secret", "https://api.swx.mock")
 
     expected_req_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     expected_req_payload = 'token=some-access-token&' \
@@ -185,7 +186,7 @@ def test_get_token_successfully_with_context_manager(m: mock.Mock):
     Tests a successful token request and revoke using a Context Manager.
     """
     expected_resp_payload = {
-        "host": "https://api.swx.mock",
+        "host": "https://api.swx.altairone.com",
         "access_token": "valid-token",
         "expires_in": 604799,
         "scope": "app function",
@@ -197,7 +198,7 @@ def test_get_token_successfully_with_context_manager(m: mock.Mock):
 
     m.side_effect = [expected_resp_token, expected_resp_revoke]
 
-    with get_token("https://api.swx.mock", "client-id", "client-secret", ["app", "function"]) as actual_token:
+    with get_token("client-id", "client-secret", ["app", "function"]) as actual_token:
         assert actual_token.host == expected_resp_payload["host"]
         assert actual_token.access_token == expected_resp_payload["access_token"]
         assert actual_token.expires_in == expected_resp_payload["expires_in"]
@@ -211,11 +212,11 @@ def test_get_token_successfully_with_context_manager(m: mock.Mock):
                            'scope=app function'
 
     m.assert_has_calls([
-        mock.call("https://api.swx.mock/oauth2/token",
+        mock.call("https://api.swx.altairone.com/oauth2/token",
                   headers=expected_req_headers,
                   data=expected_req_payload,
                   timeout=DEFAULT_TIMEOUT),
-        mock.call("https://api.swx.mock/oauth2/revoke",
+        mock.call("https://api.swx.altairone.com/oauth2/revoke",
                   data='token=valid-token&'
                        'client_id=client-id&'
                        'client_secret=client-secret',
