@@ -26,7 +26,7 @@ class Property(APIResource):
             Property.
         """
         payload = {self.name: value}
-        return PropertiesModel.parse_obj(self._make_request("POST", payload, **kwargs).json())
+        return PropertiesModel.parse_obj(self._make_request("PUT", payload, **kwargs).json())
 
     def _build_partial_path(self):
         return f"/properties/{self.name}"
@@ -52,7 +52,7 @@ class Properties(APIResource):
         :param values: A dictionary with the Property names and values to set.
         :return: A :class:`PropertiesModel` with the new Property values.
         """
-        return PropertiesModel.parse_obj(self._make_request("POST", values, **kwargs).json())
+        return PropertiesModel.parse_obj(self._make_request("PUT", values, **kwargs).json())
 
     def _build_partial_path(self):
         return "/properties"

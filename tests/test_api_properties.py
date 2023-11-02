@@ -84,7 +84,7 @@ def test_update_one():
                 properties("temperature").
                 update(17.5, params={'foo': 'bar'}))
 
-    m.assert_called_once_with("POST",
+    m.assert_called_once_with("PUT",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties/temperature",
                               params={'foo': 'bar'},
                               headers={
@@ -119,7 +119,7 @@ def test_update_multiple():
                 properties().
                 update(new_values, params={'foo': 'bar'}))
 
-    m.assert_called_once_with("POST",
+    m.assert_called_once_with("PUT",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties",
                               params={'foo': 'bar'},
                               headers={
