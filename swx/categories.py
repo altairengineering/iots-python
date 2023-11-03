@@ -1,9 +1,8 @@
-from dataclasses import dataclass, field
-from typing import List, overload
+from dataclasses import dataclass
+from typing import overload
 
-from .models.anythingdb import Category as CategoryModel
-from .models.anythingdb import CategoryList as CategoryListModel
 from .internal.resource import APIResource
+from .models import anythingdb as models
 from .things import _ThingsMethod
 
 
@@ -11,13 +10,14 @@ from .things import _ThingsMethod
 class Category(APIResource, _ThingsMethod):
     name: str
 
-    def get(self, **kwargs) -> CategoryModel:
+    def get(self, **kwargs) -> models.Category:
         """
         Make a request to the server to get the Category info.
 
-        :return: A :class:`CategoryModel` with the Category info.
+        :return: A :class:`~swx.models.anythingdb.Category` instance with
+                 the Category info.
         """
-        return CategoryModel.parse_obj(self._make_request(**kwargs).json())
+        return models.Category.parse_obj(self._make_request(**kwargs).json())
 
     def _build_partial_path(self):
         return f"/categories/{self.name}"
@@ -26,13 +26,14 @@ class Category(APIResource, _ThingsMethod):
 @dataclass
 class Categories(APIResource):
 
-    def get(self, **kwargs) -> CategoryListModel:
+    def get(self, **kwargs) -> models.CategoryList:
         """
         Make a request to the server to list the Categories info.
 
-        :return: A :class:`CategoryListModel` with the Categories info.
+        :return: A :class:`~swx.models.anythingdb.CategoryList` instance with
+                 the Categories info.
         """
-        return CategoryListModel.parse_obj(self._make_request(**kwargs).json())
+        return models.CategoryList.parse_obj(self._make_request(**kwargs).json())
 
     def _build_partial_path(self):
         return "/categories"

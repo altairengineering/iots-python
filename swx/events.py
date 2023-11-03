@@ -16,7 +16,8 @@ class Event(APIResource):
 
         :param event: The information of the new Event value
             (e.g. `{"delay": {"input": 5}}`).
-        :return: A :class:`EventResponse` with the new Event value.
+        :return: A :class:`~swx.models.anythingdb.EventResponse` instance with
+                 the new Event value.
         """
         payload = event
         if isinstance(event, EventCreateRequest):
@@ -27,7 +28,8 @@ class Event(APIResource):
         """
         Make a request to the server to get the history values of the Event.
 
-        :return: A :class:`EventListResponse` with the value of the Event.
+        :return: A :class:`~swx.models.anythingdb.EventListResponse` instance
+                 with the value of the Event.
         """
         return EventListResponse.parse_obj(self._make_request(**kwargs).json())
 
@@ -43,7 +45,8 @@ class EventValue(APIResource):
         """
         Make a request to the server to get the value of the Event.
 
-        :return: A :class:`EventResponse` with the value of the Event.
+        :return: A :class:`~swx.models.anythingdb.EventResponse` instance with
+                 the value of the Event.
         """
         return EventResponse.parse_obj(self._make_request(**kwargs).json())
 
@@ -59,8 +62,8 @@ class Events(APIResource):
         Make a request to the server to list the value of all the Thing
         Events.
 
-        :return: A :class:`EventListResponse` with the values of all the
-            Thing Events.
+        :return: A :class:`~swx.models.anythingdb.EventListResponse` instance
+                 with the values of all the Thing Events.
         """
         return EventListResponse.parse_obj(self._make_request(**kwargs).json())
 

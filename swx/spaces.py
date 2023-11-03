@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from typing import List, overload
+from dataclasses import dataclass
+from typing import overload
 
 from .categories import _CategoriesMethod
 from .internal.resource import APIResource

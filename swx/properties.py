@@ -1,32 +1,33 @@
-from dataclasses import dataclass, field
-from typing import List, Union, overload
+from dataclasses import dataclass
+from typing import Union, overload
 
-from .models.anythingdb import Properties as PropertiesModel
 from .internal.resource import APIResource
+from .models import anythingdb as models
 
 
 @dataclass
 class Property(APIResource):
     name: str
 
-    def get(self, **kwargs) -> PropertiesModel:
+    def get(self, **kwargs) -> models.Properties:
         """
         Make a request to the server to get the value of the Property.
 
-        :return: A :class:`PropertiesModel` with the value of the Property.
+        :return: A :class:`~swx.models.anythingdb.Properties` instance with
+                 the value of the Property.
         """
-        return PropertiesModel.parse_obj(self._make_request(**kwargs).json())
+        return models.Properties.parse_obj(self._make_request(**kwargs).json())
 
-    def update(self, value, **kwargs) -> PropertiesModel:
+    def update(self, value, **kwargs) -> models.Properties:
         """
         Make a request to the server to update the value of the Property.
 
         :param value: The value to set on the Property.
-        :return: A :class:`PropertiesModel` with the new value of the
-            Property.
+        :return: A :class:`~swx.models.anythingdb.Properties` instance with
+                 the new value of the Property.
         """
         payload = {self.name: value}
-        return PropertiesModel.parse_obj(self._make_request("PUT", payload, **kwargs).json())
+        return models.Properties.parse_obj(self._make_request("PUT", payload, **kwargs).json())
 
     def _build_partial_path(self):
         return f"/properties/{self.name}"
@@ -35,24 +36,25 @@ class Property(APIResource):
 @dataclass
 class Properties(APIResource):
 
-    def get(self, **kwargs) -> PropertiesModel:
+    def get(self, **kwargs) -> models.Properties:
         """
         Make a request to the server to list the value of all the Thing
         Properties.
 
-        :return: A :class:`PropertiesModel` with the values of all the
-            Thing Properties.
+        :return: A :class:`~swx.models.anythingdb.Properties` instance with
+                 the values of all the Thing Properties.
         """
-        return PropertiesModel.parse_obj(self._make_request(**kwargs).json())
+        return models.Properties.parse_obj(self._make_request(**kwargs).json())
 
-    def update(self, values: Union[dict, PropertiesModel], **kwargs) -> PropertiesModel:
+    def update(self, values: Union[dict, models.Properties], **kwargs) -> models.Properties:
         """
         Make a request to the server to update one or multiple Property values.
 
         :param values: A dictionary with the Property names and values to set.
-        :return: A :class:`PropertiesModel` with the new Property values.
+        :return:       A :class:`~swx.models.anythingdb.Properties` instance
+                       with the new Property values.
         """
-        return PropertiesModel.parse_obj(self._make_request("PUT", values, **kwargs).json())
+        return models.Properties.parse_obj(self._make_request("PUT", values, **kwargs).json())
 
     def _build_partial_path(self):
         return "/properties"

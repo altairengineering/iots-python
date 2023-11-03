@@ -87,7 +87,7 @@ def revoke_token(access_token: Union[str, Token], client_id: str,
     :param client_id:     Client ID of the client that requested the token.
     :param client_secret: Client Secret of the client that requested the token.
     :param host:          API Host URL. If access_token is a :class:`Token`,
-                          it defaults to the token hostm otherwise it defaults
+                          it defaults to the token host, otherwise it defaults
                           to https://api.swx.altairone.com.
     """
     payload = f'token={access_token}&' \
