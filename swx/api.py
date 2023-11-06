@@ -11,7 +11,7 @@ class API(_SpacesMethod):
     The top-level class used as an abstraction of the SmartWorks API.
     """
 
-    def __init__(self, host: str = "", token: str = "", beta: bool = True):
+    def __init__(self, host: str = "", token: str = ""):
         """
         Creates a new API instance.
 
@@ -23,9 +23,6 @@ class API(_SpacesMethod):
         :param token: (optional) Access token used for API authentication.
             It can also be set using :func:`~API.set_token` or setting the
             client credentials with :func:`~API.get_token`.
-        :param beta: (optional) If True, a special header will be added to all
-            the requests made to the SmartWorks API to use features in beta
-            stage.
         """
         host = host or DEFAULT_SWX_API_HOST
         if not host.startswith("http://") and not host.startswith("https://"):
@@ -33,10 +30,7 @@ class API(_SpacesMethod):
 
         self.host = host
         self._token = token
-        self._beta = beta
         self.headers = {}
-        if beta:
-            self.headers['Prefer'] = "preview=2023.1"
 
     def set_token(self, token: str):
         """
@@ -66,8 +60,7 @@ class API(_SpacesMethod):
         :param scopes:          List of scopes to request.
         :return:                :class:`CredentialsAPI` instance.
         """
-        api = CredentialsAPI(self.host, client_id, client_secret, scopes,
-                             self._beta)
+        api = CredentialsAPI(self.host, client_id, client_secret, scopes)
         api.headers = self.headers
         return api
 
@@ -120,7 +113,7 @@ class CredentialsAPI(API):
     Credentials flow by getting and revoking access tokens.
     """
 
-    def __init__(self, host: str, client_id: str, client_secret: str, scopes: list, beta: bool = True):
+    def __init__(self, host: str, client_id: str, client_secret: str, scopes: list):
         """
         Creates a new CredentialsAPI instance.
 
@@ -132,11 +125,8 @@ class CredentialsAPI(API):
         :param client_id:       Client ID.
         :param client_secret:   Client Secret.
         :param scopes:          List of scopes to request.
-        :param beta: (optional) If True, a special header will be added to all
-            the requests made to the SmartWorks API to use features in beta
-            stage.
         """
-        super().__init__(host, beta=beta)
+        super().__init__(host)
         self.client_id = client_id
         self.client_secret = client_secret
         self.scopes = scopes

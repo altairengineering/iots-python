@@ -24,10 +24,7 @@ def test_get():
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties/temperature",
                               params={'foo': 'bar'},
-                              headers={
-                                  'Authorization': 'Bearer valid-token',
-                                  'Prefer': 'preview=2023.1',
-                              },
+                              headers={'Authorization': 'Bearer valid-token'},
                               data=None,
                               timeout=3)
 
@@ -57,10 +54,7 @@ def test_list():
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties",
                               params={'foo': 'bar'},
-                              headers={
-                                  'Authorization': 'Bearer valid-token',
-                                  'Prefer': 'preview=2023.1',
-                              },
+                              headers={'Authorization': 'Bearer valid-token'},
                               data=None,
                               timeout=3)
 
@@ -90,7 +84,6 @@ def test_update_one():
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
-                                  'Prefer': 'preview=2023.1',
                               },
                               data={"temperature": 17.5},
                               timeout=3)
@@ -125,7 +118,6 @@ def test_update_multiple():
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
-                                  'Prefer': 'preview=2023.1',
                               },
                               data=new_values,
                               timeout=3)

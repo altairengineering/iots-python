@@ -101,10 +101,7 @@ def test_get():
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01",
                               params={'foo': 'bar'},
-                              headers={
-                                  'Authorization': 'Bearer valid-token',
-                                  'Prefer': 'preview=2023.1',
-                              },
+                              headers={'Authorization': 'Bearer valid-token'},
                               data=None,
                               timeout=3)
 
@@ -136,10 +133,7 @@ def test_list():
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things",
                               params={'foo': 'bar'},
-                              headers={
-                                  'Authorization': 'Bearer valid-token',
-                                  'Prefer': 'preview=2023.1',
-                              },
+                              headers={'Authorization': 'Bearer valid-token'},
                               data=None,
                               timeout=3)
 

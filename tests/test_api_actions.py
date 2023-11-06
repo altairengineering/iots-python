@@ -60,7 +60,6 @@ def test_create(action_req):
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
-                                  'Prefer': 'preview=2023.1',
                               },
                               data=to_dict(action_req),
                               timeout=3)
@@ -94,10 +93,7 @@ def test_list_action():
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions/delay",
                               params={'foo': 'bar'},
-                              headers={
-                                  'Authorization': 'Bearer valid-token',
-                                  'Prefer': 'preview=2023.1',
-                              },
+                              headers={'Authorization': 'Bearer valid-token'},
                               data=None,
                               timeout=3)
 
@@ -130,10 +126,7 @@ def test_list_all():
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions",
                               params={'foo': 'bar'},
-                              headers={
-                                  'Authorization': 'Bearer valid-token',
-                                  'Prefer': 'preview=2023.1',
-                              },
+                              headers={'Authorization': 'Bearer valid-token'},
                               data=None,
                               timeout=3)
 
@@ -159,10 +152,7 @@ def test_get_action():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01"
                               "/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
                               params={'foo': 'bar'},
-                              headers={
-                                  'Authorization': 'Bearer valid-token',
-                                  'Prefer': 'preview=2023.1',
-                              },
+                              headers={'Authorization': 'Bearer valid-token'},
                               data=None,
                               timeout=3)
 
@@ -196,7 +186,6 @@ def test_put_action(action_req):
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
-                                  'Prefer': 'preview=2023.1',
                               },
                               data=to_dict(action_req),
                               timeout=3)
@@ -223,9 +212,6 @@ def test_delete_action():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01"
                               "/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
                               params={'foo': 'bar'},
-                              headers={
-                                  'Authorization': 'Bearer valid-token',
-                                  'Prefer': 'preview=2023.1',
-                              },
+                              headers={'Authorization': 'Bearer valid-token'},
                               data=None,
                               timeout=3)

@@ -123,7 +123,6 @@ def test_make_request():
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
-                                  'Prefer': 'preview=2023.1',
                               },
                               data=req_payload,
                               timeout=3)
@@ -171,7 +170,6 @@ def test_make_request_get_token():
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
-                                  'Prefer': 'preview=2023.1',
                               },
                               data=req_payload,
                               timeout=3)
@@ -200,7 +198,7 @@ def test_make_request_unauthenticated():
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/info",
                               params=None,
-                              headers={'Prefer': 'preview=2023.1'},
+                              headers={},
                               data=None,
                               timeout=3)
 
@@ -216,24 +214,3 @@ def test_make_request_missing_token():
         API(host="test-api.swx.altairone.com").make_request("POST", "/info")
 
     assert e.value == ExcMissingToken
-
-
-def test_beta_disabled_request():
-    """
-    Makes a request with beta option disabled.
-    """
-    expected_resp = make_json_response(200, None)
-
-    with mock.patch("requests.request", return_value=expected_resp) as m:
-        resp = (API(host="test-api.swx.altairone.com", beta=False).
-                set_token("valid-token").
-                make_request("GET", "/info", body=None))
-
-    m.assert_called_once_with("GET",
-                              "https://test-api.swx.altairone.com/info",
-                              params=None,
-                              headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
-                              timeout=3)
-
-    assert resp.status_code == 200
