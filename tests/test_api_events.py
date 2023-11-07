@@ -112,10 +112,10 @@ def test_list_event():
                            events("highCPU").
                            get)
 
-    for i in range(1, 10):
+    for limit in range(1, 10):
         assert_pagination(pagination_function,
                           "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events/highCPU",
-                          expected_high_cpu_events, i, {'foo': 'bar'},
+                          expected_high_cpu_events, limit, {'foo': 'bar'},
                           lambda x: x['highCPU']['timestamp'], EventResponse)
 
 
@@ -166,10 +166,10 @@ def test_list_all():
                            events().
                            get)
 
-    for i in range(1, 10):
+    for limit in range(1, 10):
         assert_pagination(pagination_function,
                           "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events",
-                          expected_events, i, {'foo': 'bar'},
+                          expected_events, limit, {'foo': 'bar'},
                           lambda x: x[list(x)[0]]['timestamp'], EventResponse)
 
 

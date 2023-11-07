@@ -170,8 +170,8 @@ def test_list():
                            things().
                            get)
 
-    for i in range(1, 10):
+    for limit in range(1, 10):
         assert_pagination(pagination_function,
                           "https://test-api.swx.altairone.com/spaces/space01/things",
-                          things, i, {'foo': 'bar'},
+                          things, limit, {'foo': 'bar'},
                           lambda x: x['uid'], Thing)

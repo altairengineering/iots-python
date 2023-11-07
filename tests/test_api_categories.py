@@ -109,8 +109,8 @@ def test_list():
                            categories().
                            get)
 
-    for i in range(1, 10):
+    for limit in range(1, 10):
         assert_pagination(pagination_function,
                           "https://test-api.swx.altairone.com/spaces/space01/categories",
-                          categories, i, {'foo': 'bar'},
+                          categories, limit, {'foo': 'bar'},
                           lambda x: x['name'], Category)

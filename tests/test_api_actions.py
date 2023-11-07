@@ -115,10 +115,10 @@ def test_list_action():
                            actions("delay").
                            get)
 
-    for i in range(1, 10):
+    for limit in range(1, 10):
         assert_pagination(pagination_function,
                           "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions/delay",
-                          expected_delay_actions, i, {'foo': 'bar'},
+                          expected_delay_actions, limit, {'foo': 'bar'},
                           lambda x: x['delay']['timeRequested'], ActionResponse)
 
 
@@ -169,10 +169,10 @@ def test_list_all():
                            actions().
                            get)
 
-    for i in range(1, 10):
+    for limit in range(1, 10):
         assert_pagination(pagination_function,
                           "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions",
-                          expected_actions, i, {'foo': 'bar'},
+                          expected_actions, limit, {'foo': 'bar'},
                           lambda x: x[list(x)[0]]['timeRequested'], ActionResponse)
 
 
