@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import overload
 
+from .internal.pagination import handle_next_pagination
 from .internal.resource import APIResource
 from .models import anythingdb as models
 from .things import _ThingsMethod
@@ -33,7 +34,9 @@ class Categories(APIResource):
         :return: A :class:`~swx.models.anythingdb.CategoryList` instance with
                  the Categories info.
         """
-        return models.CategoryList.parse_obj(self._make_request(**kwargs).json())
+        ret = models.CategoryList.parse_obj(self._make_request(**kwargs).json())
+        handle_next_pagination(self.get, ret, **kwargs)
+        return ret
 
     def _build_partial_path(self):
         return "/categories"

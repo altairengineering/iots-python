@@ -326,7 +326,7 @@ class Category(CategoryBase):
     modified: Optional[datetime] = Field(None, example="2021-11-17T03:15:40Z")
 
 
-class CategoryList(IterBaseModel):
+class CategoryList(IterBaseModel, Paginator):
     data: Optional[List[Category]] = None
     paging: Optional[Paging] = None
 
