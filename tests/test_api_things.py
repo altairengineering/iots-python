@@ -3,10 +3,11 @@ from unittest import mock
 from swx.api import API
 from swx.models.anythingdb import Thing, ThingList
 from tests.common import make_json_response
+from tests.test_api_pagination import assert_pagination
 
 test_thing01 = {
-    "uid": "01FPSXTMN4CEGX09HF5RQ4RMY6",
-    "id": "https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6",
+    "uid": "THING000000000000000000001",
+    "id": "https://api.swx.altairone.com/beta/spaces/space01/things/THING000000000000000000001",
     "categories": [
         "category1",
         "category2"
@@ -78,11 +79,33 @@ test_thing01 = {
 }
 
 test_thing02 = {
+    "uid": "THING000000000000000000002",
     "name": "RaspberryPiModel",
     "description": "My Raspberry Pi Model",
     "created": "2021-11-17T10:08:31Z",
     "modified": "2021-11-17T10:08:31Z"
 }
+
+test_thing03 = {
+    "uid": "THING000000000000000000003",
+    "name": "Thing 3",
+    "created": "2023-10-23T08:12:02Z",
+    "modified": "2023-11-06T14:03:13Z"
+}
+
+test_thing04 = {
+    "uid": "THING000000000000000000004",
+    "name": "Thing 4",
+    "created": "2023-02-20T21:54:23Z",
+    "modified": "2023-07-01T16:34:52Z"
+}
+
+things = [
+    test_thing01,
+    test_thing02,
+    test_thing03,
+    test_thing04,
+]
 
 
 def test_get():
@@ -92,11 +115,11 @@ def test_get():
     expected_resp = make_json_response(200, test_thing01)
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
-        cat = (API(host="test-api.swx.altairone.com").
-               set_token("valid-token").
-               spaces("space01").
-               things("thing01").
-               get(params={'foo': 'bar'}))
+        thing_resp = (API(host="test-api.swx.altairone.com").
+                      set_token("valid-token").
+                      spaces("space01").
+                      things("thing01").
+                      get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01",
@@ -105,8 +128,8 @@ def test_get():
                               data=None,
                               timeout=3)
 
-    assert cat == Thing.parse_obj(test_thing01)
-    assert type(cat) == Thing
+    assert thing_resp == Thing.parse_obj(test_thing01)
+    assert type(thing_resp) == Thing
 
 
 def test_list():
@@ -115,7 +138,7 @@ def test_list():
     """
     expected_resp_payload = {
         "paging": {
-            "next_cursor": "",
+            "next_cursor": "123",
             "previous_cursor": ""
         },
         "data": [test_thing01, test_thing02]
@@ -124,11 +147,11 @@ def test_list():
     expected_resp = make_json_response(200, expected_resp_payload)
 
     with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
-        cat = (API(host="test-api.swx.altairone.com").
-               set_token("valid-token").
-               spaces("space01").
-               things().
-               get(params={'foo': 'bar'}))
+        things_resp = (API(host="test-api.swx.altairone.com").
+                       set_token("valid-token").
+                       spaces("space01").
+                       things().
+                       get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things",
@@ -137,5 +160,18 @@ def test_list():
                               data=None,
                               timeout=3)
 
-    assert cat == ThingList.parse_obj(expected_resp_payload)
-    assert type(cat) == ThingList
+    assert things_resp == ThingList.parse_obj(expected_resp_payload)
+    assert type(things_resp) == ThingList
+
+    # Test pagination
+    pagination_function = (API(host="test-api.swx.altairone.com").
+                           set_token("valid-token").
+                           spaces("space01").
+                           things().
+                           get)
+
+    for i in range(1, 10):
+        assert_pagination(pagination_function,
+                          "https://test-api.swx.altairone.com/spaces/space01/things",
+                          things, i, {'foo': 'bar'},
+                          lambda x: x['uid'], Thing)

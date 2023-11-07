@@ -29,6 +29,7 @@ autodoc_pydantic = "^1.8.0"
 typed-ast = "^1.5.4"
 m2r = "^0.3.1"
 jupyter = "^1.0.0"
+httpretty = "^1.1.4"
 
 [build-system]
 requires = ["poetry>=0.12"]

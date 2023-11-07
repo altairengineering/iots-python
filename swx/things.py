@@ -3,6 +3,7 @@ from typing import overload
 
 from .actions import _ActionsMethod
 from .events import _EventsMethod
+from .internal.pagination import handle_next_pagination
 from .internal.resource import APIResource
 from .models import anythingdb as models
 from .properties import _PropertiesMethod
@@ -35,7 +36,23 @@ class Things(APIResource):
         :return: A :class:`~swx.models.anythingdb.ThingList` instance with
                  the Things info.
         """
-        return models.ThingList.parse_obj(self._make_request(**kwargs).json())
+        ret = models.ThingList.parse_obj(self._make_request(**kwargs).json())
+
+        # def next_func(resp, **kwargs_copy):
+        #     if resp.paging.next_cursor:
+        #         from copy import deepcopy
+        #         kwargs2 = deepcopy(kwargs_copy)
+        #         if 'params' not in kwargs2:
+        #             kwargs2['params'] = {}
+        #         kwargs2['params']['next_cursor'] = resp.paging.next_cursor
+        #         return lambda: self.get(**kwargs2)
+        #     return None
+        #
+        # ret._iter_func = next_func(ret, **kwargs)
+
+        handle_next_pagination(self.get, ret, **kwargs)
+
+        return ret
 
     def _build_partial_path(self):
         return "/things"

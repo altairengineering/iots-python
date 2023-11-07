@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from pydantic import Field, conint, constr
 
+from models.paginator import Paginator
 from swx.models.basemodel import IterBaseModel
 
 
@@ -30,7 +31,6 @@ class Type(Enum):
 
 
 class DataSchema(IterBaseModel):
-
     field_type: Optional[Union[str, List[str]]] = Field(None, alias="@type")
     description: Optional[str] = None
     title: Optional[str] = None
@@ -178,7 +178,7 @@ class Paging3(IterBaseModel):
     previous_cursor: Optional[str] = Field(None, example="")
 
 
-class ThingList(IterBaseModel):
+class ThingList(IterBaseModel, Paginator):
     data: Optional[List[Thing]] = None
     paging: Optional[Paging3] = None
 
