@@ -208,7 +208,7 @@ class Paging5(IterBaseModel):
     previous_cursor: Optional[str] = Field(None, example="")
 
 
-class ActionListResponse(IterBaseModel):
+class ActionListResponse(IterBaseModel, Paginator):
     data: Optional[List[ActionResponse]] = Field(
         None,
         example=[

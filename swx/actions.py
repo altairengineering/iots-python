@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Union, overload
 
+from .internal.pagination import handle_next_pagination
 from .internal.resource import APIResource
 from .models.anythingdb import (ActionCreateRequest, ActionListResponse,
                                 ActionResponse, ActionUpdateRequest)
@@ -24,14 +25,16 @@ class Action(APIResource):
             payload = action.dict()
         return ActionResponse.parse_obj(self._make_request("POST", payload, **kwargs).json())
 
-    def get(self, **kwargs):
+    def get(self, **kwargs) -> ActionListResponse:
         """
         Make a request to the server to get the history values of the Action.
 
         :return: An :class:`~swx.models.anythingdb.ActionListResponse` instance
                  with the value of the Action.
         """
-        return ActionListResponse.parse_obj(self._make_request(**kwargs).json())
+        ret = ActionListResponse.parse_obj(self._make_request(**kwargs).json())
+        handle_next_pagination(self.get, ret, **kwargs)
+        return ret
 
     def _build_partial_path(self):
         return f"/actions/{self.action_name}"
@@ -85,7 +88,9 @@ class Actions(APIResource):
         :return: An :class:`~swx.models.anythingdb.ActionListResponse` instance
                  with the values of all the Thing Actions.
         """
-        return ActionListResponse.parse_obj(self._make_request(**kwargs).json())
+        ret = ActionListResponse.parse_obj(self._make_request(**kwargs).json())
+        handle_next_pagination(self.get, ret, **kwargs)
+        return ret
 
     def _build_partial_path(self):
         return "/actions"

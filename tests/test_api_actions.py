@@ -6,6 +6,7 @@ from swx.api import API
 from swx.models.anythingdb import (ActionCreateRequest, ActionListResponse,
                                    ActionResponse, ActionUpdateRequest)
 from tests.common import make_json_response, to_dict
+from tests.test_api_pagination import assert_pagination
 
 test_action01 = {
     "delay": {
@@ -100,6 +101,26 @@ def test_list_action():
     assert action == ActionListResponse.parse_obj(expected_resp_payload)
     assert type(action) == ActionListResponse
 
+    # Test pagination
+    expected_delay_actions = [
+        test_action01,
+        test_action02,
+    ]
+    expected_delay_actions.sort(key=lambda x: x['delay']['timeRequested'])
+
+    pagination_function = (API(host="test-api.swx.altairone.com").
+                           set_token("valid-token").
+                           spaces("space01").
+                           things("thing01").
+                           actions("delay").
+                           get)
+
+    for i in range(1, 10):
+        assert_pagination(pagination_function,
+                          "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions/delay",
+                          expected_delay_actions, i, {'foo': 'bar'},
+                          lambda x: x['delay']['timeRequested'], ActionResponse)
+
 
 def test_list_all():
     """
@@ -132,6 +153,27 @@ def test_list_all():
 
     assert actions == ActionListResponse.parse_obj(expected_resp_payload)
     assert type(actions) == ActionListResponse
+
+    # Test pagination
+    expected_actions = [
+        test_action01,
+        test_action02,
+        test_action03,
+    ]
+    expected_actions.sort(key=lambda x: x[list(x)[0]]['timeRequested'])
+
+    pagination_function = (API(host="test-api.swx.altairone.com").
+                           set_token("valid-token").
+                           spaces("space01").
+                           things("thing01").
+                           actions().
+                           get)
+
+    for i in range(1, 10):
+        assert_pagination(pagination_function,
+                          "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions",
+                          expected_actions, i, {'foo': 'bar'},
+                          lambda x: x[list(x)[0]]['timeRequested'], ActionResponse)
 
 
 def test_get_action():
