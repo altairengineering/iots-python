@@ -6,6 +6,7 @@ from swx.api import API
 from swx.models.anythingdb import (EventCreateRequest, EventListResponse,
                                    EventResponse)
 from tests.common import make_json_response, to_dict
+from tests.test_api_pagination import assert_pagination
 
 test_event01 = {
     "highCPU": {
@@ -84,11 +85,11 @@ def test_list_event():
                  set_token("valid-token").
                  spaces("space01").
                  things("thing01").
-                 events("delay").
+                 events("highCPU").
                  get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
-                              "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events/delay",
+                              "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events/highCPU",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=None,
@@ -96,6 +97,26 @@ def test_list_event():
 
     assert event == EventListResponse.parse_obj(expected_resp_payload)
     assert type(event) == EventListResponse
+
+    # Test pagination
+    expected_high_cpu_events = [
+        test_event01,
+        test_event02,
+    ]
+    expected_high_cpu_events.sort(key=lambda x: x['highCPU']['timestamp'])
+
+    pagination_function = (API(host="test-api.swx.altairone.com").
+                           set_token("valid-token").
+                           spaces("space01").
+                           things("thing01").
+                           events("highCPU").
+                           get)
+
+    for i in range(1, 10):
+        assert_pagination(pagination_function,
+                          "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events/highCPU",
+                          expected_high_cpu_events, i, {'foo': 'bar'},
+                          lambda x: x['highCPU']['timestamp'], EventResponse)
 
 
 def test_list_all():
@@ -130,6 +151,27 @@ def test_list_all():
     assert events == EventListResponse.parse_obj(expected_resp_payload)
     assert type(events) == EventListResponse
 
+    # Test pagination
+    expected_events = [
+        test_event01,
+        test_event02,
+        test_event03,
+    ]
+    expected_events.sort(key=lambda x: x[list(x)[0]]['timestamp'])
+
+    pagination_function = (API(host="test-api.swx.altairone.com").
+                           set_token("valid-token").
+                           spaces("space01").
+                           things("thing01").
+                           events().
+                           get)
+
+    for i in range(1, 10):
+        assert_pagination(pagination_function,
+                          "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events",
+                          expected_events, i, {'foo': 'bar'},
+                          lambda x: x[list(x)[0]]['timestamp'], EventResponse)
+
 
 def test_get_event():
     """
@@ -142,12 +184,12 @@ def test_get_event():
                  set_token("valid-token").
                  spaces("space01").
                  things("thing01").
-                 events("delay", "01EDCB9FMD0Q3QR0YV4TWY4S3E").
+                 events("highCPU", "01EDCEZDTJX50SQTCJST5EW5NX").
                  get(params={'foo': 'bar'}))
 
     m.assert_called_once_with("GET",
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01"
-                              "/events/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
+                              "/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=None,

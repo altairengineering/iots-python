@@ -272,7 +272,7 @@ class Paging6(IterBaseModel):
     previous_cursor: Optional[str] = Field(None, example="")
 
 
-class EventListResponse(IterBaseModel):
+class EventListResponse(IterBaseModel, Paginator):
     data: Optional[List[EventResponse]] = Field(
         None,
         example=[

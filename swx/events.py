@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Union, overload
 
+from .internal.pagination import handle_next_pagination
 from .internal.resource import APIResource
 from .models.anythingdb import (EventCreateRequest, EventListResponse,
                                 EventResponse)
@@ -24,14 +25,16 @@ class Event(APIResource):
             payload = event.dict()
         return EventResponse.parse_obj(self._make_request("POST", payload, **kwargs).json())
 
-    def get(self, **kwargs):
+    def get(self, **kwargs) -> EventListResponse:
         """
         Make a request to the server to get the history values of the Event.
 
         :return: A :class:`~swx.models.anythingdb.EventListResponse` instance
                  with the value of the Event.
         """
-        return EventListResponse.parse_obj(self._make_request(**kwargs).json())
+        ret = EventListResponse.parse_obj(self._make_request(**kwargs).json())
+        handle_next_pagination(self.get, ret, **kwargs)
+        return ret
 
     def _build_partial_path(self):
         return f"/events/{self.event_name}"
@@ -65,7 +68,9 @@ class Events(APIResource):
         :return: A :class:`~swx.models.anythingdb.EventListResponse` instance
                  with the values of all the Thing Events.
         """
-        return EventListResponse.parse_obj(self._make_request(**kwargs).json())
+        ret = EventListResponse.parse_obj(self._make_request(**kwargs).json())
+        handle_next_pagination(self.get, ret, **kwargs)
+        return ret
 
     def _build_partial_path(self):
         return "/events"
