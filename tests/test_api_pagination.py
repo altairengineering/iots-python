@@ -14,6 +14,7 @@ def assert_pagination(pagination_function: callable, expected_url: str,
     Asserts that, given API function (pagination_function) that supports
     pagination, it can be paginated properly.
     """
+
     def request_callback(request: httpretty.core.HTTPrettyRequest, uri, response_headers):
         # Assert expected query params
         for q in request.querystring:
@@ -66,12 +67,16 @@ def assert_pagination(pagination_function: callable, expected_url: str,
     assert len(httpretty.latest_requests()) == 1
     if limit < len(expected_results):
         assert len(actual_result.data) == limit
+        assert actual_result.has_more()
     else:
         assert len(actual_result.data) == len(expected_results)
+        assert not actual_result.has_more()
 
     # Iterate results
     for result_index, result in enumerate(actual_result):
         assert result == expected_type.parse_obj(expected_results[result_index])
+
+    assert not actual_result.has_more()
 
     # Assert that the API has been called until all data has been fetched
     assert len(httpretty.latest_requests()) == math.ceil(len(expected_results) / limit)
