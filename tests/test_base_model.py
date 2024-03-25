@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional
 
 import pytest
 
-from swx.models.basemodel import IterBaseModel
+from iots.models.basemodel import IterBaseModel
 
 
 class AClass(IterBaseModel):
@@ -23,7 +23,7 @@ def test_base_model_dict():
         "info": {
             "favourite_color": "Yellow"
         },
-        "lucky_numbers": [1, 2, 3]
+        "lucky_numbers": [1, 2, 3],
     }
 
     c = DictClass.parse_obj(user_info)
@@ -46,6 +46,8 @@ def test_base_model_dict():
     assert c.lucky_numbers[1] == 2
     with pytest.raises(KeyError):
         _ = c["birthdate"]
+    with pytest.raises(KeyError):
+        _ = c.birthdate
 
     # set
     c.name = "Brooklyn"
@@ -144,6 +146,8 @@ def test_base_model_obj():
     assert c["info"]["favourite_color"] == "Yellow"
     with pytest.raises(AttributeError):
         _ = c["birthdate"]
+    with pytest.raises(AttributeError):
+        _ = c.birthdate
 
     # set
     c.name = "Brooklyn"

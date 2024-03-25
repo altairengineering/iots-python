@@ -1,9 +1,14 @@
 from unittest import mock
 
-from swx.api import API
-from swx.models.anythingdb import Category, CategoryList
-from tests.common import make_json_response
-from tests.test_api_pagination import assert_pagination
+import pytest
+
+from iots.api import API
+from iots.models.models import (CategoryCreate, Category, CategoryList,
+                                CategoryUpdate)
+from .common import make_response, to_json
+from .test_api_pagination import assert_pagination
+
+request_mock_pkg = 'iots.api.requests.request'
 
 test_category01 = {
     "name": "ElectronicBoards",
@@ -46,14 +51,52 @@ categories = [
 ]
 categories.sort(key=lambda x: x['name'])
 
+# Payload of a request to create/update a Category
+test_category_request_payload = test_category01.copy()
+del test_category_request_payload['created']
+del test_category_request_payload['modified']
+
+
+@pytest.mark.parametrize("category_req", [
+    CategoryCreate.parse_obj(test_category_request_payload),
+    test_category_request_payload,
+])
+def test_create(category_req):
+    """
+    Tests a successful request to create a Category.
+    """
+    expected_resp_payload = test_category01
+
+    expected_resp = make_response(201, expected_resp_payload)
+
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
+        action = (API(host="test-api.swx.altairone.com").
+                  set_token("valid-token").
+                  spaces("space01").
+                  categories().
+                  create(category_req, params={'foo': 'bar'}))
+
+    m.assert_called_once_with("POST",
+                              "https://test-api.swx.altairone.com/spaces/space01/categories",
+                              params={'foo': 'bar'},
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Content-Type': 'application/json',
+                              },
+                              data=to_json(category_req),
+                              timeout=3)
+
+    assert action == Category.parse_obj(expected_resp_payload)
+    assert isinstance(action, Category)
+
 
 def test_get():
     """
     Tests a successful request to get a Category.
     """
-    expected_resp = make_json_response(200, test_category01)
+    expected_resp = make_response(200, test_category01)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         cat = (API(host="test-api.swx.altairone.com").
                set_token("valid-token").
                spaces("space01").
@@ -64,11 +107,11 @@ def test_get():
                               "https://test-api.swx.altairone.com/spaces/space01/categories/category01",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)
 
     assert cat == Category.parse_obj(test_category01)
-    assert type(cat) == Category
+    assert isinstance(cat, Category)
 
 
 def test_list():
@@ -83,9 +126,9 @@ def test_list():
         "data": [test_category01, test_category02]
     }
 
-    expected_resp = make_json_response(200, expected_resp_payload)
+    expected_resp = make_response(200, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         cat = (API(host="test-api.swx.altairone.com").
                set_token("valid-token").
                spaces("space01").
@@ -96,11 +139,11 @@ def test_list():
                               "https://test-api.swx.altairone.com/spaces/space01/categories",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)
 
     assert cat == CategoryList.parse_obj(expected_resp_payload)
-    assert type(cat) == CategoryList
+    assert isinstance(cat, CategoryList)
 
     # Test pagination
     pagination_function = (API(host="test-api.swx.altairone.com").
@@ -114,3 +157,59 @@ def test_list():
                           "https://test-api.swx.altairone.com/spaces/space01/categories",
                           categories, limit, {'foo': 'bar'},
                           lambda x: x['name'], Category)
+
+
+@pytest.mark.parametrize("category_req", [
+    CategoryUpdate.parse_obj(test_category_request_payload),
+    test_category_request_payload,
+])
+def test_update(category_req):
+    """
+    Tests a successful request to update a Category.
+    """
+    expected_resp_payload = test_category_request_payload.copy()
+    expected_resp_payload["created"] = "2024-01-15T11:19:09Z"
+    expected_resp_payload["modified"] = "2024-03-21T20:33:51Z"
+
+    expected_resp = make_response(200, expected_resp_payload)
+
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
+        action = (API(host="test-api.swx.altairone.com").
+                  set_token("valid-token").
+                  spaces("space01").
+                  categories("ElectronicBoards").
+                  update(category_req, params={'foo': 'bar'}))
+
+    m.assert_called_once_with("PUT",
+                              "https://test-api.swx.altairone.com/spaces/space01/categories/ElectronicBoards",
+                              params={'foo': 'bar'},
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Content-Type': 'application/json',
+                              },
+                              data=to_json(category_req),
+                              timeout=3)
+
+    assert action == Category.parse_obj(expected_resp_payload)
+    assert isinstance(action, Category)
+
+
+def test_delete():
+    """
+    Tests a successful request to delete a Category.
+    """
+    expected_resp = make_response(204)
+
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
+        (API(host="test-api.swx.altairone.com").
+         set_token("valid-token").
+         spaces("space01").
+         categories("ElectronicBoards").
+         delete(params={'foo': 'bar'}))
+
+    m.assert_called_once_with("DELETE",
+                              "https://test-api.swx.altairone.com/spaces/space01/categories/ElectronicBoards",
+                              params={'foo': 'bar'},
+                              headers={'Authorization': 'Bearer valid-token'},
+                              data=[],
+                              timeout=3)

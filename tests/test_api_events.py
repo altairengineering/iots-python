@@ -2,11 +2,13 @@ from unittest import mock
 
 import pytest
 
-from swx.api import API
-from swx.models.anythingdb import (EventCreateRequest, EventListResponse,
-                                   EventResponse)
-from tests.common import make_json_response, to_dict
-from tests.test_api_pagination import assert_pagination
+from iots.api import API
+from iots.models.models import (EventCreateRequest, EventListResponse,
+                                EventResponse)
+from .common import make_response, to_json
+from .test_api_pagination import assert_pagination
+
+request_mock_pkg = 'iots.api.requests.request'
 
 test_event01 = {
     "highCPU": {
@@ -42,9 +44,9 @@ def test_create(event_req):
     Tests a successful request to create an Event value.
     """
     expected_resp_payload = test_event01
-    expected_resp = make_json_response(201, expected_resp_payload)
+    expected_resp = make_response(201, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         event = (API(host="test-api.swx.altairone.com").
                  set_token("valid-token").
                  spaces("space01").
@@ -59,11 +61,11 @@ def test_create(event_req):
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
                               },
-                              data=to_dict(event_req),
+                              data=to_json(event_req),
                               timeout=3)
 
     assert event == EventResponse.parse_obj(expected_resp_payload)
-    assert type(event) == EventResponse
+    assert isinstance(event, EventResponse)
 
 
 def test_list_event():
@@ -78,9 +80,9 @@ def test_list_event():
         "data": [test_event01, test_event02]
     }
 
-    expected_resp = make_json_response(200, expected_resp_payload)
+    expected_resp = make_response(200, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         event = (API(host="test-api.swx.altairone.com").
                  set_token("valid-token").
                  spaces("space01").
@@ -92,11 +94,11 @@ def test_list_event():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events/highCPU",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)
 
     assert event == EventListResponse.parse_obj(expected_resp_payload)
-    assert type(event) == EventListResponse
+    assert isinstance(event, EventListResponse)
 
     # Test pagination
     expected_high_cpu_events = [
@@ -131,9 +133,9 @@ def test_list_all():
         "data": [test_event01, test_event02, test_event03]
     }
 
-    expected_resp = make_json_response(200, expected_resp_payload)
+    expected_resp = make_response(200, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         events = (API(host="test-api.swx.altairone.com").
                   set_token("valid-token").
                   spaces("space01").
@@ -145,11 +147,11 @@ def test_list_all():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/events",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)
 
     assert events == EventListResponse.parse_obj(expected_resp_payload)
-    assert type(events) == EventListResponse
+    assert isinstance(events, EventListResponse)
 
     # Test pagination
     expected_events = [
@@ -177,9 +179,9 @@ def test_get_event():
     """
     Tests a successful request to get an Event value.
     """
-    expected_resp = make_json_response(200, test_event02)
+    expected_resp = make_response(200, test_event02)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         event = (API(host="test-api.swx.altairone.com").
                  set_token("valid-token").
                  spaces("space01").
@@ -192,8 +194,8 @@ def test_get_event():
                               "/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)
 
     assert event == EventResponse.parse_obj(test_event02)
-    assert type(event) == EventResponse
+    assert isinstance(event, EventResponse)

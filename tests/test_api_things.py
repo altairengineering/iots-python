@@ -1,9 +1,13 @@
 from unittest import mock
 
-from swx.api import API
-from swx.models.anythingdb import Thing, ThingList
-from tests.common import make_json_response
-from tests.test_api_pagination import assert_pagination
+import pytest
+
+from iots.api import API
+from iots.models.models import Thing, ThingList, ThingCreate, ThingUpdate
+from .common import make_response, to_json
+from .test_api_pagination import assert_pagination
+
+request_mock_pkg = 'iots.api.requests.request'
 
 test_thing01 = {
     "uid": "THING000000000000000000001",
@@ -74,6 +78,16 @@ test_thing01 = {
             }
         }
     },
+    "links": [
+        {
+            "href": "https://help.altair.com/altair-iot-studio/index.htm",
+            "rel": "documentation"
+        },
+        {
+            "href": "/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6",
+            "rel": "parent"
+        }
+    ],
     "created": "2021-12-13T09:38:11Z",
     "modified": "2021-12-13T09:38:11Z"
 }
@@ -107,14 +121,54 @@ things = [
     test_thing04,
 ]
 
+# Payload of a request to create/update a Category
+test_thing_request_payload = test_thing01.copy()
+del test_thing_request_payload['uid']
+del test_thing_request_payload['id']
+del test_thing_request_payload['created']
+del test_thing_request_payload['modified']
+
+
+@pytest.mark.parametrize("thing_req", [
+    ThingCreate.parse_obj(test_thing_request_payload),
+    test_thing_request_payload,
+])
+def test_create(thing_req):
+    """
+    Tests a successful request to create a Thing.
+    """
+    expected_resp_payload = test_thing01
+
+    expected_resp = make_response(201, expected_resp_payload)
+
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
+        action = (API(host="test-api.swx.altairone.com").
+                  set_token("valid-token").
+                  spaces("space01").
+                  things().
+                  create(thing_req, params={'foo': 'bar'}))
+
+    m.assert_called_once_with("POST",
+                              "https://test-api.swx.altairone.com/spaces/space01/things",
+                              params={'foo': 'bar'},
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Content-Type': 'application/json',
+                              },
+                              data=to_json(thing_req),
+                              timeout=3)
+
+    assert action == Thing.parse_obj(expected_resp_payload)
+    assert isinstance(action, Thing)
+
 
 def test_get():
     """
     Tests a successful request to get a Thing.
     """
-    expected_resp = make_json_response(200, test_thing01)
+    expected_resp = make_response(200, test_thing01)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         thing_resp = (API(host="test-api.swx.altairone.com").
                       set_token("valid-token").
                       spaces("space01").
@@ -125,11 +179,36 @@ def test_get():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)
 
     assert thing_resp == Thing.parse_obj(test_thing01)
-    assert type(thing_resp) == Thing
+    assert isinstance(thing_resp, Thing)
+
+
+def test_get_by_category():
+    """
+    Tests a successful request to get a Thing using the Category endpoint.
+    """
+    expected_resp = make_response(200, test_thing01)
+
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
+        thing_resp = (API(host="test-api.swx.altairone.com").
+                      set_token("valid-token").
+                      spaces("space01").
+                      categories("category2").
+                      things("thing01").
+                      get(params={'foo': 'bar'}))
+
+    m.assert_called_once_with("GET",
+                              "https://test-api.swx.altairone.com/spaces/space01/categories/category2/things/thing01",
+                              params={'foo': 'bar'},
+                              headers={'Authorization': 'Bearer valid-token'},
+                              data=[],
+                              timeout=3)
+
+    assert thing_resp == Thing.parse_obj(test_thing01)
+    assert isinstance(thing_resp, Thing)
 
 
 def test_list():
@@ -138,15 +217,15 @@ def test_list():
     """
     expected_resp_payload = {
         "paging": {
-            "next_cursor": "123",
+            "next_cursor": "",
             "previous_cursor": ""
         },
         "data": [test_thing01, test_thing02]
     }
 
-    expected_resp = make_json_response(200, expected_resp_payload)
+    expected_resp = make_response(200, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         things_resp = (API(host="test-api.swx.altairone.com").
                        set_token("valid-token").
                        spaces("space01").
@@ -157,11 +236,11 @@ def test_list():
                               "https://test-api.swx.altairone.com/spaces/space01/things",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)
 
     assert things_resp == ThingList.parse_obj(expected_resp_payload)
-    assert type(things_resp) == ThingList
+    assert isinstance(things_resp, ThingList)
 
     # Test pagination
     pagination_function = (API(host="test-api.swx.altairone.com").
@@ -175,3 +254,57 @@ def test_list():
                           "https://test-api.swx.altairone.com/spaces/space01/things",
                           things, limit, {'foo': 'bar'},
                           lambda x: x['uid'], Thing)
+
+
+@pytest.mark.parametrize("thing_req", [
+    ThingUpdate.parse_obj(test_thing_request_payload),
+    test_thing_request_payload,
+])
+def test_update(thing_req):
+    """
+    Tests a successful request to update a Thing.
+    """
+    expected_resp_payload = test_thing01
+
+    expected_resp = make_response(200, expected_resp_payload)
+
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
+        action = (API(host="test-api.swx.altairone.com").
+                  set_token("valid-token").
+                  spaces("space01").
+                  things("THING000000000000000000001").
+                  update(thing_req, params={'foo': 'bar'}))
+
+    m.assert_called_once_with("PUT",
+                              "https://test-api.swx.altairone.com/spaces/space01/things/THING000000000000000000001",
+                              params={'foo': 'bar'},
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Content-Type': 'application/json',
+                              },
+                              data=to_json(thing_req),
+                              timeout=3)
+
+    assert action == Thing.parse_obj(expected_resp_payload)
+    assert isinstance(action, Thing)
+
+
+def test_delete():
+    """
+    Tests a successful request to delete a Thing.
+    """
+    expected_resp = make_response(204)
+
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
+        (API(host="test-api.swx.altairone.com").
+         set_token("valid-token").
+         spaces("space01").
+         things("THING000000000000000000001").
+         delete(params={'foo': 'bar'}))
+
+    m.assert_called_once_with("DELETE",
+                              "https://test-api.swx.altairone.com/spaces/space01/things/THING000000000000000000001",
+                              params={'foo': 'bar'},
+                              headers={'Authorization': 'Bearer valid-token'},
+                              data=[],
+                              timeout=3)

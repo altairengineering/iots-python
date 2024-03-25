@@ -2,11 +2,13 @@ from unittest import mock
 
 import pytest
 
-from swx.api import API
-from swx.models.anythingdb import (ActionCreateRequest, ActionListResponse,
-                                   ActionResponse, ActionUpdateRequest)
-from tests.common import make_json_response, to_dict
-from tests.test_api_pagination import assert_pagination
+from iots.api import API
+from iots.models.models import (ActionCreateRequest, ActionListResponse,
+                                ActionResponse, ActionUpdateRequest)
+from .common import make_response, to_json
+from .test_api_pagination import assert_pagination
+
+request_mock_pkg = 'iots.api.requests.request'
 
 test_action01 = {
     "delay": {
@@ -45,9 +47,9 @@ def test_create(action_req):
     Tests a successful request to create an Action value.
     """
     expected_resp_payload = test_action01
-    expected_resp = make_json_response(201, expected_resp_payload)
+    expected_resp = make_response(201, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
                   set_token("valid-token").
                   spaces("space01").
@@ -62,11 +64,11 @@ def test_create(action_req):
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
                               },
-                              data=to_dict(action_req),
+                              data=to_json(action_req),
                               timeout=3)
 
     assert action == ActionResponse.parse_obj(expected_resp_payload)
-    assert type(action) == ActionResponse
+    assert isinstance(action, ActionResponse)
 
 
 def test_list_action():
@@ -81,9 +83,9 @@ def test_list_action():
         "data": [test_action01, test_action02]
     }
 
-    expected_resp = make_json_response(200, expected_resp_payload)
+    expected_resp = make_response(200, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
                   set_token("valid-token").
                   spaces("space01").
@@ -95,11 +97,11 @@ def test_list_action():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions/delay",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)
 
     assert action == ActionListResponse.parse_obj(expected_resp_payload)
-    assert type(action) == ActionListResponse
+    assert isinstance(action, ActionListResponse)
 
     # Test pagination
     expected_delay_actions = [
@@ -134,9 +136,9 @@ def test_list_all():
         "data": [test_action01, test_action02, test_action03]
     }
 
-    expected_resp = make_json_response(200, expected_resp_payload)
+    expected_resp = make_response(200, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         actions = (API(host="test-api.swx.altairone.com").
                    set_token("valid-token").
                    spaces("space01").
@@ -148,11 +150,11 @@ def test_list_all():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/actions",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)
 
     assert actions == ActionListResponse.parse_obj(expected_resp_payload)
-    assert type(actions) == ActionListResponse
+    assert isinstance(actions, ActionListResponse)
 
     # Test pagination
     expected_actions = [
@@ -180,9 +182,9 @@ def test_get_action():
     """
     Tests a successful request to get an Action value.
     """
-    expected_resp = make_json_response(200, test_action02)
+    expected_resp = make_response(200, test_action02)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
                   set_token("valid-token").
                   spaces("space01").
@@ -195,11 +197,11 @@ def test_get_action():
                               "/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)
 
     assert action == ActionResponse.parse_obj(test_action02)
-    assert type(action) == ActionResponse
+    assert isinstance(action, ActionResponse)
 
 
 @pytest.mark.parametrize("action_req", [
@@ -211,9 +213,9 @@ def test_put_action(action_req):
     Tests a successful request to update an Action value.
     """
     expected_resp_payload = test_action02
-    expected_resp = make_json_response(200, expected_resp_payload)
+    expected_resp = make_response(200, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         action = (API(host="test-api.swx.altairone.com").
                   set_token("valid-token").
                   spaces("space01").
@@ -226,23 +228,23 @@ def test_put_action(action_req):
                               "/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
                               params={'foo': 'bar'},
                               headers={
-                                  'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
+                                  'Authorization': 'Bearer valid-token',
                               },
-                              data=to_dict(action_req),
+                              data=to_json(action_req),
                               timeout=3)
 
     assert action == ActionResponse.parse_obj(expected_resp_payload)
-    assert type(action) == ActionResponse
+    assert isinstance(action, ActionResponse)
 
 
 def test_delete_action():
     """
     Tests a successful request to delete an Action value.
     """
-    expected_resp = make_json_response(204)
+    expected_resp = make_response(204)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         (API(host="test-api.swx.altairone.com").
          set_token("valid-token").
          spaces("space01").
@@ -255,5 +257,5 @@ def test_delete_action():
                               "/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)

@@ -1,8 +1,11 @@
+import json
 from unittest import mock
 
-from swx.api import API
-from swx.models.anythingdb import Properties
-from tests.common import make_json_response
+from iots.api import API
+from iots.models.models import Property, Properties
+from .common import make_response
+
+request_mock_pkg = 'iots.api.requests.request'
 
 
 def test_get():
@@ -11,9 +14,9 @@ def test_get():
     """
     expected_resp_payload = {"temperature": 21.7}
 
-    expected_resp = make_json_response(200, expected_resp_payload)
+    expected_resp = make_response(200, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         prop = (API(host="test-api.swx.altairone.com").
                 set_token("valid-token").
                 spaces("space01").
@@ -25,11 +28,11 @@ def test_get():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties/temperature",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)
 
     assert prop.dict() == expected_resp_payload
-    assert type(prop) == Properties
+    assert isinstance(prop, Property)
 
 
 def test_list():
@@ -41,9 +44,9 @@ def test_list():
         "humidity": 78
     }
 
-    expected_resp = make_json_response(200, expected_resp_payload)
+    expected_resp = make_response(200, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         prop = (API(host="test-api.swx.altairone.com").
                 set_token("valid-token").
                 spaces("space01").
@@ -55,11 +58,11 @@ def test_list():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties",
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
-                              data=None,
+                              data=[],
                               timeout=3)
 
     assert prop == expected_resp_payload
-    assert type(prop) == Properties
+    assert isinstance(prop, Properties)
 
 
 def test_update_one():
@@ -68,9 +71,9 @@ def test_update_one():
     """
     expected_resp_payload = {"temperature": 17.5}
 
-    expected_resp = make_json_response(201, expected_resp_payload)
+    expected_resp = make_response(201, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         prop = (API(host="test-api.swx.altairone.com").
                 set_token("valid-token").
                 spaces("space01").
@@ -82,14 +85,14 @@ def test_update_one():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties/temperature",
                               params={'foo': 'bar'},
                               headers={
-                                  'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
+                                  'Authorization': 'Bearer valid-token',
                               },
-                              data={"temperature": 17.5},
+                              data=json.dumps({"temperature": 17.5}),
                               timeout=3)
 
     assert prop == expected_resp_payload
-    assert type(prop) == Properties
+    assert isinstance(prop, Property)
 
 
 def test_update_multiple():
@@ -102,9 +105,9 @@ def test_update_multiple():
     }
     expected_resp_payload = new_values
 
-    expected_resp = make_json_response(201, expected_resp_payload)
+    expected_resp = make_response(201, expected_resp_payload)
 
-    with mock.patch("swx.api.requests.request", return_value=expected_resp) as m:
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         prop = (API(host="test-api.swx.altairone.com").
                 set_token("valid-token").
                 spaces("space01").
@@ -116,11 +119,11 @@ def test_update_multiple():
                               "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties",
                               params={'foo': 'bar'},
                               headers={
-                                  'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
+                                  'Authorization': 'Bearer valid-token',
                               },
-                              data=new_values,
+                              data=json.dumps(new_values),
                               timeout=3)
 
     assert prop == expected_resp_payload
-    assert type(prop) == Properties
+    assert isinstance(prop, Properties)
