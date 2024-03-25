@@ -7,7 +7,7 @@ Submodules
 swx.internal.resource module
 ----------------------------
 
-.. automodule:: swx.internal.resource
+.. automodule:: iots.internal.resource
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ swx.internal.resource module
 Module contents
 ---------------
 
-.. automodule:: swx.internal
+.. automodule:: iots.internal
    :members:
    :undoc-members:
    :show-inheritance:

@@ -6,8 +6,8 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'swx'
-copyright = '2023, SmartWorks'
+project = 'iots'
+copyright = '2024, Altair® IoT Studio™'
 author = 'SmartWorks'
 release = '0.1.0'
 
@@ -31,3 +31,13 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+
+
+def process_docstring(app, what, name, obj, options, lines):
+    from m2r import convert
+    rst = convert('\n'.join(lines))
+    lines[:] = rst.split('\n')
+
+
+def setup(app):
+    app.connect('autodoc-process-docstring', process_docstring)

@@ -17,4 +17,4 @@ docs:
 	m2r docs/readme.md
 	rm docs/readme.md
 
-	cd docs && make html
+	cd docs && make clean && make html

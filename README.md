@@ -1,11 +1,11 @@
-# SmartWorks API Client <!-- NODOC -->
+# Altair® IoT Studio™ API Client <!-- NODOC -->
 
-**A Python client for the SmartWorks API** <!-- NODOC -->
+**A Python client for the Altair® IoT Studio™ API** <!-- NODOC -->
 
 ## Introduction
 
-This library allows you to interact with the SmartWorks API using Python.
-The current implementation has support for:
+This library allows you to interact with the Altair® IoT Studio™ API using
+Python. The current implementation has support for:
 - Categories API <b>(only <code>GET</code> methods)</b>
 - Things API <b>(only <code>GET</code> methods)</b>
 - Properties API
@@ -17,7 +17,7 @@ The current implementation has support for:
 From PyPI:
 
 ```shell
-pip install swx
+pip install iots
 ```
 
 This library officially supports Python 3.7+.
@@ -26,7 +26,7 @@ This library officially supports Python 3.7+.
 
 All the requests are made using an instance of the `API` class.
 ```python
-from swx import API
+from iots import API
 
 api = API()
   ```
@@ -34,7 +34,7 @@ api = API()
 By default, the API class will use the host `https://api.swx.altairone.com`.
 You can also specify a different host:
 ```python
-from swx import API
+from iots import API
 
 api = API(host="https://api.my-smartworks.com")
 ```
@@ -43,20 +43,10 @@ api = API(host="https://api.my-smartworks.com")
 
 There are multiple ways to deal with authentication:
 
-- Setting a token at instantiation time:
+- Setting an already-exchanged access token:
   
   ```python
-  from swx import API
-  
-  my_token = "some-access-token"
-  api = API(host="api.swx.altairone.com", token=my_token)
-  ```
-
-- Setting a token after instantiation:
-  
-  ```python
-  api = API(host="api.swx.altairone.com")
-  api.set_token(my_token)
+  api = API(host="api.swx.altairone.com").set_token("my-access-token")
   ```
 
 - Using an OAuth2 client credentials with manual token revocation:
@@ -65,7 +55,7 @@ There are multiple ways to deal with authentication:
   my_client_id = "some-client-id"
   my_client_secret = "the-client-secret"
   my_scopes = ["category", "thing"]
-  api = API(host="api.swx.altairone.com").get_token(my_client_id, my_client_secret, my_scopes)
+  api = API(host="api.swx.altairone.com").set_credentials(my_client_id, my_client_secret, my_scopes)
   
   # ...
   
@@ -75,14 +65,14 @@ There are multiple ways to deal with authentication:
 - Using an OAuth2 client credentials with automatic token revocation:
   
   ```python
-  with API(host="api.swx.altairone.com").get_token(my_client_id, my_client_secret, my_scopes) as api:
+  with API(host="api.swx.altairone.com").set_credentials(my_client_id, my_client_secret, my_scopes) as api:
       # ...
       # The token will be revoked when the 'with' block ends
-      # or if the function returns or raises an exception
+      # or if the code returns or raises an exception
   ```
 
-> ⚠️ **Note:** Tokens are not automatically refreshed (yet). If a token expires,
-> you'll need to request a new one.
+**Tokens are automatically refreshed** using OAuth2 client credentials, so you
+don't need to care about manually refreshing them.
 
 ## Using the API
 
@@ -119,7 +109,7 @@ action = space.things("01GQ2E9M2Y45BX9EW0F2BM032Q").actions("updateFirmware").cr
 ```
 
 The models used by the API for request and response data can be found in the
-`swx.models` package.
+`iots.models.models` module.
 
 > 💡 **Note:** The API resources use type hints that should help to understand
 > how to use the API and the data models to define input data or access
@@ -153,6 +143,5 @@ for t in things:
 ```
 
 ## 🔮 Future features
-- Auto-refresh access token.
-- Support create, update and delete methods in Categories and Things APIs.
 - Add more API resource components.
+- Support for asynchronous requests.
