@@ -112,7 +112,7 @@ def test_get_token_with():
                                      'scope': 'app function',
                                  })
 
-    assert api._security_strategy._token is ''
+    assert api._security_strategy._token == ''
 
     m.assert_called_with('POST',
                          'https://api.swx.altairone.com/auth/revoke',

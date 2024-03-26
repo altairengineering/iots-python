@@ -1,10 +1,6 @@
-.PHONY: all clean_models docs
+.PHONY: all docs
 
 all: anythingdb
-
-anythingdb:
-	datamodel-codegen  --input openapi/anythingdb.yaml --input-file-type openapi --output swx/models/anythingdb.py --base-class swx.models.basemodel.IterBaseModel
-	python tools/clean_models.py swx/models/anythingdb.py
 
 docs:
 	# Use README in the documentation, removing selected lines before

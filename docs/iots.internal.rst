@@ -1,11 +1,11 @@
-swx.internal package
-====================
+iots.internal package
+=====================
 
 Submodules
 ----------
 
-swx.internal.resource module
-----------------------------
+iots.internal.resource module
+-----------------------------
 
 .. automodule:: iots.internal.resource
    :members:

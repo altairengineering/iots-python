@@ -37,6 +37,15 @@ class API(_SpacesMethods):
             self.with_security(self._security_strategy)
 
     def with_security(self, security_strategy: Union[AccessToken, OAuth2ClientCredentials]):
+        """
+        Sets the security strategy for the API client. If the provided security
+        strategy requires token exchange and retrieval, the method will retrieve
+        the access token automatically.
+
+        :param security_strategy: The security strategy to be set for the API client.
+        :type security_strategy: Union[AccessToken, OAuth2ClientCredentials]
+        :return: The modified API client with the specified security strategy.
+        """
         self._security_strategy = security_strategy
 
         if isinstance(self._security_strategy, SecurityStrategyWithTokenExchange):
@@ -46,6 +55,12 @@ class API(_SpacesMethods):
         return self
 
     def set_token(self, token: str):
+        """
+        Sets an already exchanged access token as an bearer token security
+        strategy.
+
+        :return: The modified API client.
+        """
         return self.with_security(AccessToken(token))
 
     def set_credentials(self, client_id: str, client_secret: str,
@@ -53,6 +68,17 @@ class API(_SpacesMethods):
                         token_url: str = '/oauth2/token',
                         revoke_token_url: str = '/oauth2/revoke',
                         refresh_threshold: int = 10):
+        """
+        Configure an OAuth2 security strategy using the Client Credentials flow.
+
+        :param client_id: The client ID for OAuth2 client credentials authentication.
+        :param client_secret: The client secret for OAuth2 client credentials authentication.
+        :param scopes: The list of scopes to be requested during token exchange.
+        :param token_url: The URL for token exchange.
+        :param revoke_token_url: The URL for revoking access tokens (optional).
+        :param refresh_threshold: The number of seconds before token expiration to trigger token refresh.
+        :return: The modified API client.
+        """
         return self.with_security(OAuth2ClientCredentials(client_id, client_secret,
                                                           scopes, token_url,
                                                           revoke_token_url,

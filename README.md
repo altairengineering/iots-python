@@ -6,8 +6,8 @@
 
 This library allows you to interact with the Altair® IoT Studio™ API using
 Python. The current implementation has support for:
-- Categories API <b>(only <code>GET</code> methods)</b>
-- Things API <b>(only <code>GET</code> methods)</b>
+- Categories API
+- Things API
 - Properties API
 - Actions API
 - Events API
@@ -96,13 +96,16 @@ things = space.categories("Sensors").things().get()
 things = space.things().get(params={"property:temperature": "gt:20"})
 
 # Get all the Property values of a Thing
-properties = space.things("01GQ2E9M2Y45BX9EW0F2BM032Q").properties().get()
+thing_properties = space.things("01GQ2E9M2Y45BX9EW0F2BM032Q").properties().get()
+# ... and access to the 'temperature' Property
+temperature = thing_properties['temperature']
 
 # Get a specific Property value
-property = space.things("01GQ2E9M2Y45BX9EW0F2BM032Q").properties("temperature").get()
+thing_property = space.things("01GQ2E9M2Y45BX9EW0F2BM032Q").properties("temperature").get()
+temperature = thing_properties['temperature']
 
 # Set a Property value
-property = space.things("01GQ2E9M2Y45BX9EW0F2BM032Q").properties("temperature").update(17.3)
+thing_property = space.things("01GQ2E9M2Y45BX9EW0F2BM032Q").properties("temperature").update(17.3)
 
 # Create a new Action value
 action = space.things("01GQ2E9M2Y45BX9EW0F2BM032Q").actions("updateFirmware").create({"updateFirmware": {"input": "v2.0.0"}})
