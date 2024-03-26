@@ -1,0 +1,482 @@
+Last updated: February 16, 2024
+
+
+                        ALTAIR IOT STUDIO SERVICE TERMS
+
+IF LICENSEE DOES NOT AGREE TO ALL OF THESE TERMS AND CONDITIONS, LICENSEE MAY
+NOT ACCESS OR USE ALTAIR IOT STUDIO. BY CHECKING THE ACCEPTANCE BOX OR
+INSTALLING OR USING ALL OR ANY PORTION OF THE SOFTWARE OR SERVICE, LICENSEE IS
+ACCEPTING ALL OF THE TERMS AND CONDITIONS OF THIS AGREEMENT AS PUBLISHED ON
+ALTAIR IOT STUDIO WEBSITE AT https://altair.com/altair-iot-studio/ (AS MAY BE
+RELOCATED BY ALTAIR FROM TIME TO TIME). IN THE EVENT LICENSEE IS REDIRECTED TO
+ALTAIR IOT STUDIO WEBSITE, LICENSEE AGREES THAT LICENSEE’S USE IS SUBJECT TO
+ANY TERMS OF SERVICE OR PRIVACY POLICIES POSTED THEREON.
+
+This Altair IoT Studio Service Agreement (“Agreement”) is between Altair
+Engineering Inc. or its authorized resellers (“Altair”) and the licensee
+(individual or entity) that has purchased (for a fee) (a “Subscription”) or
+obtains (free of charge) (a “Trial”) license to Altair IoT Studio Service or
+Altair Panopticon (“Licensee” or “you” or “your”). Altair IoT Studio and/or
+Altair Panopticon, as applicable, may hereinafter be referred to as the
+“Solution”. Before you may use the Solution, your consent to the following
+terms and conditions is required by checking the "I Agree" box. If you are
+accepting these terms on behalf of another person or company or other legal
+entity, you represent and warrant that you have full authority to bind that
+person, company or legal entity to these terms. If you are an individual using
+the Solution on behalf of a corporation, partnership or other entity, then that
+entity will be the Licensee, and you represent and warrant that you are
+authorized to enter into this Agreement on behalf of such entity and bind such
+entity to the terms and conditions of this Agreement. The “Effective Date” of
+this Agreement is the date of Licensee’s initial access to the Solution through
+any online provisioning, registration or order process. This Agreement permits
+the parties to enter into order forms referencing this Agreement for
+Subscription licenses (each, an “Order Form”) which set forth the quantity of
+Units, as applicable, specifies the fees payable by Licensee, and may contain
+other terms and conditions. This Agreement includes any and all attachments and
+referenced policies, including without limitation all Order Forms entered into
+between the parties.
+From time to time, Altair may modify this Agreement. Unless otherwise specified
+by Altair, changes become effective for existing Subscription Licensees upon
+renewal of the then-current Subscription Term. For those Licensees accessing
+Trial licenses, changes shall be deemed accepted by Licensee and become
+effective immediately upon Licensee’s continued use of the Solution. Altair
+will use reasonable efforts to notify Licensee of the changes through
+communications through the Solution, email, or other means. Licensee may be
+required to click to accept the modified agreement before using the Solution in
+a renewal Subscription Term, and in any event continued use of the Solution
+during the renewal Subscription Term will constitute Licensee’s acceptance of
+the version of the Agreement in effect at the time the renewal Subscription
+Term begins.
+1.  PROVISION OF SERVICES. Altair IoT Studio includes the service and products
+    made available by Altair which enable Licensee to build applications for
+    the Internet of Things (“Altair IoT Studio”). Altair Panopticon is a hosted
+    service permitting Licensee to access Altair’s data visualization product
+    (“Altair Panopticon”). The Solution is described more fully in the
+    then-current version of any supporting technical documentation made
+    available to Licensee by Altair (“Documentation”). The Solution shall be
+    made available on a subscription basis for a set term as designated in the
+    applicable Order Form as provided by Altair (each, a “Subscription Term”)
+    or at no cost on a trial basis. To the extent applicable, Licensee
+    acknowledges that the cloud computing resources upon which the Solution is
+    hosted are sourced by Altair from a third-party cloud service provider,
+    inclusive of hardware, software, and platforms (a “Cloud Provider”).
+    Additional terms shall apply to on premise deployments of the Solution
+    and/or private cloud offerings managed by Altair.
+2.  LICENSE GRANT AND RESTRICTIONS ON USE. Subject to the terms and conditions
+    of the Agreement, Altair hereby grants to Licensee, and Licensee hereby
+    accepts, the following license rights to the Solution upon completion of
+    the Registration Form:
+    (a) Subscription License. Where specified in an Order Form and upon
+        Altair’s receipt of payment of applicable license fees, Licensee is
+        granted a non-exclusive, non-transferable, worldwide right during the
+        applicable Subscription Term to access and use the Solution solely by
+        Permitted Users (as defined below) for Licensee’s internal purposes and
+        pursuant to the Documentation and any restrictions set forth in
+        subsection (c) below, and as designated in the applicable Order Form.
+    (b) Trial License. If the Solutions are accessed by Licensee free of
+        charge, Licensee is granted a limited (subject to Section 10),
+        non-exclusive, non-transferable, worldwide right to access and use the
+        Solution solely by Permitted Users for Licensee’s internal purposes and
+        pursuant to the Documentation and any restrictions set forth in
+        subsection (c) below.
+    (c) Restrictions on Use. Licensee shall not: (a) rent, lease, copy, sell,
+        provide access to or sublicense the Solution to any third party or any
+        license or other rights thereto, in whole or in part, (b) reverse
+        engineer, decompile, disassemble, or otherwise seek to obtain the
+        source code to the Solution, except to the minimum extent expressly
+        required by applicable law (and then only upon advance written notice
+        to Altair), (c) modify the Solution or any Documentation, or create any
+        derivative work from any of the foregoing, (d) remove or obscure any
+        product identification, trademarks, proprietary, copyright or other
+        notices contained in the Solution (including any reports or data
+        printed via the use of the Solution), (e) incorporate the Solution into
+        any other offering (whether software as a service or otherwise), (f)
+        use the Solution to develop a product which is competitive with any of
+        Altair’s or Altair’s affiliates product offerings, (g) publicly
+        disseminate information or analysis regarding the performance of the
+        Solution, (h) link any software developed, tested or supported by
+        Licensee or third parties to the Solution or the Share Link (as defined
+        below) (except for Licensee’s own proprietary software solely for
+        Licensee’s internal use), (i) distribute or make the Solution available
+        over a network where it could be used by multiple devices at the same
+        time, or (j) use the Solution for third-party training, or to deliver
+        software implementation or consulting services to any third parties, or
+        for commercial time-sharing or service bureau use. Licensee’s access to
+        and use of the Solution is, at all times, subject to the terms of this
+        Agreement and the applicable terms and conditions of the service
+        offered by the Cloud Provider (“Cloud Provider Terms”). Licensee
+        acknowledges and agrees that Licensee’s access to and use of the
+        Solution shall be deemed acceptance of such Cloud Provider Terms. Cloud
+        Provider Terms may be made available to Licensee upon written request
+        to Altair.
+3.  PERMITTED USERS AND DEVICES. For purposes of this Agreement, “Permitted
+    Users” are Licensee’s employees, Licensee’s Affiliates’ employees, and its
+    independent contractors and consultants who are not competitors of Altair
+    which are (i) engaged in the support of Licensee’s business purpose(s),
+    (ii) bound by obligations of confidentiality to Licensee at least as
+    restrictive as the terms hereof, and (iii) agree to use the Solution in
+    strict compliance with the terms of this Agreement. Use of and access to
+    the Solution is permitted only upon Licensee’s completion of the IoT Studio
+    registration form located at Altair® IoT Studio™ Registration
+    (altairone.com) (“Registration Form”) and for use on Permitted Devices
+    which shall be identified on the applicable Order Form for Subscription
+    Licensees and are set forth at:
+    https://help.altair.com/altair-iot-studio/topics/get_started/free_trial_limits.htm#reference_ayg_t3g_fsb
+    for Trial Licensees (“Permitted Device”). Permitted Users must create their
+    own user ID’s and passwords to access the Solution (“Credentials”). These
+    Credentials are obtained by individual, named persons and may not be
+    shared. Licensee will ensure that all Permitted Users keep these
+    Credentials strictly confidential. Licensee is solely responsible for: (i)
+    any and all actions taken by Permitted Users and/or any Permitted Devices
+    connected Solutions; and (ii) anyone using Licensee’s accounts and
+    passwords. If you discover any unauthorized use of your Credentials you
+    should immediately change your password and notify Altair’s support team.
+    Use of the Solution by all: (i) Permitted Users and (ii) Permitted
+    Device(s) in the aggregate must be within the restrictions set forth
+    herein, and where applicable, in the relevant Order Form. “Affiliate” means
+    each legal entity that is directly or indirectly controlled by Licensee on
+    or after the Effective Date, for so long as such entity remains directly or
+    indirectly controlled by Licensee (where “controlled” means the ownership
+    of, or the power to vote, directly or indirectly, a majority of any class
+    of voting securities of a corporation or limited liability company, or the
+    ownership of any general partnership interest in any general or limited
+    partnership).
+4.  THIRD-PARTY CODE AND LINKS. Third Party Code. The Solution may contain or
+    be provided with components which are licensed from third parties (“Third
+    Party Code”), including components subject to the terms and conditions of
+    “open source” software licenses (“Open Source Software”). Open Source
+    Software may be identified in the Documentation, or in a list of the Open
+    Source Software provided to Licensee upon written request. To the extent
+    required by the license that accompanies the Open Source Software, the
+    terms of such license will apply in lieu of the terms of this Agreement
+    with respect to such Open Source Software, including, without limitation,
+    any provisions governing access to source code, modification or reverse
+    engineering. Altair does not warrant or endorse and does not assume and
+    will not have any liability or responsibility to Licensee or any other
+    person for Third Party Code. Altair’s Third Party Code providers, as third
+    party beneficiaries, shall be entitled to enforce the terms of this
+    Agreement directly against Licensee as necessary to protect such Third
+    Party Code providers’ intellectual property rights. Third Party Links.
+    Altair may include or recommend third party resources, materials and
+    developers and/or links to third party websites and applications as part
+    of, or in connection with, the Solution. Altair has no control over such
+    sites or developers and, accordingly, you acknowledge and agree that Altair
+    is not responsible or liable for (i) the availability of such external
+    sites or applications; (ii) any content or other materials or performance
+    available from such sites or applications; and (iii) for any damage or
+    loss, directly or indirectly caused or alleged to be caused by or in
+    connection with use of or reliance on any such content, materials or
+    applications.
+5.  LICENSEE DATA. “Licensee Data” means any business information or other data
+    which Licensee inputs, or provides to Altair, for inputting, into the
+    Solution. Licensee Data may also include, as applicable, data from your
+    devices, program code (like scripts for listeners or rules), text, or files
+    of any type. Altair does not screen Licensee Data and does not review,
+    test, confirm, approve or verify any Licensee Data or the accuracy of any
+    Licensee Data. Your access to and use of the Solution or any content is at
+    your own risk. General. Licensee shall ensure that Licensee’s use of the
+    Solution and all Licensee Data is at all times compliant with Licensee’s
+    own privacy policies (where applicable) and all applicable local, state,
+    federal and international law, regulations and conventions, including
+    without limitation those related to data privacy, international
+    communications and the exportation of technical or personal data. Licensee
+    is solely responsible for the accuracy, content and legality of all
+    Licensee Data. Licensee represents and warrants to Altair that Licensee has
+    sufficient rights in the Licensee Data to authorize Altair to process,
+    distribute and display the Licensee Data as contemplated by this Agreement,
+    and that the Licensee Data and its use hereunder will not violate or
+    infringe the rights of any third party. Health Information. Licensee will
+    not submit to the Solution any patient, medical or other protected health
+    information regulated by HIPAA or any similar federal or state laws, rules
+    or regulations (“Health Information”) and acknowledges that Altair is not a
+    Business Associate (as defined under 45 CFR 160.103) and that the Solution
+    is not HIPAA compliant. “HIPAA” means the Health Insurance Portability and
+    Accountability Act, as amended and supplemented. Altair shall have no
+    liability under this Agreement for Health Information, notwithstanding
+    anything to the contrary herein. Payment Card Data. Licensee will not
+    submit to the Solution any payment card information. Licensee acknowledges
+    that the Solution is not compliant with the Payment Card Industry Data
+    Security Standards. Ownership. As between the parties, Licensee shall
+    retain all right, title and interest (including any and all intellectual
+    property rights) in and to the Licensee Data as provided to the Solution.
+    Subject to the terms of this Agreement, Licensee hereby grants to Altair a
+    non-exclusive, worldwide, royalty- free right to use, copy, store,
+    transmit, distribute, perform and display (including publicly), modify and
+    create derivative works of the Licensee Data to the extent necessary for
+    the Solution to perform as described in the Documentation (the “Licensee
+    Data License”). You also agree that Altair has the right to elect not to
+    accept, post, execute, store, display, publish or transmit any Licensee
+    Data in its sole discretion. You agree that the Licensee Data License is
+    royalty free, irrevocable and worldwide (for so long as Licensee Data is
+    stored by Altair), and include a right for Altair to make such Licensee
+    Data available to, and pass these rights along to, others with whom Altair
+    has contractual relationships related to the provision of the Solution. You
+    understand and agree that Altair, in performing the required technical
+    steps to provide the Solution to Altair’s users, may make changes to
+    Licensee Data as necessary to conform and adapt said Licensee Data to the
+    technical requirements of connecting networks, devices, services or media.
+    No Licensee Data Archiving. Altair does not provide an archiving service.
+    For Subscription licenses, Licensee Data shall be retained by Altair only
+    for the duration of the Subscription Term, but in no case shall such
+    Licensee Data be retained for more than a twelve (12) month period. For
+    Trial licenses, Licensee Data shall be deleted thirty (30) days after it is
+    input into the Solution. Altair expressly disclaims all other obligations
+    with respect to storage. Solution Log Data. In addition to the license
+    rights specified above in this Section 5, Altair may aggregate Licensee’s
+    metadata and usage data, to the extent applicable, including but not
+    limited to Licensee’s user id, data queries, and actions performed within
+    the Solution, inclusive of any Solution performance characteristics
+    (“Solution Log Data”). The Solution Log Data will be deemed Altair
+    Technology (as defined in Section 8 below), and Licensee acknowledges that
+    Altair may use the Solution Log Data (i) for its own internal, statistical
+    analysis, (ii) to develop and improve the Solution and (iii) to create and
+    distribute reports and other materials regarding use of the Solution. For
+    clarity, nothing in this Section 5 gives Altair the right to publicly
+    identify Licensee as the source of any Solution Log Data without Licensee’s
+    prior written consent. Licensee Data Security. Altair does not take any
+    responsibility for any loss or unauthorized distribution of Licensee Data.
+    There are limited circumstances in which Altair may have the need to review
+    part or all of your Licensee Data, as provided in Altair’s Privacy Policy.
+    Except as described herein and in Altair’s Privacy Policy, unless you elect
+    to enable others to view or have access to Licensee Data you submit to the
+    Solution, no one else should see your Licensee Data without your consent.
+    The Solution enables you to use third party services and applications that
+    interact with the Solution and your Licensee Data, and you should review
+    the access rights you provide to those services or applications, as you may
+    enable them to access your Licensee Data through your agreements with those
+    parties. Licensee Data Portability. Altair incorporates tools in the
+    Solution to let you share or export Licensee Data into files or make it
+    accessible through web services or APIs, subject to the terms of this
+    Agreement and subject to compliance with Altair’s Privacy Policy. Public
+    Features. To the extent applicable, Altair may provide interactive features
+    that allow Licensee, in its sole discretion, to share models, reports, and
+    information generated by its use of the Solution with people other than
+    Licensee’s Permitted Users through the creation of a user specific url
+    (“Share Link”). Licensee may provide its Share Link directly to another
+    person or post it on publicly accessible websites such as Facebook and
+    LinkedIn. Licensee is solely responsible for the distribution of its Share
+    Link.
+6.  ALTAIR IOT STUDIO MARKETPLACE. Altair’s IoT Studio Marketplace is made
+    available to Permitted Users accessing IoT Studio and allows such Permitted
+    Users the ability to access various IoT applications developed both by
+    Altair and third parties. By accessing Altair’s IoT Studio Marketplace,
+    Permitted Users agree to comply with the Altair IoT Studio Supplemental
+    Terms and Conditions found at:
+    https://terms.swx.altairone.com/marketplace.pdf.
+7.  HIGH RISK ACTIVITIES. The Solution is not fault-tolerant and is not
+    designed, manufactured or intended for use as or with on-line control
+    equipment in hazardous environments requiring fail-safe performance, such
+    as in the operation of nuclear facilities, aircraft navigation or
+    communication systems, air traffic control, direct life support machines or
+    weapon systems in which the failure of the Solution could lead directly to
+    death, personal injury or severe physical or environmental damage ("High
+    Risk Activities"). Accordingly, Altair and its suppliers specifically
+    disclaim any express or implied warranty of fitness for High Risk
+    Activities.
+8.  OWNERSHIP. Altair Technology. This is an agreement for use of the Solution
+    and not an agreement for sale. Licensee acknowledges that it is obtaining
+    only a limited right to use the Solution on a hosted basis and that
+    irrespective of any use of the words “purchase”, “sale” or like terms
+    hereunder no ownership rights are being conveyed to Licensee. Licensee
+    agrees that Altair or its suppliers retain all right, title and interest
+    (including all patent, copyright, trade secret and other intellectual
+    property rights) in and to the Solution, the Documentation, any other
+    Altair deliverables and any and all related and underlying software
+    (including interfaces), databases (including data models, structures,
+    Aggregated Anonymous Data and any other non-Licensee specific data and
+    statistical data), technology, reports and documentation and all copies,
+    modifications and derivative works thereof (including any changes which
+    incorporate any Feedback) (collectively, “Altair Technology”). Further,
+    Licensee acknowledges that the Solution is offered, where applicable, as an
+    on-line, hosted solution, and that Licensee has no right to obtain a copy
+    of the Solution code itself. Nothing in this Section 8 shall be deemed as
+    granting Altair ownership of Licensee Data or in any way impacting
+    Licensee’s ownership of Licensee Data. Feedback. Licensee, from time to
+    time, may submit comments, information, questions, data, ideas,
+    descriptions of processes, or other information to Altair (“Feedback”).
+    Altair may in connection with any of its products or services freely use,
+    copy, disclose, license, distribute and exploit any Feedback in any manner
+    without any obligation, royalty or restriction based on intellectual
+    property rights or otherwise.
+9.  SUBSCRIPTION TERM, FEES & PAYMENT. Subscription Term. For Subscription
+    licenses, the Subscription Term shall be identified on the applicable Order
+    Form. Any renewals require mutual agreement and all applicable fees for
+    such renewals will be at Altair’s then-current rates. If Licensee’s
+    Subscription license is not renewed, Licensee’s access to the Solution will
+    terminate at the end of the then-current Subscription Term unless provided
+    otherwise in this Agreement. Notwithstanding the foregoing,
+    Licensee shall be permitted to access the Solution with limited
+    functionalities via a Trial license. Fees and Payment. All fees are prepaid
+    and are set forth in the Order Form. All fees are non-refundable. Unless
+    timely provided with a valid certificate of exemption or other evidence
+    that items are not taxable, Licensee will be invoiced for all applicable
+    taxes including, but not limited to, VAT, GST, sales tax, consumption tax
+    and service tax. Licensee will make all payments free and clear of, and
+    without reduction for, any withholding or other taxes; any such taxes
+    imposed on payments by Licensee hereunder will be Licensee’s sole
+    responsibility.
+10. TERM AND TERMINATION. Term. This Agreement is effective as of the Effective
+    Date and shall remain in effect until terminated as provided herein.
+    Subscription licenses shall have a 12-month term of use, unless otherwise
+    specified in the applicable Order Form. Trial licenses shall terminate upon
+    Altair’s decommissioning of the Solution. Termination for Cause. Either
+    party may terminate this Agreement (including all related Order Forms and
+    Subscription Terms) if the other party (a) fails to cure any material
+    breach of this Agreement within thirty (30) days after written notice; (b)
+    ceases operation without a successor; or (c) seeks protection under any
+    bankruptcy, receivership, trust deed, creditors’ arrangement, composition,
+    or comparable proceeding, or if any such proceeding is instituted against
+    that party (and not dismissed within sixty (60) days thereafter).
+    Notwithstanding the foregoing, Altair retains the right to terminate this
+    Agreement immediately if Licensee breaches the terms of Sections 2, 8, or
+    14 of this Agreement. Effect of Termination. Upon any termination or
+    expiration of this Agreement, Licensee shall immediately cease any and all
+    use of and access to the Solution and delete (or, at Altair’s request,
+    return) any and all copies of the Documentation, any Altair passwords or
+    access codes and any other Altair Confidential Information in its
+    possession. Licensee acknowledges that, except as exported or printed prior
+    to termination or expiration by Licensee as may be permitted through the
+    functionality of the Solution, following termination or expiration,
+    Licensee shall have no further access to any Licensee Data input into the
+    Solution, and that Altair may delete any such data at any time. Except
+    where an exclusive remedy is specified in this Agreement, the exercise by
+    either party of any remedy under this Agreement, including termination,
+    will be without prejudice to any other remedies it may have under this
+    Agreement, by law, or otherwise.
+11. NO WARRANTY. NEITHER ALTAIR NOR ANY OF ITS SUPPLIERS MAKES ANY WARRANTIES,
+    EXPRESS OR IMPLIED, STATUTORY OR OTHERWISE, INCLUDING BUT NOT LIMITED TO
+    WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE OR
+    NONINFRINGEMENT. ALTAIR DOES NOT WARRANT THAT: (A) THE SOLUTION WILL MEET
+    ALL OF YOUR REQUIREMENTS; (B) THE SOLUTION WILL BE UNINTERRUPTED, TIMELY,
+    SECURE, OR ERROR- FREE; (C) ALL ERRORS IN THE SOLUTION WILL BE CORRECTED;
+    (D) IT WILL REVIEW LICENSEE DATA FOR ACCURACY; OR (D) IT WILL PRESERVE OR
+    MAINTAIN LICENSEE DATA WITHOUT LOSS. ANY MATERIAL DOWNLOADED OR OTHERWISE
+    OBTAINED THROUGH THE USE OF THE SOLUTION IS DONE AT YOUR OWN DISCRETION AND
+    RISK AND YOU ARE SOLELY RESPONSIBLE FOR ANY DAMAGE TO YOUR COMPUTER SYSTEMS
+    OR OTHER DEVICE OR LOSS OF DATA THAT RESULTS FROM THE DOWNLOAD OF ANY SUCH
+    MATERIAL. LICENSEE MAY HAVE OTHER STATUTORY RIGHTS. HOWEVER, TO THE FULLEST
+    EXTENT PERMITTED BY LAW, ANY STATUTORILY REQUIRED WARRANTIES SHALL BE
+    LIMITED AS PROVIDED HEREIN. ALTAIR SHALL NOT BE LIABLE FOR DELAYS,
+    INTERRUPTIONS, SERVICE FAILURES AND OTHER PROBLEMS INHERENT IN USE OF THE
+    INTERNET AND ELECTRONIC COMMUNICATIONS OR OTHER SYSTEMS OUTSIDE THE
+    REASONABLE CONTROL OF ALTAIR, SPECIFICALLY INCLUDING ANY CLOUD PROVIDER
+    SERVICES. ACCESS TO THE SOLUTION VIA A TRIAL LICENSE (FREE OF CHARGE) IS
+    PROVIDED ON AN “AS IS”, “AS AVAILABLE” BASIS WITHOUT ANY WARRANTY OF ANY
+    KIND.
+12. SUPPORT. Licensees will be eligible to receive telephone and email support
+    for the Solution.
+13. LIMITATION OF REMEDIES AND DAMAGES. NEITHER PARTY SHALL BE LIABLE FOR ANY
+    LOSS OF USE, LOST OR INACCURATE DATA, FAILURE OF SECURITY MECHANISMS,
+    INTERRUPTION OF BUSINESS, COSTS OF DELAY OR ANY INDIRECT, SPECIAL,
+    INCIDENTAL, RELIANCE OR CONSEQUENTIAL DAMAGES OF ANY KIND (INCLUDING LOST
+    PROFITS), REGARDLESS OF THE FORM OF ACTION, WHETHER IN CONTRACT, TORT
+    (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF INFORMED OF
+    THE POSSIBILITY OF SUCH DAMAGES IN ADVANCE. ALTAIR’S ENTIRE LIABILITY AND
+    OBLIGATION TO LICENSEE SHALL NOT EXCEED THE AMOUNT OF FIFTY DOLLARS
+    ($50.00). YOU AGREE NOT TO BRING ANY SUIT OR ACTION AGAINST ALTAIR, AND/OR
+    ITS SUBSIDIARIES AND AFFILIATES, ALTAIR’S LICENSORS AND/OR ANY OF THEIR
+    RESPECTIVE DIRECTORS, OFFICERS, EMPLOYEES OR AGENTS FOR ANY REASON
+    WHATSOEVER MORE THAN ONE (1) YEAR AFTER THE CAUSE OF ACTON ARISES.
+14. CONFIDENTIAL INFORMATION. Each party (as “Recipient”) agrees that all code
+    (if any), inventions, know-how, business, technical and financial
+    information it obtains from the disclosing party (“Discloser”) constitute
+    the confidential property of the Discloser (“Confidential Information”),
+    provided that it is identified as confidential at the time of disclosure.
+    Any Licensee Data and any Altair Technology and performance information
+    relating to the Solution shall be deemed Confidential Information without
+    any marking or further designation. Except as expressly authorized herein,
+    the Recipient will hold in confidence and not use or disclose any
+    Confidential Information. Confidential Information shall not include
+    information which: a) is or becomes part of the public domain through no
+    fault of the Recipient; b) is lawfully received by the Recipient from a
+    third party having the right to disclose such information; c) is disclosed
+    by the Recipient with the prior written approval of the Discloser; d) was
+    known to the Recipient prior to receipt from the Discloser; or e) is
+    independently developed by the Recipient without a breach of this
+    Agreement. If the Recipient is required by a government body or court of
+    law to disclose Confidential Information, the Recipient agrees to promptly
+    notify the Discloser so that the Discloser may seek an appropriate
+    protective order or other relief. The Recipient acknowledges that
+    disclosure of Confidential Information could cause substantial harm for
+    which damages alone would not be a sufficient remedy, and therefore upon
+    any such disclosure by the Recipient the Discloser shall be entitled to
+    seek appropriate equitable relief in addition to whatever other remedies it
+    might have at law.
+
+
+15. GENERAL TERMS. Assignment. This Agreement may not be assigned by Licensee
+    without the prior written permission of Altair. Severability. If any
+    provision of this Agreement shall be adjudged by any court of competent
+    jurisdiction to be unenforceable or invalid, that provision shall be
+    limited to the minimum extent necessary so that this Agreement shall
+    otherwise remain in effect. Governing Law. Excluding conflict of laws
+    rules, this Agreement shall be governed by and construed under the laws of
+    the State of Michigan. The parties agree that all disputes shall be subject
+    to the jurisdiction of courts in the State of Michigan. The United Nations
+    Convention on Contracts for the International Sale of Goods and the Uniform
+    Computer Information Transactions Act, as currently enacted by any
+    jurisdiction or as may be codified or amended from time to time by any
+    jurisdiction, do not apply to this Agreement. Altair’s Licensee List.
+    Licensee agrees that Altair may disclose Licensee’s name and logo as a
+    customer of Altair. Notice. Any notice or communication required or
+    permitted under this Agreement shall be in writing to the parties at the
+    addresses set forth on the Order Form or at such other address as may be
+    given in writing by either party to the other in accordance with this
+    paragraph and shall be deemed to have been given upon actual receipt.
+    Amendments; Waivers. No supplement, modification, or amendment of this
+    Agreement shall be binding, unless executed in writing by a duly authorized
+    representative of each party to this Agreement. No waiver will be implied
+    from conduct or failure to enforce or exercise rights under this Agreement,
+    nor will any waiver be effective unless in a writing signed by a duly
+    authorized representative on behalf of the party claimed to have waived. No
+    provision of any purchase order or other business form employed by
+    Licensee, including any electronic invoicing portals and vendor
+    registration processes, will supersede the terms and conditions of this
+    Agreement, and any such document relating to this Agreement shall be for
+    administrative purposes only and shall have no legal effect.
+    Notwithstanding the foregoing, this paragraph does not limit Altair’s
+    rights to modify this Agreement as set forth in the preamble section above.
+    Entire Agreement. This Agreement, including, where applicable, each Order
+    Form, and any other mutually agreed exhibits or attachments, constitute the
+    entire agreement between Licensee and Altair and supersedes all previous
+    written and oral agreements and communications relating to the subject
+    matter of this Agreement. Licensee acknowledges that the Solution is an
+    on-line product, and that Altair may make changes to the Solution, and
+    Altair will update the Documentation accordingly. Audit Rights. Upon
+    Altair’s written request, Licensee shall furnish Altair with a signed
+    certification certifying that the Solution is being used pursuant to the
+    terms of this Agreement, including any access and user limitations. With
+    prior reasonable notice, Altair may audit the use of the Solution by
+    Licensee provided such audit is during regular business hours. Licensee is
+    responsible for such audit costs only in the event the audit reveals that
+    Licensee’s use of the Solution is not in accordance with the permitted
+    scope of use. Force Majeure. Neither party shall be liable to the other for
+    any delay or failure to perform any obligation under this Agreement (except
+    for a failure to pay fees) if the delay or failure is due to unforeseen
+    events which occur after the signing of this Agreement and which are beyond
+    the reasonable control of such party, such as a strike, blockade, war, act
+    of terrorism, riot, natural disaster, failure or diminishment of power or
+    telecommunications or data networks or services, or refusal of a license by
+    a government agency. Independent Contractors. The parties to this Agreement
+    are independent contractors. Neither party will have the power to bind the
+    other or incur obligations on the other party’s behalf without the other
+    party’s prior written consent. Government End-Users. The Solution is based
+    upon commercial computer software. If the Permitted User or Licensee of the
+    Solution is an agency, department or other entity of the United States
+    Government, the use, duplication, reproduction, release, modification,
+    disclosure or transfer of the Solution, or any related documentation of any
+    kind, including technical data and manuals, is restricted by a license
+    agreement or by this Agreement in accordance with Federal Acquisition
+    Regulation 12.212 for civilian purposes and Defense Federal Acquisition
+    Regulation Supplement 227.7202 for military purposes. The Solution was
+    developed fully at private expense. All other use is prohibited. Export
+    Control. In its use of the Solution, Licensee agrees to comply with all
+    export and import laws and regulations of the United States and other
+    applicable jurisdictions. Without limiting the foregoing, (i) Licensee
+    represents and warrants that it is not listed on any U.S. government list
+    of prohibited or restricted parties or located in (or a national of) a
+    country that is subject to a U.S. government embargo or that has been
+    designated by the U.S. government as a “terrorist supporting” country and
+    (ii) Licensee shall not (and shall not permit any of its Permitted Users or
+    others to) access or use the Solution in violation of any U.S. export
+    embargo, prohibition or restriction.
