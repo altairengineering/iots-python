@@ -1,11 +1,35 @@
 openapi: 3.0.3
 info:
-  title: AnythingDB API reference
-  description: AnythingDB OpenAPI endpoints - OpenAPI 3.0
+  title: AnythingDB - API reference
+  description: |
+    This is the specification for the AnythingDB API, which allows to create and
+    interact with Things following the
+    [WoT specification](https://www.w3.org/TR/wot-thing-description/#thing),
+    as well as other features like Models, Categories, or even running custom
+    queries directly on the database.
+    
+    📖 [Check the documentation](https://help.altair.com/altair-iot-studio/topics/anythingdb/anythingdb_intro.htm)
+    to know more about AnythingDB.
   version: 1.0.0
+  x-api-gen:
+    equivalent_paths:
+      - source: /spaces/{space}/categories/{category-name}/things
+        target: /spaces/{space}/things
 servers:
   - url: 'https://api.swx.altairone.com'
-    description: SmartWorks
+    description: Altair® IoT Studio™
+  - url: '{protocol}://{address}'
+    description: Custom API address
+    variables:
+      protocol:
+        description: HTTP protocol.
+        default: https
+        enum:
+          - https
+          - http
+      address:
+        description: The domain or IP of the Altair® IoT Studio™ API.
+        default: api.swx.altairone.com
 tags:
   - name: Categories
     description: Operations on Categories
@@ -15,8 +39,6 @@ tags:
     description: Operations on Model-Versions
   - name: Things
     description: Operations on Things
-  - name: Things-Status
-    description: Operations on Things Status
   - name: Thing Credentials
     description: Operations on Things Credentials
   - name: Actions
@@ -28,14 +50,28 @@ tags:
   - name: Properties History
     description: Operations on Thing Properties History
   - name: Query Cursors
-    description: Operations about database queries
+    description: Operations on database queries
+  - name: Categories MQTT-credentials
+    description: Operations on MQTT credentials for Categories
+  - name: Things MQTT-credentials
+    description: Operations on MQTT credentials for Things
 security:
-  - OAuth2AuthorizationCode: [ ]
+  - AccessToken: []
   - OAuth2ClientCredentials: [ ]
-  - AccessToken: [ ]
+  - OAuth2AuthorizationCode: [ ]
 paths:
-  /beta/spaces/{space}/categories:
+  /spaces/{space}/categories:
     post:
+      x-method-name:
+        default: create
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ category ]
+        - OAuth2AuthorizationCode: [ category ]
+      description: |
+        Creates a new Category in the Space.
+
+        > 🚧 **Limitations:** A Category cannot currently be renamed.
       tags:
         - Categories
       summary: Create a Category
@@ -68,6 +104,17 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ category ]
+        - OAuth2AuthorizationCode: [ category ]
+      description: |
+        Returns the list of Categories.
+
+        > 🚧 **Limitations:** A maximum of 1000 Categories will be returned per
+        > page (50 by default).
       tags:
         - Categories
       summary: List categories
@@ -93,16 +140,21 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-
+  /spaces/{space}/categories/{category-name}:
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ category ]
+        - OAuth2AuthorizationCode: [ category ]
+      description: |
+        Returns a Category.
       tags:
         - Categories
       summary: Get a Category
       operationId: GetCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
       responses:
         200:
           description: OK
@@ -122,10 +174,23 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     put:
+      x-method-name:
+        default: update
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ category ]
+        - OAuth2AuthorizationCode: [ category ]
+      description: |
+        Updates a Category.
+
+        > 🚧 **Limitations:** A Category cannot currently be renamed.
       tags:
         - Categories
       summary: Update a Category
       operationId: UpdateCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
       requestBody:
         description: Update an existent Category by name
         required: true
@@ -168,10 +233,22 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ category ]
+        - OAuth2AuthorizationCode: [ category ]
+      description: |
+        Deletes a Category.
+
+        > 📘 **Information:** The Things inside the Category will not be removed.
+        > They will simply not belong to the eliminated Category anymore.
       tags:
         - Categories
       summary: Delete a Category
       operationId: DeleteCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
       responses:
         204:
           description: The resource was deleted successfully.
@@ -186,8 +263,16 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/models:
+  /spaces/{space}/models:
     post:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ model ]
+        - OAuth2AuthorizationCode: [ model ]
+      description: |
+        Creates a new Model inside a Space.
+
+        > 🚧 **Limitations:** A Model cannot be renamed.
       tags:
         - Models
       summary: Create a Model
@@ -220,6 +305,15 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ model ]
+        - OAuth2AuthorizationCode: [ model ]
+      description: |
+        Returns the list of Models.
+
+        > 🚧 **Limitations:** A maximum of 1000 Models will be returned per
+        > page (50 by default).
       tags:
         - Models
       summary: List Models
@@ -245,16 +339,21 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/models/{model-name}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/model-name'
-
+  /spaces/{space}/models/{model-name}:
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ model ]
+        - OAuth2AuthorizationCode: [ model ]
+      description: |
+        Returns a Model.
       tags:
         - Models
       summary: Get a Model
       operationId: GetModel
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/model-name'
       responses:
         200:
           description: OK
@@ -274,10 +373,21 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     put:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ model ]
+        - OAuth2AuthorizationCode: [ model ]
+      description: |
+        Updates a Model.
+
+        > 🚧 **Limitations:** A Model cannot be renamed.
       tags:
         - Models
       summary: Update a Model
       operationId: UpdateModel
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/model-name'
       requestBody:
         description: Update an existent Model by name
         required: true
@@ -314,10 +424,22 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ model ]
+        - OAuth2AuthorizationCode: [ model ]
+      description: |
+        Deletes a Model and all its Versions.
+
+        > 🚧 **Limitations:** If a Model is being used by a Category or a Thing,
+        > the Model cannot be deleted until all the associations with the Model are removed.
       tags:
         - Models
       summary: Delete a Model
       operationId: DeleteModel
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/model-name'
       responses:
         204:
           description: The resource was deleted successfully.
@@ -349,8 +471,19 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/models/{model-name}/versions:
+  /spaces/{space}/models/{model-name}/versions:
     post:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ model ]
+        - OAuth2AuthorizationCode: [ model ]
+      description: |
+        Creates a new Version of a Model inside a Space.
+
+        > 📘 **Information:** The Version identifier will be a number that
+        > starts with 1 and is automatically incremented for every new Model-Version.
+
+        > 🚧 **Limitations:** Once a Version is created, it cannot be updated or deleted.
       tags:
         - Model-Versions
       summary: Create a Model Version
@@ -359,7 +492,7 @@ paths:
         - $ref: '#/components/parameters/space'
         - $ref: '#/components/parameters/model-name'
       requestBody:
-        description: Create a new Model Version in the platform
+        description: Create a new Model-Version in the platform
         required: true
         content:
           application/json:
@@ -382,6 +515,15 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ model ]
+        - OAuth2AuthorizationCode: [ model ]
+      description: |
+        Returns the list of Versions of a Model.
+
+        > 🚧 **Limitations:** A maximum of 1000 Model-Versions will be returned
+        > per page (50 by default).
       tags:
         - Model-Versions
       summary: List Versions of a Model
@@ -408,17 +550,22 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/models/{model-name}/versions/{version-num}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/model-name'
-      - $ref: '#/components/parameters/version-num'
-
+  /spaces/{space}/models/{model-name}/versions/{version-num}:
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ model ]
+        - OAuth2AuthorizationCode: [ model ]
+      description: |
+        Returns a Model-Version.
       tags:
         - Model-Versions
       summary: Get a Model Version
       operationId: GetVersion
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/model-name'
+        - $ref: '#/components/parameters/version-num'
       responses:
         200:
           description: OK
@@ -437,16 +584,23 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things:
-    parameters:
-      - $ref: '#/components/parameters/space'
-
+  /spaces/{space}/things:
     post:
+      x-method-name:
+        default: create
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      description: |
+        Creates a new Thing inside a Space according to the
+        [WoT specification](https://www.w3.org/TR/wot-thing-description/#thing).
       tags:
         - Things
       summary: Add a Thing Description
-      description: Add a new Thing Description to the platform according to WoT specification.
       operationId: CreateThing
+      parameters:
+        - $ref: '#/components/parameters/space'
       requestBody:
         description: Create a new Thing Description in the platform
         required: true
@@ -473,7 +627,25 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      description: |
+        Returns the list of Things.
+
+        Filters can be applied to return only the Things that match some criteria.
+
+        > 🚧 **Limitations:** A maximum of 1000 Things will be returned
+        > per page (50 by default).
+      tags:
+        - Things
+      summary: List Thing Descriptions
+      operationId: ListThings
       parameters:
+        - $ref: '#/components/parameters/space'
         - $ref: '#/components/parameters/title'
         - $ref: '#/components/parameters/type'
         - $ref: '#/components/parameters/model'
@@ -481,18 +653,13 @@ paths:
         - $ref: '#/components/parameters/thing-ids'
         - $ref: '#/components/parameters/category'
         - $ref: '#/components/parameters/in_category'
-        - $ref: '#/components/parameters/next_cursor'
-        - $ref: '#/components/parameters/previous_cursor'
-        - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/sort_things'
         - $ref: '#/components/parameters/properties'
         - $ref: '#/components/parameters/links-rel'
         - $ref: '#/components/parameters/links-href'
-      tags:
-        - Things
-      summary: List Thing Descriptions
-      description: List all Thing Descriptions in the Space
-      operationId: ListThings
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
           description: OK
@@ -521,19 +688,30 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     delete:
-      parameters:
-        - $ref: '#/components/parameters/type'
-        - $ref: '#/components/parameters/thing-ids'
-        - $ref: '#/components/parameters/category'
-        - $ref: '#/components/parameters/properties'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Things
       summary: Delete Things
       description: |
         Deletes all the existing information (Things and history) from all the
-        Things matching the given filters. It will fail if no filters are provided.
+        Things matching the given filters.
+
+        > 📘 **Information:** To prevent accidental deletions, the operation
+        > will fail if no filters are provided.
+
+        > ⚠️ **Warning:** This operation can remove lots of Things in one go and
+        > without asking for confirmation, so make sure you know what you are doing!
 
       operationId: DeleteThings
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/type'
+        - $ref: '#/components/parameters/thing-ids'
+        - $ref: '#/components/parameters/category'
+        - $ref: '#/components/parameters/properties'
       responses:
         200:
           description: OK
@@ -552,17 +730,21 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things/{thing-id}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/thing-id'
-
+  /spaces/{space}/things/{thing-id}:
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      description: |
+        Returns the Thing with the given ID.
       tags:
         - Things
       summary: Get Thing Description
-      description: Get the Thing Description from a Thing
       operationId: GetThing
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
       responses:
         200:
           description: OK
@@ -582,11 +764,21 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     put:
+      x-method-name:
+        default: update
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      description: |
+        Updates the Thing with the given ID.
       tags:
         - Things
       summary: Update Thing Description
-      description: Update the Thing Description from a Thing by ID. You need to include the whole Thing Description with the modifications to update it.
       operationId: UpdateThing
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
       requestBody:
         description: Update an existent Thing Description by ID
         required: true
@@ -599,6 +791,8 @@ paths:
               title: Temperature Sensor
               description: My update temperature sensor
               categories: ["category1", "category2"]
+              status:
+                cpu: 5.7
               properties:
                 cpu:
                   title: "Temperature"
@@ -615,11 +809,13 @@ paths:
                 $ref: '#/components/schemas/Thing'
               example:
                 uid: 01FPSXTMN4CEGX09HF5RQ4RMY6
-                id: 'https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+                id: 'https://api.swx.altairone.com/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
                 title: Temperature Sensor
                 description: My update temperature sensor
                 categories: ["category1", "category2"]
                 model: null
+                status:
+                  cpu: 5.7
                 properties:
                   cpu:
                     title: "Temperature"
@@ -641,11 +837,20 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      description: |
+        Deletes the Thing with the given ID and all its related information
+        (Properties history, graph relationships...).
       tags:
         - Things
       summary: Delete Thing
-      description: Deletes all the existing information from a Thing by ID. It deletes the Thing Description and the data history.
       operationId: DeleteThing
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
       responses:
         204:
           description: The resource was deleted successfully.
@@ -660,17 +865,28 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-
+  /spaces/{space}/categories/{category-name}/things:
     post:
+      x-method-name:
+        default: create
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      description: |
+        Creates a new Thing inside a Space according to the
+        [WoT specification](https://www.w3.org/TR/wot-thing-description/#thing).
+        The specified Category will be assigned to the new Thing.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       tags:
         - Things
       summary: Add a Thing Description into a Category
-      description: Add a new Thing Description into a Category according to WoT specification
       operationId: CreateThingFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
       requestBody:
         description:
           Create a new Thing Description in the platform.
@@ -702,24 +918,41 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      description: |
+        Returns the list of Things with the given Category.
+
+        Filters can be applied to return only the Things that match some criteria.
+
+        > 🚧 **Limitations:** A maximum of 1000 Things will be returned
+        > per page (50 by default).
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      tags:
+        - Things
+      summary: List Thing Descriptions from a Category
+      operationId: ListThingsFromCategory
       parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
         - $ref: '#/components/parameters/title'
         - $ref: '#/components/parameters/type'
         - $ref: '#/components/parameters/model'
         - $ref: '#/components/parameters/version'
         - $ref: '#/components/parameters/thing-ids'
-        - $ref: '#/components/parameters/next_cursor'
-        - $ref: '#/components/parameters/previous_cursor'
-        - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/sort_things'
         - $ref: '#/components/parameters/properties'
         - $ref: '#/components/parameters/links-rel'
         - $ref: '#/components/parameters/links-href'
-      tags:
-        - Things
-      summary: List Thing Descriptions from a Category
-      description: List all Thing Descriptions in a Category
-      operationId: ListThingsFromCategory
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
           description: OK
@@ -748,21 +981,33 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     delete:
-      parameters:
-        - $ref: '#/components/parameters/type'
-        - $ref: '#/components/parameters/thing-ids'
-        - $ref: '#/components/parameters/properties'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Things
       summary: Delete Things from a Category
       description: |
         Deletes all the existing information (Things and history) from all the
-        Things in a Category matching the given filters.
-        
-        **WARNING**: All Things in the Category will be removed if no filters
-        are provided.
+        Things with the specified Category that match the given filters.
+
+        > 📘 **Information:** To prevent accidental deletions, the operation
+        > will fail if no filters are provided.
+
+        > ⚠️ **Warning:** This operation can remove lots of Things in one go and
+        > without asking for confirmation, so make sure you know what you are doing!
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
 
       operationId: DeleteThingsFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/type'
+        - $ref: '#/components/parameters/thing-ids'
+        - $ref: '#/components/parameters/properties'
       responses:
         200:
           description: OK
@@ -781,18 +1026,25 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-      - $ref: '#/components/parameters/thing-id'
-
+  /spaces/{space}/categories/{category-name}/things/{thing-id}:
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      description: |
+        Returns the Thing with the given ID and Category.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       tags:
         - Things
       summary: Get Thing Description from a Category
-      description: Get the Thing Description from a Thing
       operationId: GetThingFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
       responses:
         200:
           description: OK
@@ -812,11 +1064,27 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     put:
+      x-method-name:
+        default: update
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      description: |
+        Updates the Thing with the given ID and Category.
+
+        > 📘 **Information:** The Categories of the Thing will not be changed.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       tags:
         - Things
       summary: Update Thing Description in a Category
-      description: Update the Thing Description from a Thing by ID. You need to include the whole Thing Description with the modifications to update it.
       operationId: UpdateThingFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
       requestBody:
         description:
           Update an existent Thing Description by ID.
@@ -831,6 +1099,8 @@ paths:
               uid: '01FPSXTMN4CEGX09HF5RQ4RMY6'
               title: Temperature Sensor
               description: My update temperature sensor
+              status:
+                cpu: 5.7
               properties:
                 cpu:
                   title: "Temperature"
@@ -847,10 +1117,12 @@ paths:
                 $ref: '#/components/schemas/ThingCategory'
               example:
                 uid: 01FPSXTMN4CEGX09HF5RQ4RMY6
-                id: 'https://api.swx.altairone.com/beta/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+                id: 'https://api.swx.altairone.com/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
                 title: Temperature Sensor
                 description: My update temperature sensor
                 model: null
+                status:
+                  cpu: 5.7
                 properties:
                   cpu:
                     title: "Temperature"
@@ -872,13 +1144,24 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      description: |
+        Deletes the Thing with the given ID and all its related information
+        (Properties history, graph relationships...).
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       tags:
         - Things
       summary: Delete Thing
-      description:
-        Deletes all the existing information from a Thing by ID.
-        It completely deletes the Thing from all the Categories and all its data.
       operationId: DeleteThingFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
       responses:
         204:
           description: The resource was deleted successfully.
@@ -893,368 +1176,22 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things-status:
-    parameters:
-      - $ref: '#/components/parameters/space'
-
+  /spaces/{space}/things/{thing-id}/reset-secret:
     post:
-      tags:
-        - Things-Status
-      summary: Add a Thing from a Thing Status
-      description: Add a new Thing to the platform using a Thing Status
-      operationId: CreateThingStatus
-      requestBody:
-        description: Create a new Thing in the platform using a Thing Status
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ThingStatusCreate'
-      responses:
-        201:
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ThingStatus'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/Forbidden'
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/ServerError'
-
-    get:
-      parameters:
-        - $ref: '#/components/parameters/title'
-        - $ref: '#/components/parameters/type'
-        - $ref: '#/components/parameters/model'
-        - $ref: '#/components/parameters/version'
-        - $ref: '#/components/parameters/thing-ids'
-        - $ref: '#/components/parameters/category'
-        - $ref: '#/components/parameters/in_category'
-        - $ref: '#/components/parameters/next_cursor'
-        - $ref: '#/components/parameters/previous_cursor'
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/sort_things'
-        - $ref: '#/components/parameters/properties'
-        - $ref: '#/components/parameters/links-rel'
-        - $ref: '#/components/parameters/links-href'
-      tags:
-        - Things-Status
-      summary: List Things Status
-      description: List all Thing Status in the Space
-      operationId: ListThingsStatus
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ThingStatusList'
-          links:
-            pagingNextPage:
-              operationId: listThingsStatus
-              parameters:
-                next_cursor: '$response.body#/paging/next_cursor'
-            pagingPreviousPage:
-              operationId: listThingsStatus
-              parameters:
-                previous_cursor: '$response.body#/paging/previous_cursor'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/Forbidden'
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/ServerError'
-
-  /beta/spaces/{space}/things-status/{thing-id}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/thing-id'
-
-    get:
-      tags:
-        - Things-Status
-      summary: Get Thing Status
-      description: Get Thing Status
-      operationId: GetThingStatus
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ThingStatus'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/Forbidden'
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/ServerError'
-
-    put:
-      tags:
-        - Things-Status
-      summary: Update Thing Status
-      description: Update a Thing using a Thing Status.
-      operationId: UpdateThingStatus
-      requestBody:
-        description: Update an existent Thing using a Thing Status.
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ThingStatusUpdate'
-            example:
-              uid: 01FPSXTMN4CEGX09HF5RQ4RMY6
-              title: SmartWorks Device
-              description: My connected SmartWorks device
-              categories:
-                - category1
-                - category2
-              model:
-                name: RaspberryPiModel
-                version: 1
-              properties:
-                cpu: 67.8
-                disk: 21.9
-                memory: 95
-      responses:
-        200:
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ThingStatus'
-              example:
-                uid: 01FPSXTMN4CEGX09HF5RQ4RMY6
-                id: 'https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
-                title: SmartWorks Device
-                description: My connected SmartWorks device
-                categories:
-                  - category1
-                  - category2
-                model:
-                  name: RaspberryPiModel
-                  version: 1
-                properties:
-                  cpu: 67.8
-                  disk: 21.9
-                  memory: 95
-                  mac: aa:bb:cc:dd:ee:ff
-                created: '2021-12-13T09:38:11Z'
-                modified: '2022-02-10T15:44:07Z'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/Forbidden'
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/ServerError'
-
-  /beta/spaces/{space}/categories/{category-name}/things-status:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-
-    post:
-      tags:
-        - Things-Status
-      summary: Add a Thing from a Thing Status into a Category
-      description: Add a new Thing into a Category using a Thing Status
-      operationId: CreateThingStatusFromCategory
-      requestBody:
-        description:
-          Create a new Thing in the platform using a Thing Status.
-          The `categories` attribute cannot be used in the request body.
-          The Thing will be added only to the Category used in the URL.
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ThingStatusCategoryCreate'
-      responses:
-        201:
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ThingStatusCategory'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/Forbidden'
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/ServerError'
-
-    get:
-      parameters:
-        - $ref: '#/components/parameters/title'
-        - $ref: '#/components/parameters/type'
-        - $ref: '#/components/parameters/model'
-        - $ref: '#/components/parameters/version'
-        - $ref: '#/components/parameters/thing-ids'
-        - $ref: '#/components/parameters/next_cursor'
-        - $ref: '#/components/parameters/previous_cursor'
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/sort_things'
-        - $ref: '#/components/parameters/properties'
-        - $ref: '#/components/parameters/links-rel'
-        - $ref: '#/components/parameters/links-href'
-      tags:
-        - Things-Status
-      summary: List Things Status
-      description: List all Thing Status from a Category
-      operationId: ListThingsStatusFromCategory
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ThingStatusCategoryList'
-          links:
-            pagingNextPage:
-              operationId: listThingsStatus
-              parameters:
-                next_cursor: '$response.body#/paging/next_cursor'
-            pagingPreviousPage:
-              operationId: listThingsStatus
-              parameters:
-                previous_cursor: '$response.body#/paging/previous_cursor'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/Forbidden'
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/ServerError'
-
-  /beta/spaces/{space}/categories/{category-name}/things-status/{thing-id}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-      - $ref: '#/components/parameters/thing-id'
-
-    get:
-      tags:
-        - Things-Status
-      summary: Get Thing Status
-      description: Get Thing Status from a Category
-      operationId: GetThingStatusFromCategory
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ThingStatusCategory'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/Forbidden'
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/ServerError'
-
-    put:
-      tags:
-        - Things-Status
-      summary: Update Thing Status in a Category
-      description: Update a Thing using a Thing Status.
-      operationId: UpdateThingStatusFromCategory
-      requestBody:
-        description:
-          Update an existent Thing using a Thing Status.
-          The `categories` attribute cannot be used in the request body.
-          Categories associations will not be changed.
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ThingStatusCategoryUpdate'
-            example:
-              uid: 01FPSXTMN4CEGX09HF5RQ4RMY6
-              title: SmartWorks Device
-              description: My connected SmartWorks device
-              model:
-                name: RaspberryPiModel
-                version: 1
-              properties:
-                cpu: 67.8
-                disk: 21.9
-                memory: 95
-      responses:
-        200:
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ThingStatusCategory'
-              example:
-                uid: 01FPSXTMN4CEGX09HF5RQ4RMY6
-                id: 'https://api.swx.altairone.com/beta/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
-                title: SmartWorks Device
-                description: My connected SmartWorks device
-                model:
-                  name: RaspberryPiModel
-                  version: 1
-                properties:
-                  cpu: 67.8
-                  disk: 21.9
-                  memory: 95
-                  mac: aa:bb:cc:dd:ee:ff
-                created: '2021-12-13T09:38:11Z'
-                modified: '2022-02-10T15:44:07Z'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/Forbidden'
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/ServerError'
-
-  /beta/spaces/{space}/things/{thing-id}/reset-secret:
-    post:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Thing Credentials
+      summary: Reset the secret of the Thing's OAuth2 client
+      description: |
+        Resets the secret of the Thing's OAuth2 client. The client will be
+        created if it does not exist yet.
+      operationId: ThingResetSecret
       parameters:
         - $ref: '#/components/parameters/space'
         - $ref: '#/components/parameters/thing-id'
-      summary: Reset the secret of the Thing's OAuth2 client
-      description: |
-        Reset the secret of the Thing's OAuth2 client. The client will be
-        created if it does not exist yet.
-      operationId: ThingResetSecret
       responses:
         201:
           description: Created
@@ -1271,19 +1208,27 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/reset-secret:
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/reset-secret:
     post:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Thing Credentials
+      summary: Reset the secret of the Thing's OAuth2 client
+      description: |
+        Resets the secret of the Thing's OAuth2 client in the scope of a
+        Category the Thing belongs to. The client will be created if it does
+        not exist yet.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: CategoryThingResetSecret
       parameters:
         - $ref: '#/components/parameters/space'
         - $ref: '#/components/parameters/category-name'
         - $ref: '#/components/parameters/thing-id'
-      summary: Reset the secret of the Thing's OAuth2 client
-      description: |
-        Reset the secret of the Thing's OAuth2 client using a Category the Thing
-        belongs to. The client will be created if it does not exist yet.
-      operationId: CategoryThingResetSecret
       responses:
         201:
           description: Created
@@ -1300,18 +1245,24 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things/{thing-id}/actions/{action-name}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/thing-id'
-      - $ref: '#/components/parameters/action-name'
-
+  /spaces/{space}/things/{thing-id}/actions/{action-name}:
     post:
+      x-method-name:
+        default: create
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Actions
       summary: Create Thing Action
-      description: Create an Action for one Thing
+      description: |
+        Creates a new Action resource for the given Thing's Action.
       operationId: CreateAction
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/action-name'
       requestBody:
         content:
           application/json:
@@ -1336,11 +1287,28 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Actions
-      summary: List Thing Actions by name
-      description: List the queue of Actions for one Thing by name
+      summary: List Thing Actions by Action name
+      description: |
+        Returns the list of Action resources of the given Thing's Action.
+
+        > 🚧 **Limitations:** A maximum of 1000 Action resources will be returned
+        > per page (50 by default).
       operationId: ListActionsByName
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/action-name'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
           description: OK
@@ -1355,13 +1323,13 @@ paths:
                         delay: 5
                       status: pending
                       timeRequested: '2022-06-02 15:37:46+0000'
-                      href: "/beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR"
+                      href: "/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR"
                   - delay:
                       input:
                         delay: 7
                       status: pending
                       timeRequested: '2022-06-02 15:39:54+0000'
-                      href: "/beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E"
+                      href: "/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E"
                 paging:
                   next_cursor: ''
                   previous_cursor: ''
@@ -1376,17 +1344,29 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things/{thing-id}/actions:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/thing-id'
-
+  /spaces/{space}/things/{thing-id}/actions:
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Actions
       summary: List Thing Actions
-      description: List the queue of Actions for one Thing
+      description: |
+        Returns the list of Action resources of the given Thing.
+
+        > 🚧 **Limitations:** A maximum of 1000 Action resources will be returned
+        > per page (50 by default).
       operationId: ListActions
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
           description: OK
@@ -1405,19 +1385,23 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things/{thing-id}/actions/{action-name}/{action-id}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/thing-id'
-      - $ref: '#/components/parameters/action-name'
-      - $ref: '#/components/parameters/action-id'
-
+  /spaces/{space}/things/{thing-id}/actions/{action-name}/{action-id}:
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Actions
-      summary: Show Thing Action
-      description: Show an Action for one Thing
-      operationId: ShowAction
+      summary: Get Thing Action
+      description: |
+        Returns a Thing Action resource.
+      operationId: GetAction
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/action-name'
+        - $ref: '#/components/parameters/action-id'
       responses:
         200:
           description: OK
@@ -1437,11 +1421,23 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     put:
+      x-method-name:
+        default: update
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Actions
       summary: Update Thing Action
-      description: Update an Actions for one Thing
+      description: |
+        Updates a Thing Action resource.
       operationId: UpdateAction
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/action-name'
+        - $ref: '#/components/parameters/action-id'
       requestBody:
         content:
           application/json:
@@ -1474,11 +1470,21 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Actions
       summary: Delete Thing Action
-      description: Delete an Actions for one Thing
+      description: |
+        Deletes a Thing Action resource.
       operationId: DeleteAction
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/action-name'
+        - $ref: '#/components/parameters/action-id'
       responses:
         204:
           description: The resource was deleted successfully.
@@ -1493,19 +1499,28 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/actions/{action-name}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-      - $ref: '#/components/parameters/thing-id'
-      - $ref: '#/components/parameters/action-name'
-
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/actions/{action-name}:
     post:
+      x-method-name:
+        default: create
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Actions
-      summary: Create Thing Action
-      description: Create an Action for one Thing
+      summary: Create Thing Action from a Category
+      description: |
+        Creates a new Action resource for the given Thing's Action.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: CreateActionFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/action-name'
       requestBody:
         content:
           application/json:
@@ -1537,11 +1552,32 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Actions
-      summary: List Thing Actions by name
-      description: List the queue of Actions for one Thing by name
+      summary: List Thing Actions by Action name from a Category
+      description: |
+        Returns the list of Action resources of the given Thing's Action.
+
+        > 🚧 **Limitations:** A maximum of 1000 Action resources will be returned
+        > per page (50 by default).
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: ListActionsByNameFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/action-name'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
           description: OK
@@ -1556,13 +1592,13 @@ paths:
                         delay: 5
                       status: pending
                       timeRequested: '2022-06-02 15:37:46+0000'
-                      href: "/beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR"
+                      href: "/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR"
                   - delay:
                       input:
                         delay: 7
                       status: pending
                       timeRequested: '2022-06-02 15:39:54+0000'
-                      href: "/beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E"
+                      href: "/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E"
                 paging:
                   next_cursor: ''
                   previous_cursor: ''
@@ -1578,18 +1614,33 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/actions:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-      - $ref: '#/components/parameters/thing-id'
-
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/actions:
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Actions
-      summary: List Thing Actions
-      description: List the queue of Actions for one Thing
+      summary: List Thing Actions from a Category
+      description: |
+        Returns the list of Action resources of the given Thing.
+
+        > 🚧 **Limitations:** A maximum of 1000 Action resources will be returned
+        > per page (50 by default).
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: ListActionsFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
           description: OK
@@ -1604,17 +1655,17 @@ paths:
                         delay: 5
                       status: pending
                       timeRequested: '2022-06-02 15:37:46+0000'
-                      href: "/beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR"
+                      href: "/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR"
                   - delay:
                       input:
                         delay: 7
                       status: pending
                       timeRequested: '2022-06-02 15:39:54+0000'
-                      href: "/beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E"
+                      href: "/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E"
                   - reboot:
                       status: pending
                       timeRequested: '2022-06-02 15:56:12+0000'
-                      href: "/beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCCZYATJW1Z3D4T4BA4S2QH"
+                      href: "/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCCZYATJW1Z3D4T4BA4S2QH"
                 paging:
                   next_cursor: ''
                   previous_cursor: ''
@@ -1629,20 +1680,27 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/actions/{action-name}/{action-id}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-      - $ref: '#/components/parameters/thing-id'
-      - $ref: '#/components/parameters/action-name'
-      - $ref: '#/components/parameters/action-id'
-
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/actions/{action-name}/{action-id}:
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Actions
-      summary: Show Thing Action
-      description: Show an Action for one Thing
-      operationId: ShowActionFromCategory
+      summary: Get Thing Action from a Category
+      description: |
+        Returns a Thing Action resource.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: GetActionFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/action-name'
+        - $ref: '#/components/parameters/action-id'
       responses:
         200:
           description: OK
@@ -1669,11 +1727,27 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     put:
+      x-method-name:
+        default: update
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Actions
-      summary: Update Thing Action
-      description: Update an Actions for one Thing
+      summary: Update Thing Action from a Category
+      description: |
+        Updates a Thing Action resource.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: UpdateActionFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/action-name'
+        - $ref: '#/components/parameters/action-id'
       requestBody:
         content:
           application/json:
@@ -1706,11 +1780,25 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Actions
-      summary: Delete Thing Action
-      description: Delete an Actions for one Thing
+      summary: Delete Thing Action from a Category
+      description: |
+        Deletes a Thing Action resource.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: DeleteActionCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/action-name'
+        - $ref: '#/components/parameters/action-id'
       responses:
         204:
           description: The resource was deleted successfully.
@@ -1725,26 +1813,32 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things/{thing-id}/events/{event-name}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/thing-id'
-      - $ref: '#/components/parameters/event-name'
-
+  /spaces/{space}/things/{thing-id}/events/{event-name}:
     post:
+      x-method-name:
+        default: create
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Events
       summary: Create Thing Event
-      description: Create an Event for one Thing
+      description: |
+        Creates a new Event resource for the given Thing's Event.
       operationId: CreateEvent
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/event-name'
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/EventCreateRequest'
       responses:
-        200:
-          description: OK
+        201:
+          description: Created
           content:
             application/json:
               schema:
@@ -1761,11 +1855,28 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Events
-      summary: List Thing Events by name
-      description: List the queue of Events for one Thing by name
+      summary: List Thing Events by Event name
+      description: |
+        Returns the list of Event resources of the given Thing's Event.
+
+        > 🚧 **Limitations:** A maximum of 1000 Event resources will be returned
+        > per page (50 by default).
       operationId: ListEventsByName
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/event-name'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
           description: OK
@@ -1778,11 +1889,11 @@ paths:
                   - highCPU:
                       data: 61
                       timestamp: "2020-04-02 15:22:37+0000"
-                      href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+                      href: /spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
                   - highCPU:
                       data: 85
                       timestamp: "2020-04-02 15:26:42+0000"
-                      href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCGYKV4YQ1CY3QHHSX8J843
+                      href: /spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCGYKV4YQ1CY3QHHSX8J843
                 paging:
                   next_cursor: ''
                   previous_cursor: ''
@@ -1797,17 +1908,29 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things/{thing-id}/events:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/thing-id'
-
+  /spaces/{space}/things/{thing-id}/events:
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Events
       summary: List Thing Events
-      description: List the queue of Events for one Thing
+      description: |
+        Returns the list of Event resources of the given Thing.
+
+        > 🚧 **Limitations:** A maximum of 1000 Event resources will be returned
+        > per page (50 by default).
       operationId: ListEvents
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
           description: OK
@@ -1826,19 +1949,23 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things/{thing-id}/events/{event-name}/{event-id}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/thing-id'
-      - $ref: '#/components/parameters/event-name'
-      - $ref: '#/components/parameters/event-id'
-
+  /spaces/{space}/things/{thing-id}/events/{event-name}/{event-id}:
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Events
-      summary: Show Thing Event
-      description: Show an Event for one Thing
-      operationId: ShowEvent
+      summary: Get Thing Event
+      description: |
+        Returns a Thing Event resource.
+      operationId: GetEvent
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/event-name'
+        - $ref: '#/components/parameters/event-id'
       responses:
         200:
           description: OK
@@ -1857,27 +1984,64 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/events/{event-name}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-      - $ref: '#/components/parameters/thing-id'
-      - $ref: '#/components/parameters/event-name'
-
-    post:
+    delete:
+      security:
+        - AccessToken: [ ]
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Events
-      summary: Create Thing Event
-      description: Create an Event for one Thing
+      summary: Delete Thing Event
+      description: |
+        Deletes a Thing Event resource.
+      operationId: DeleteEvent
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/event-name'
+        - $ref: '#/components/parameters/event-id'
+      responses:
+        204:
+          description: The resource was deleted successfully.
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/events/{event-name}:
+    post:
+      x-method-name:
+        default: create
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      tags:
+        - Events
+      summary: Create Thing Event from a Category
+      description: |
+        Creates a new Event resource for the given Thing's Event.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: CreateEventFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/event-name'
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/EventCreateRequest'
       responses:
-        200:
-          description: OK
+        201:
+          description: Created
           content:
             application/json:
               schema:
@@ -1886,7 +2050,7 @@ paths:
                 highCPU:
                   data: 61
                   timestamp: "2020-04-02 15:22:37+0000"
-                  href: /beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+                  href: /spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
         400:
           $ref: '#/components/responses/BadRequest'
         401:
@@ -1899,11 +2063,32 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Events
-      summary: List Thing Events by name
-      description: List the queue of Events for one Thing by name
+      summary: List Thing Events by Event name from a Category
+      description: |
+        Returns the list of Event resources of the given Thing's Event.
+
+        > 🚧 **Limitations:** A maximum of 1000 Event resources will be returned
+        > per page (50 by default).
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: ListEventsByNameFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/event-name'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
           description: OK
@@ -1935,18 +2120,33 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/events:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-      - $ref: '#/components/parameters/thing-id'
-
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/events:
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Events
-      summary: List Thing Events
-      description: List the queue of Events for one Thing
+      summary: List Thing Events from a Category
+      description: |
+        Returns the list of Event resources of the given Thing.
+
+        > 🚧 **Limitations:** A maximum of 1000 Event resources will be returned
+        > per page (50 by default).
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: ListEventsFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
           description: OK
@@ -1959,15 +2159,15 @@ paths:
                   - highCPU:
                       data: 61
                       timestamp: "2020-04-02 15:22:37+0000"
-                      href: /beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+                      href: /spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
                   - highCPU:
                       data: 85
                       timestamp: "2020-04-02 15:26:42+0000"
-                      href: /beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCGYKV4YQ1CY3QHHSX8J843
+                      href: /spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCGYKV4YQ1CY3QHHSX8J843
                   - lowDiskSpace:
                       data: 95
                       timestamp: "2020-04-03 07:12:55+0000"
-                      href: /beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/lowDiskSpace/01GPX7BR5X3YT5Y65ZMT24YT1N
+                      href: /spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/lowDiskSpace/01GPX7BR5X3YT5Y65ZMT24YT1N
                 paging:
                   next_cursor: ''
                   previous_cursor: ''
@@ -1982,20 +2182,27 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/events/{event-name}/{event-id}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-      - $ref: '#/components/parameters/thing-id'
-      - $ref: '#/components/parameters/event-name'
-      - $ref: '#/components/parameters/event-id'
-
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/events/{event-name}/{event-id}:
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Events
-      summary: Show Thing Event
-      description: Show an Event for one Thing
-      operationId: ShowEventFromCategory
+      summary: Get Thing Event from a Category
+      description: |
+        Returns a Thing Event resource.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: GetEventFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/event-name'
+        - $ref: '#/components/parameters/event-id'
       responses:
         200:
           description: OK
@@ -2007,7 +2214,7 @@ paths:
                 highCPU:
                   data: 61
                   timestamp: "2020-04-02 15:22:37+0000"
-                  href: /beta/spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+                  href: /spaces/altair/categories/ElectronicBoards/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
         400:
           $ref: '#/components/responses/BadRequest'
         401:
@@ -2019,17 +2226,56 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things/{thing-id}/properties:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/thing-id'
+    delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      tags:
+        - Events
+      summary: Delete Thing Event from a Category
+      description: |
+        Deletes a Thing Event resource.
 
-    post:
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: DeleteEventCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/event-name'
+        - $ref: '#/components/parameters/event-id'
+      responses:
+        204:
+          description: The resource was deleted successfully.
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /spaces/{space}/things/{thing-id}/properties:
+    put:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties
-      summary: Create Thing Properties
-      description: Add new values for one or more Properties of a Thing
-      operationId: CreateProperties
+      summary: Update Thing Property values
+      description: |
+        Updates the values of one or more Properties of a Thing.
+      operationId: UpdateProperties
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/update-history'
+      x-method-name:
+        default: update
       requestBody:
         content:
           application/json:
@@ -2054,11 +2300,19 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties
       summary: List Thing Properties
-      description: List all the Properties from one Thing
+      description: |
+        Returns all the Property values of a Thing.
       operationId: ListProperties
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
       responses:
         200:
           description: OK
@@ -2077,18 +2331,30 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things/{thing-id}/properties/{property}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/thing-id'
-      - $ref: '#/components/parameters/property'
-
-    post:
+  /spaces/{space}/things/{thing-id}/properties/{property}:
+    put:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties
-      summary: Create Thing property
-      description: Add a new value of a Property from one Thing
-      operationId: CreateProperty
+      summary: Update Thing Property value
+      description: |
+        Updates the value of a Thing Property.
+      operationId: UpdateProperty
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/update-history'
+      x-method-name:
+        default: update
+      x-input-parameters:
+        parameters:
+          - name: value
+            description: The new value of the Property.
+        payload: '{"{{ property }}": {{ value }}}'
       requestBody:
         content:
           application/json:
@@ -2113,11 +2379,20 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties
-      summary: Show Thing Property
-      description: Show a Property from one Thing
-      operationId: ShowProperty
+      summary: Get Thing Property value
+      description: |
+        Returns the value of a Thing Property.
+      operationId: GetProperty
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/property'
       responses:
         200:
           description: OK
@@ -2136,18 +2411,28 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/properties:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-      - $ref: '#/components/parameters/thing-id'
-
-    post:
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/properties:
+    put:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties
-      summary: Create Thing Properties from a Category
-      description: Add new values for one or more Properties of a Thing from a Category
-      operationId: CreatePropertiesFromCategory
+      summary: Update Thing Property values from a Category
+      description: |
+        Updates the values of one or more Properties of a Thing.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: UpdatePropertiesFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/update-history'
+      x-method-name:
+        default: update
       requestBody:
         content:
           application/json:
@@ -2172,11 +2457,23 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties
       summary: List Thing Properties from a Category
-      description: List all the Properties of one Thing from a Category
+      description: |
+        Returns all the Property values of a Thing.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: ListPropertiesFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
       responses:
         200:
           description: OK
@@ -2195,19 +2492,33 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/properties/{property}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-      - $ref: '#/components/parameters/thing-id'
-      - $ref: '#/components/parameters/property'
-
-    post:
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/properties/{property}:
+    put:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties
-      summary: Create Thing Property from a Category
-      description: Add a new value of a Property of one Thing from a Category
-      operationId: CreatePropertyFromCategory
+      summary: Update Thing Property value from a Category
+      description: |
+        Updates the value of a Thing Property.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: UpdatePropertyFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/update-history'
+      x-method-name:
+        default: update
+      x-input-parameters:
+        parameters:
+          - name: value
+        payload: '{"{{ property }}": {{ value }}}'
       requestBody:
         content:
           application/json:
@@ -2232,11 +2543,24 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties
-      summary: Show Thing Property from a Category
-      description: Show a Property of one Thing from a Category
-      operationId: ShowPropertyFromCategory
+      summary: Get Thing Property from a Category
+      description: |
+        Returns the value of a Thing Property.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: GetPropertyFromCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/property'
       responses:
         200:
           description: OK
@@ -2255,12 +2579,17 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things/{thing-id}/properties-history:
+  /spaces/{space}/things/{thing-id}/properties-history:
     post:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties History
-      summary: Create historical values for any Thing's Property
-      description: Add historical values for one or more Properties of a Thing
+      summary: Create historical values for any Thing Property
+      description: |
+        Adds historical values for one or more Properties of a Thing.
       operationId: CreatePropertiesHistoryValues
       parameters:
         - $ref: '#/components/parameters/space'
@@ -2315,15 +2644,27 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties History
-      summary: List the historical values of any Thing's Property
-      description: List the historical Properties values from a Thing
+      summary: List historical values of any Thing Property
+      description: |
+        Returns the list of historical Properties values of a Thing.
+
+        > 🚧 **Limitations:** A maximum of 1000 values will be returned
+        > per page (50 by default).
       operationId: ListPropertiesHistoryValues
       parameters:
         - $ref: '#/components/parameters/space'
         - $ref: '#/components/parameters/thing-id'
         - $ref: '#/components/parameters/at'
+        - $ref: '#/components/parameters/group_property_history'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         201:
           description: Created
@@ -2342,12 +2683,53 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/things/{thing-id}/properties-history/{property}:
-    post:
+    delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties History
-      summary: Create historical values for a specific Thing's Property
-      description: Add historical values of a specific Thing's Property
+      summary: Delete historical values of any Thing Property
+      description: |
+        Deletes historical Properties values of a Thing.
+
+        > 📘 **Information:** To prevent accidental deletions, the operation
+        > will fail if no filters are provided.
+
+        > ⚠️ **Warning:** This operation can remove lots of information in one go and
+        > without asking for confirmation, so make sure you know what you are doing!
+      operationId: DeletePropertiesHistoryValues
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/at_delete'
+        - $ref: '#/components/parameters/property-names'
+      responses:
+        204:
+          description: Deleted
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /spaces/{space}/things/{thing-id}/properties-history/{property}:
+    post:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      tags:
+        - Properties History
+      summary: Create historical values for a Thing Property
+      description: |
+        Adds one or more historical values for the given Thing Property.
       operationId: CreatePropertyHistoryValues
       parameters:
         - $ref: '#/components/parameters/space'
@@ -2401,16 +2783,27 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties History
-      summary: List the historical values of a specific Thing's Property
-      description: List the historical Property values of a specific Thing's Property
+      summary: List historical values of a Thing Property
+      description: |
+        Returns the list of historical values of the given Thing Property.
+
+        > 🚧 **Limitations:** A maximum of 1000 values will be returned
+        > per page (50 by default).
       operationId: ListPropertyHistoryValues
       parameters:
         - $ref: '#/components/parameters/space'
         - $ref: '#/components/parameters/thing-id'
         - $ref: '#/components/parameters/property'
         - $ref: '#/components/parameters/at'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         201:
           description: Created
@@ -2440,12 +2833,56 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/properties-history:
-    post:
+    delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties History
-      summary: Create historical values for any Property of a Thing that belongs to a Category
-      description: Add historical values for one or more Properties of a Thing that belongs to a Category
+      summary: Delete historical values of Thing Property
+      description: |
+        Deletes historical values of a Thing Property.
+
+        > 📘 **Information:** To prevent accidental deletions, the operation
+        > will fail if no filters are provided.
+
+        > ⚠️ **Warning:** This operation can remove lots of information in one go and
+        > without asking for confirmation, so make sure you know what you are doing!
+      operationId: DeletePropertyHistoryValues
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/at_delete'
+      responses:
+        204:
+          description: Deleted
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/properties-history:
+    post:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      tags:
+        - Properties History
+      summary: Create historical values for any Thing Property from a Category
+      description: |
+        Adds historical values for one or more Properties of a Thing.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: CreateCategoryPropertiesHistoryValues
       parameters:
         - $ref: '#/components/parameters/space'
@@ -2501,16 +2938,31 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties History
-      summary: List the historical values of any Property of a Thing that belongs to a Category
-      description: List the historical Properties values from a Thing that belongs to a Category
+      summary: List historical values of any Thing Property from a Category
+      description: |
+        Returns the list of historical Properties values of a Thing.
+
+        > 🚧 **Limitations:** A maximum of 1000 values will be returned
+        > per page (50 by default).
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: ListCategoryPropertiesHistoryValues
       parameters:
         - $ref: '#/components/parameters/space'
         - $ref: '#/components/parameters/category-name'
         - $ref: '#/components/parameters/thing-id'
         - $ref: '#/components/parameters/at'
+        - $ref: '#/components/parameters/group_property_history'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         201:
           description: Created
@@ -2529,12 +2981,60 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/categories/{category-name}/things/{thing-id}/properties-history/{property}:
-    post:
+    delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties History
-      summary: Create historical values for a specific Property of a Thing that belongs to a Category
-      description: Add historical values of a specific Property of a Thing that belongs to a Category
+      summary: Delete historical values of any Property of a Thing from a Category
+      description: |
+        Deletes historical Properties values of a Thing.
+
+        > 📘 **Information:** To prevent accidental deletions, the operation
+        > will fail if no filters are provided.
+
+        > ⚠️ **Warning:** This operation can remove lots of information in one go and
+        > without asking for confirmation, so make sure you know what you are doing!
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: DeleteCategoryPropertiesHistoryValues
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/at_delete'
+        - $ref: '#/components/parameters/property-names'
+      responses:
+        204:
+          description: Deleted
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/properties-history/{property}:
+    post:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      tags:
+        - Properties History
+      summary: Create historical values for Thing Property from a Category
+      description: |
+        Adds one or more historical values for the given Thing Property.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: CreateCategoryPropertyHistoryValues
       parameters:
         - $ref: '#/components/parameters/space'
@@ -2589,10 +3089,21 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Properties History
-      summary: List the historical values of a specific Property of a Thing that belongs to a Category
-      description: List the historical Property values of a specific Property of a Thing that belongs to a Category
+      summary: List historical values of a Thing Property from a Category
+      description: |
+        Returns the list of historical values of the given Thing Property.
+
+        > 🚧 **Limitations:** A maximum of 1000 values will be returned
+        > per page (50 by default).
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
       operationId: ListCategoryPropertyHistoryValues
       parameters:
         - $ref: '#/components/parameters/space'
@@ -2600,6 +3111,9 @@ paths:
         - $ref: '#/components/parameters/thing-id'
         - $ref: '#/components/parameters/property'
         - $ref: '#/components/parameters/at'
+        - $ref: '#/components/parameters/next_cursor'
+        - $ref: '#/components/parameters/previous_cursor'
+        - $ref: '#/components/parameters/limit'
       responses:
         201:
           description: Created
@@ -2629,18 +3143,67 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/query/cursor:
-    parameters:
-      - $ref: '#/components/parameters/space'
+    delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      tags:
+        - Properties History
+      summary: Delete historical values of a Thing Property from a Category
+      description: |
+        Deletes historical values of a Thing Property.
+
+        > 📘 **Information:** To prevent accidental deletions, the operation
+        > will fail if no filters are provided.
+
+        > ⚠️ **Warning:** This operation can remove lots of information in one go and
+        > without asking for confirmation, so make sure you know what you are doing!
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: DeleteCategoryPropertyHistoryValues
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/at_delete'
+      responses:
+        204:
+          description: Deleted
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /spaces/{space}/query/cursor:
     post:
-      description: |+
+#      x-pagination:
+#        next:
+#          reuse-previous-request: true
+#          url: "https://api.swx.altairone.com/spaces/dsanchez/query/cursor/{$response.body#/id}"
+#          result: "result"
+#          has_more: "$response.body#/hasMore"
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ query ]
+        - OAuth2AuthorizationCode: [ query ]
+      description: |
         This endpoint allows to perform custom read-only queries directly on AnythingDB.
         AnythingDB relies on [**ArangoDB**](https://www.arangodb.com/), so this endpoint
         allows to set a custom AQL query that will run in a sandboxed ArangoDB database
         where the AnythingDB's Space information is stored.
-        
-        This endpoint is compatible with the [`/_api/cursor`](https://www.arangodb.com/docs/stable/http/aql-query-cursor-accessing-cursors.html#create-cursor)
-        in the ArangoDB REST API.
+
+        > 📘 **Information:** This endpoint is compatible with the
+        > [`/_api/cursor`](https://www.arangodb.com/docs/stable/http/aql-query-cursor-accessing-cursors.html#create-cursor)
+        > in the ArangoDB REST API.
 
         **A JSON object with these properties is required:**
 
@@ -2670,6 +3233,7 @@ paths:
           - **bindVars** (object): key/value pairs representing the bind parameters.
           - **options**: key/value object with extra options for the query.
            **Note: options will be ignored.**
+          - **then**: key/value object with actions to apply on the returned query.
 
 
         The query details include the query string plus optional query options and
@@ -2709,7 +3273,8 @@ paths:
         If the JSON representation is malformed or the query specification is
         missing from the request, the server will respond with *HTTP 400*.
         The body of the response will contain a JSON object with additional error
-        details, that will be available in the `details` attribute of an standard SmartWorks API error.
+        details, that will be available in the `details` attribute of an standard
+        Altair® IoT Studio™ API error response.
         The error object has the following attributes:
 
         - **error**: boolean flag to indicate that an error occurred (*true* in this case)
@@ -2724,6 +3289,8 @@ paths:
       tags:
         - Query Cursors
       operationId: createQueryCursor
+      parameters:
+        - $ref: '#/components/parameters/space'
       requestBody:
         description: Create a new read-only query cursor
         required: true
@@ -2731,17 +3298,27 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PostAPICursor'
+            examples:
+              requestQueryRange:
+                $ref: '#/components/examples/requestQueryRange'
+              requestQueryThenUpdateProperty:
+                $ref: '#/components/examples/requestQueryThenUpdateProperty'
       responses:
         201:
-          description: |+
+          description: |
             is returned if the result set can be created by the server.
 
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostAPICursorResponse'
+              examples:
+                responseQueryRange:
+                  $ref: '#/components/examples/responseQueryRange'
+                responseQueryThenUpdateProperty:
+                  $ref: '#/components/examples/responseQueryThenUpdateProperty'
         400:
-          description: |+
+          description: |
             is returned if the JSON representation is malformed or the query specification is
             missing from the request.
 
@@ -2769,7 +3346,7 @@ paths:
         403:
           $ref: '#/components/responses/Forbidden'
         404:
-          description: |+
+          description: |
             The server will respond with *HTTP 404* in case a non-existing collection is
             accessed in the query.
 
@@ -2787,24 +3364,18 @@ paths:
                     errorMessage: "AQL: collection or view not found: foo (while parsing)"
                     errorNum: 1203
         405:
-          description: |+
+          description: |
             The server will respond with *HTTP 405* if an unsupported HTTP method is used.
         500:
           $ref: '#/components/responses/ServerError'
 
-  /beta/spaces/{space}/query/cursor/{cursor-id}:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - description: The name of the cursor
-        in: path
-        name: cursor-id
-        required: true
-        schema:
-          type: string
-          example: 1234567
+  /spaces/{space}/query/cursor/{cursor-id}:
     post:
-      description: |+
-
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ query ]
+        - OAuth2AuthorizationCode: [ query ]
+      description: |
         If the cursor is still alive, returns an object with the following
         attributes:
 
@@ -2817,50 +3388,83 @@ paths:
         still return no documents. If, however, *hasMore* is *false*, then
         the cursor is exhausted.  Once the *hasMore* attribute has a value of
         *false*, the client can stop.
-        
-        This endpoint is compatible with the [`/_api/cursor/{cursor-identifier}`](https://www.arangodb.com/docs/stable/http/aql-query-cursor-accessing-cursors.html#read-next-batch-from-cursor)
-        in the ArangoDB REST API.
+
+        > 📘 **Information:** This endpoint is compatible with the
+        > [`/_api/cursor/{cursor-identifier}`](https://www.arangodb.com/docs/stable/http/aql-query-cursor-accessing-cursors.html#read-next-batch-from-cursor)
+        > in the ArangoDB REST API.
 
       summary: Read next batch from cursor
       tags:
         - Query Cursors
       operationId: modifyQueryCursorPost
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - description: The name of the cursor
+          in: path
+          name: cursor-id
+          required: true
+          schema:
+            type: string
+            example: 1234567
+      requestBody:
+        description: Apply an operation on returned data
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThenQueryRequest'
+            examples:
+              noPayload:
+                summary: No payload
+                value: {}
+              requestQueryNextBatchThenUpdateProperty:
+                $ref: '#/components/examples/requestQueryNextBatchThenUpdateProperty'
       responses:
-        '200':
-          description: |+
+        200:
+          description: |
             The server will respond with *HTTP 200* in case of success.
 
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostAPICursorResponse'
-        '400':
-          description: |+
+              examples:
+                responseQueryRange2:
+                  $ref: '#/components/examples/responseQueryRange2'
+                responseQueryRange3:
+                  $ref: '#/components/examples/responseQueryRange3'
+        400:
+          description: |
             If the cursor identifier is omitted, the server will respond with *HTTP 404*.
         401:
           $ref: '#/components/responses/Unauthorized'
         403:
           $ref: '#/components/responses/Forbidden'
         404:
-          description: |+
+          description: |
             If no cursor with the specified identifier can be found, the server will respond
             with *HTTP 404*.
         405:
-          description: |+
+          description: |
             The server will respond with *HTTP 405* if an unsupported HTTP method is used.
         500:
           $ref: '#/components/responses/ServerError'
 
   /spaces/{space}/categories/{category-name}/mqtt-credentials:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
     post:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ category ]
+        - OAuth2AuthorizationCode: [ category ]
       tags:
         - Categories MQTT-credentials
-      summary: Create MQTT Categories credentials
-      description: Create an new MQTT Categories credentials.
-      operationId: createMQTTCategoriesCredentials
+      summary: Create MQTT credentials for a Category
+      description: |
+        Creates new MQTT credentials for the given Category.
+      operationId: CreateCategoriesMQTTCredentials
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
       requestBody:
         required: true
         content:
@@ -2881,11 +3485,19 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ category ]
+        - OAuth2AuthorizationCode: [ category ]
       tags:
         - Categories MQTT-credentials
-      summary: Show MQTT Categories credentials
-      description: Show the specific MQTT Category credentials
-      operationId: ShowMQTTCategoriesCredentials
+      summary: Get MQTT credentials of a Category
+      description: |
+        Returns the MQTT credentials of the given Category.
+      operationId: GetCategoriesMQTTCredentials
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
       responses:
         '200':
           description: OK
@@ -2898,99 +3510,22 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
     put:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ category ]
+        - OAuth2AuthorizationCode: [ category ]
       tags:
         - Categories MQTT-credentials
-      summary: Update MQTT Categories credentials
-      description: Update an existing MQTT Categories credentials. If you send an empty body, a random password will be generated
-      operationId: updateMQTTCategoriesCredentials
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MQTTCategoryForm'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MQTTCategoryDocument'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-    delete:
-      tags:
-        - Categories MQTT-credentials
-      summary: Delete MQTT Categories credentials
-      description: Delete an existing MQTT Categories credentials.
-      operationId: deleteMQTTCategoriesCredentials
-      responses:
-        '204':
-          description: The resource was deleted successfully
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
+      summary: Update MQTT credentials of a Category
+      description: |
+        Updates the existing MQTT credentials of the given Category.
 
-  /spaces/{space}/categories/{category-name}/things/{thing-id}/mqtt-credentials:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/category-name'
-      - $ref: '#/components/parameters/thing-id'
-    post:
-      tags:
-        - Categories Things MQTT-credentials
-      summary: Create MQTT Categories Things credentials
-      description: Create an new MQTT Categories Things credentials.
-      operationId: createMQTTCategoriesThingsCredentials
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MQTTCategoryForm'
-      responses:
-        '201':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MQTTCategoryDocument'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-    get:
-      tags:
-        - Categories Things MQTT-credentials
-      summary: Show MQTT Categories Things credentials
-      description: Show the specific MQTT Categories Things credentials
-      operationId: ShowMQTTCategoriesThingsCredentials
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MQTTThingsDocumentShow'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-    put:
-      tags:
-        - Categories Things MQTT-credentials
-      summary: Update MQTT Categories Things credentials
-      description: Update an existing MQTT Categories Things credentials. If you send an empty body, a random password will be generated
-      operationId: updateMQTTCategoriesThingsCredentials
+        > 📘 **Information:** Sending an empty request will generate new
+        > credentials with a random password.
+      operationId: UpdateCategoriesMQTTCredentials
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
       requestBody:
         required: false
         content:
@@ -3003,7 +3538,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MQTTThingsDocumentShow'
+                $ref: '#/components/schemas/MQTTCategoryDocument'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -3011,11 +3546,19 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
     delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ category ]
+        - OAuth2AuthorizationCode: [ category ]
       tags:
-        - Categories Things MQTT-credentials
-      summary: Delete MQTT Categories Things credentials
-      description: Delete an existing MQTT Categories Things credentials.
-      operationId: deleteMQTTCategoriesThingsCredentials
+        - Categories MQTT-credentials
+      summary: Delete MQTT credentials of a Category
+      description: |
+        Deletes the existing MQTT credentials of the given Category.
+      operationId: DeleteCategoriesMQTTCredentials
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
       responses:
         '204':
           description: The resource was deleted successfully
@@ -3027,15 +3570,20 @@ paths:
           $ref: '#/components/responses/NotFound'
 
   /spaces/{space}/things/{thing-id}/mqtt-credentials:
-    parameters:
-      - $ref: '#/components/parameters/space'
-      - $ref: '#/components/parameters/thing-id'
     post:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Things MQTT-credentials
-      summary: Create MQTT Things credentials
-      description: Create an new MQTT Things credentials.
-      operationId: createMQTTThingsCredentials
+      summary: Create MQTT credentials for a Thing
+      description: |
+        Creates new MQTT credentials for the given Thing.
+      operationId: CreateThingMQTTCredentials
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
       requestBody:
         required: true
         content:
@@ -3056,28 +3604,47 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
     get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Things MQTT-credentials
-      summary: Show MQTT Things credentials
-      description: Show the specific MQTT Things credentials
-      operationId: ShowMQTTThingsCredentials
+      summary: Get MQTT credentials of a Thing
+      description: |
+        Returns the MQTT credentials of the given Thing.
+      operationId: GetThingMQTTCredentials
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MQTTThingsDocumentShow'
+                $ref: '#/components/schemas/MQTTThingDocument'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
     put:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Things MQTT-credentials
-      summary: Update MQTT Things credentials
-      description: Update an existing MQTT Things credentials. If you send an empty body, a random password will be generated
-      operationId: updateMQTTThingsCredentials
+      summary: Update MQTT credentials of a Thing
+      description: |
+        Updates the existing MQTT credentials of the given Thing.
+
+        > 📘 **Information:** Sending an empty request will generate new
+        > credentials with a random password.
+      operationId: UpdateThingMQTTCredentials
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
       requestBody:
         required: false
         content:
@@ -3090,7 +3657,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MQTTThingsDocumentShow'
+                $ref: '#/components/schemas/MQTTThingDocument'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -3098,11 +3665,19 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
     delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
       tags:
         - Things MQTT-credentials
       summary: Delete MQTT Things credentials
-      description: Delete an existing MQTT Things credentials.
-      operationId: deleteMQTTThingsCredentials
+      description: |
+        Deletes the existing MQTT credentials of the given Thing.
+      operationId: DeleteThingMQTTCredentials
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/thing-id'
       responses:
         '204':
           description: The resource was deleted successfully
@@ -3113,8 +3688,172 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /spaces/{space}/categories/{category-name}/things/{thing-id}/mqtt-credentials:
+    post:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      tags:
+        - Things MQTT-credentials
+      summary: Create MQTT credentials for a Thing from a Category
+      description: |
+        Creates new MQTT credentials for the given Thing.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: CreateThingMQTTCredentialsByCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MQTTCategoryForm'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MQTTCategoryDocument'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    get:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      tags:
+        - Things MQTT-credentials
+      summary: Get MQTT credentials of a Thing from a Category
+      description: |
+        Returns the MQTT credentials of the given Thing.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: GetThingMQTTCredentialsByCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MQTTThingDocument'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    put:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      tags:
+        - Things MQTT-credentials
+      summary: Update MQTT credentials of a Thing from a Category
+      description: |
+        Updates the existing MQTT credentials of the given Thing.
+
+        > 📘 **Information:** Sending an empty request will generate new
+        > credentials with a random password.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: UpdateThingMQTTCredentialsByCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MQTTCategoryForm'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MQTTThingDocument'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    delete:
+      security:
+        - AccessToken: []
+        - OAuth2ClientCredentials: [ thing ]
+        - OAuth2AuthorizationCode: [ thing ]
+      tags:
+        - Things MQTT-credentials
+      summary: Delete MQTT Categories Things credentials
+      description: |
+        Deletes the existing MQTT credentials of the given Thing.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+      operationId: DeleteThingMQTTCredentialsByCategory
+      parameters:
+        - $ref: '#/components/parameters/space'
+        - $ref: '#/components/parameters/category-name'
+        - $ref: '#/components/parameters/thing-id'
+      responses:
+        '204':
+          description: The resource was deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+
 components:
+  x-pagination:
+    CursorPagination:
+      next:
+        reuse-previous-request: true
+        modifiers:
+          - param: "$request.query.next_cursor"
+            value: "$response.body#/paging/next_cursor"
+        result: "data"
+        has_more: "$response.body#/paging/next_cursor"
+
   securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: Opaque JWT
+      description: "Authenticate using an access token already granted."
+    OAuth2ClientCredentials:
+      type: oauth2
+      description: "Authenticate using the credentials of an OAuth2 Client."
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.swx.altairone.com/oauth2/token
+          refreshUrl: https://api.swx.altairone.com/oauth2/token
+          scopes:
+            offline: Offline scope
+            category: Category scope
+            model: Model scope
+            thing: Thing scope
+            query: Query scope
     OAuth2AuthorizationCode:
       type: oauth2
       description: "Authenticate going to the login page."
@@ -3124,26 +3863,10 @@ components:
           tokenUrl: https://api.swx.altairone.com/oauth2/token
           refreshUrl: https://api.swx.altairone.com/oauth2/token
           scopes:
-            offline: Offline scope
             category: Category scope
             model: Model scope
             thing: Thing scope
-    OAuth2ClientCredentials:
-      type: oauth2
-      description: "Authenticate using the credentials of an OAuth2 Client."
-      flows:
-        clientCredentials:
-          tokenUrl: https://api.swx.altairone.com/oauth2/token
-          refreshUrl: https://api.swx.altairone.com/oauth2/token
-          scopes:
-            category: Category scope
-            model: Model scope
-            thing: Thing scope
-    AccessToken:
-      type: http
-      scheme: bearer
-      bearerFormat: Opaque JWT
-      description: "Authenticate using an access token already granted."
+            query: Query scope
 
   parameters:
     space:
@@ -3234,7 +3957,7 @@ components:
       name: title
       schema:
         type: string
-      description: Filter by title
+      description: Filter by title.
       example: MainThing
 
     "type":
@@ -3242,7 +3965,7 @@ components:
       name: "@type"
       schema:
         type: string
-      description: Filter by @type
+      description: Filter by `@type`.
       example: cluster
 
     model:
@@ -3250,7 +3973,7 @@ components:
       name: model
       schema:
         type: string
-      description: Filter by Model name
+      description: Filter by Model name.
       example: RaspberryPiModel
 
     version:
@@ -3268,7 +3991,7 @@ components:
         type: array
         items:
           type: string
-      description: Filter by multiple Thing IDs
+      description: Filter by multiple Thing IDs.
       examples:
         oneId:
           summary: Example of a single thingID
@@ -3284,7 +4007,7 @@ components:
         type: array
         items:
           type: string
-      description: Filter by multiple Category names
+      description: Filter by multiple Category names.
       examples:
         oneId:
           summary: Example of a single Category
@@ -3293,11 +4016,20 @@ components:
           summary: Example of multiple Categories
           value: [ "ElectronicBoards", "ElectronicComponents" ] # ?category[]=ElectronicBoards&category[]=ElectronicComponents
 
+    update-history:
+      in: query
+      name: update_history
+      schema:
+        type: boolean
+      description: Indicates whether the values should be stored in the Properties history.
+      example: true
+
     in_category:
       in: query
       name: "in_category"
       schema:
         type: boolean
+        default: true
       description:
         If `true`, only Things within some Category will be listed.
         If `false`, only Things not associated to any Category will be listed.
@@ -3309,7 +4041,7 @@ components:
       name: "next_cursor"
       schema:
         type: string
-      description: Next cursor used to go to the next page of results
+      description: Cursor used to get the next page of results.
       example: WyIwMUY1M1BNSEpHQ1BTWlg5NVFGSkpFQURTNCJd
 
     previous_cursor:
@@ -3317,7 +4049,7 @@ components:
       name: "previous_cursor"
       schema:
         type: string
-      description: Previous cursor used to go to the previous page of results
+      description: Cursor used to get the previous page of results.
       example: WyIwMUY1M1BNSEpHQ1BTWlg5NVFGSkpFQURTNCJd
 
     limit:
@@ -3328,7 +4060,7 @@ components:
         minimum: 1
         maximum: 1000
         default: 50
-      description: The numbers of items to return
+      description: The numbers of items to return.
       example: 50
 
     sort_things:
@@ -3342,7 +4074,7 @@ components:
       style: form
       description: |
         Sort items by one or more fields in any order.
-        
+
         For example, using `sort=uid,+title,-created` will return the results
         ordered by ascending `uid`, ascending `title` and descending `created`
         (having `uid` the highest priority and `created` the lowest).
@@ -3360,26 +4092,50 @@ components:
       schema:
         type: object
       explode: true
-      example: '{"property:temp":"gt:20", "property:dim": 80}'
+      example: '?property:temp=gt:20&property:dim=80'
       description: |
-        Schema:
+        This parameter adds a condition on the value of a Thing Property.
+        Only the Things that meet this criteria will satisfy this filter.
 
-            {"property:<property_name>":"<operator>:<value>"}
+        **Example:** given the query parameters `?property:temp=gt:20&property:dim=80`,
+        a Thing will only match it if it has a `temp` Property with a value
+        greater than 20 and a `dim` Property with a value equal to 80.
+
+        The format of this query parameter is:
+
+            property:<property_name>=<operator>:<value>
+
+        Multiple parameters following the previous format can be used in the
+        same request to set multiple conditions. Note that a Thing must meet all
+        the given conditions to match.
 
         Supported value operators:
-          * eq  == (operator by default)
-          * neq !=
-          * gt  >
-          * gte >=
-          * lt  <
-          * lte <=
+          * `eq`  → Equal (`==`). This is the default operator.
+          * `neq` → Not equal (`!=`)
+          * `gt`  → Greater than (`>`)
+          * `gte` → Greater than or equal to (`>=`)
+          * `lt`  → Less than (`<`)
+          * `lte` → Less than or equal to (`<=`)
+
+        Supported functions:
+          * `contains` → Check whether the value is contained in the Property
+            value (the Property must be an array, string or object).
+
+            **Notes**:
+              * The string matching performed is case-sensitive.
+              * If the Property type is string, the `>`, `>=`, `<` and `<=`
+                operators will compare the values alphabetically.
+              * If the Property type is not an array, string or object, the
+                Thing will not satisfy the condition.
+              * If the Property type is an object, it will check whether an
+                attribute with the given name is present in it.
 
     links-rel:
       in: query
       name: links.rel
       schema:
         type: string
-      description: Filter by type of link relationship
+      description: Filter by type of link relationship (`rel`).
       example: controlledBy
 
     links-href:
@@ -3387,7 +4143,7 @@ components:
       name: links.href
       schema:
         type: string
-      description: Filter by link href
+      description: Filter by link `href`.
       example: https://www.w3.org/TR/wot-thing-description/
 
     at:
@@ -3395,19 +4151,24 @@ components:
       name: "at"
       schema:
         type: string
-      description: |+
+      description: |
         This parameter can be used as a datetime or as a datetime range value.
-        
+
         Using a date-time value:
-         - This allows to get the Property value(s) that a Thing had at this
-           date and time. <br>Example: *2022-05-31T01:23:45Z*
-        
+         - This allows to get the Property value(s) that a Thing had with the
+           date and time indicated. <br>Example: *2022-05-31T01:23:45Z*
+
+           The result will include the last values of all the Thing Properties
+           that have a timestamp equal to the `at` value.
+           If there are Properties without that timestamp, the older dates closer to this one will be returned.
+
         Using a date-time range:
          - This allows to get the Property value(s) that a Thing had in a datetime
            range, using the `|` separator to specify start and end date-times.
-           <br>Example: *2022-08-01T00:00:00Z|2022-09-01T00:00:00Z*
-        
-        If `at` is omitted, it will default to the current date and time.
+           > **Example**: *2022-08-01T00:00:00Z|2022-09-01T00:00:00Z*
+
+           Using short notation for years, months, and days is also allowed.
+           > **Example**: *2022|2023* or *2022-12|2023-03* or *2023-05-15|2023-05-30*
       examples:
         at:
           value: '2022-05-31T01:23:45Z'
@@ -3416,6 +4177,66 @@ components:
           value: '2022-08-01T00:00:00Z|2022-09-01T00:00:00Z'
           summary: From-To
 
+    at_delete:
+      in: query
+      name: "at"
+      schema:
+        type: string
+      required: true
+      description: |
+        This parameter can be used as a datetime or as a datetime range value.
+
+        Using a date-time value:
+         - This allows to delete the Property value(s) that a Thing had with the
+           date and time indicated. <br>Example: *2022-05-31T01:23:45Z*
+
+           This will delete the last values of all the Thing Properties
+           that have a timestamp equal to the `at` value.
+           If there are Properties without that timestamp, the older dates closer to this one will *NOT* be deleted.
+
+        Using a date-time range:
+         - This allows to delete the Property value(s) that a Thing had in a datetime
+           range, using the `|` separator to specify start and end date-times.
+           > **Example**: *2022-08-01T00:00:00Z|2022-09-01T00:00:00Z*
+
+           Using short notation for years, months, and days is also allowed.
+           > **Example**: *2022|2023* or *2022-12|2023-03* or *2023-05-15|2023-05-30*
+      examples:
+        at:
+          value: '2022-05-31T01:23:45Z'
+          summary: At
+        from_to:
+          value: '2022-08-01T00:00:00Z|2022-09-01T00:00:00Z'
+          summary: From-To
+
+    property-names:
+      in: query
+      name: "property_name[]"
+      schema:
+        type: array
+        items:
+          type: string
+      description: Filter by multiple Property names.
+      examples:
+        oneId:
+          summary: Example of a single Property Name
+          value: [ "cpu" ] # ?property_name[]=cpu
+        multiplePropertyNames:
+          summary: Example of multiple Property Names
+          value: [ "cpu", "temperature" ] # ?property_name[]=cpu&property_name[]=temperature
+
+    group_property_history:
+      in: query
+      name: "group"
+      schema:
+        type: boolean
+        default: false
+      description: |
+        This parameter controls the format of the returned values.
+        - If `false` (default), one item will be returned for each history value.
+        - If `true`, the history values will be returned grouped by their timestamp.
+        This means that if two or more values have the same timestamp, they will
+        be returned in a single item.
 
   schemas:
     AnyValue:
@@ -3562,6 +4383,21 @@ components:
               allOf:
                 - $ref: '#/components/schemas/DataSchema'
 
+    Link:
+      title: Link
+      type: object
+      description: A Link definition as defined by the [WoT specification](https://www.w3.org/TR/wot-thing-description/#link).
+      properties:
+        href:
+          type: string
+          format: iri
+          example: 'https://help.altair.com/altair-iot-studio/index.htm'
+          description: Target IRI of a link or submission target of a form.
+        rel:
+          type: string
+          example: 'documentation'
+          description: A link relation type identifies the semantics of a link.
+
     CategoryBase:
       title: Category Base
       type: object
@@ -3569,36 +4405,51 @@ components:
         name:
           type: string
           pattern: '^[a-zA-Z0-9_:-]{1,26}$'
-          example: ElectronicBoards
           description: Name of the Category that will be used as a unique identifier.
+          example: ElectronicBoards
         description:
           type: string
+          description: The description of the Category.
           example: My category
         model:
+          description: |
+            The Model or Model and Version that all the Things in the Category
+            must match in order to belong to it.
           allOf:
             - $ref: '#/components/schemas/ModelDescriptionCategory'
           default: null
-        validators:
-          type: object
-          x-omitempty: true
-          properties:
-            links:
-              type: array
-              items:
-                type: object
-                properties:
-                  href_pattern:
-                    type: string
-                    example: /spaces/myspace/categories/cpus/things/+
-                  rel_pattern:
-                    type: string
-                    example: '*'
-                  multiple:
-                    type: boolean
-                    example: false
-                  optional:
-                    type: boolean
-                    example: false
+#        validators:
+#          type: object
+#          x-omitempty: true
+#          description: |
+#            Validations that the Things must match to be able to belong to the
+#            Category.
+#          properties:
+#            links:
+#              type: array
+#              items:
+#                type: object
+#                properties:
+#                  href_pattern:
+#                    type: string
+#                    description: |
+#                      The pattern of the Link Href. It can use wildcards like `#` or `+`.
+#                    example: /spaces/myspace/categories/cpus/things/+
+#                  rel_pattern:
+#                    type: string
+#                    description: |
+#                      The pattern of the Link relation name. It can use wildcards like `#` or `+`
+#                    example: '*'
+#                  multiple:
+#                    type: boolean
+#                    description: |
+#                      Whether more than one Link of a Thing can match the validator.
+#                    example: false
+#                  optional:
+#                    type: boolean
+#                    description: |
+#                      Whether the validator must be matched by at least one Link of a Thing
+#                    example: false
 
     CategoryCreate:
       title: Category Creation Request
@@ -3678,6 +4529,7 @@ components:
           description: Name of the Model that will be used as a unique identifier.
         description:
           type: string
+          description: Description of the Model.
           example: My Raspberry Pi Model
 
     ModelCreate:
@@ -3745,49 +4597,37 @@ components:
             created: "2021-11-21T14:31:22Z"
             modified: "2021-11-23T08:05:17Z"
 
-    LinkValidator:
-      title: Link Validator
-      description: Define a validator for Thing's links.
-      type: object
-      properties:
-        href_pattern:
-          type: string
-          description:
-            A URL expression to be checked against each `href` in Thing's links.
-            URL expressions allow `+` (single level) and `#` (multi level) wildcards.
-        rel_pattern:
-          type: string
-          description:
-            A regex to be checked against each `rel` in Thing's links.
-        multiple:
-          type: boolean
-          default: true
-          description: If `true`, more than one Thing's link in a Category can meet the criteria of this link validator.
-        optional:
-          type: boolean
-          default: true
-          description: If `true`, a Thing will not need to have a link meeting the `href` and `rel` criteria of this link validator.
-
     ModelVersionBase:
       title: Model-Version Base
       type: object
       properties:
         title:
           type: string
+          description: Name of the Model-Version.
           example: "Version 1"
         description:
           type: string
+          description: Description of the Model-Version.
           example: "Version 1 of RaspberryPiModel"
         template:
+          description: |
+            Describes the information of a Thing associated to the Model-Version.
+
+            If a Model-Version is applied to a Thing, all defined `template`
+            fields that are defined (i.e. those with non-null values) will
+            replace these same fields in the Thing description.
           properties:
             title:
               type: string
-              example: SmartWorks Device
+              description: Name of the Thing.
+              example: Altair® IoT Studio™ Device
             description:
               type: string
-              example: My connected SmartWorks device
+              description: Description of the Thing.
+              example: My connected Altair® IoT Studio™ device
             properties:
               type: object
+              description: Property definitions of the Thing.
               additionalProperties: {}
               example:
                 cpu:
@@ -3798,6 +4638,7 @@ components:
                   readOnly: false
             actions:
               type: object
+              description: Action definitions of the Thing.
               additionalProperties: {}
               example:
                 delay:
@@ -3811,6 +4652,7 @@ components:
                         type: "number"
             events:
               type: object
+              description: Event definitions of the Thing.
               additionalProperties: {}
               example:
                 highCPU:
@@ -3821,6 +4663,7 @@ components:
                     unit: "percent"
             links:
               type: array
+              description: Links of the Thing.
               items:
                 type: object
                 additionalProperties: {}
@@ -3886,6 +4729,7 @@ components:
     ModelDescriptionCategory:
       title: Model Description for Categories
       type: object
+      nullable: true
       description: |
         Model name and Version number applied to a Category.
         Can be null (or omitted) if no Model is associated to the Category.
@@ -3909,22 +4753,38 @@ components:
       properties:
         title:
           type: string
-          example: SmartWorks Device
+          description: Name of the Thing.
+          example: Altair® IoT Studio™ Device
         description:
           type: string
-          example: My connected SmartWorks device
+          description: Description of the Thing.
+          example: My connected Altair® IoT Studio™ device
         '@type':
+          description: |
+            JSON-LD keyword to label the object with semantic tags (or types).
           oneOf:
             - type: string
             - type: array
               items:
                 type: string
           example: ["Light", "OnOffSwitch"]
+        '@context':
+          description: |
+            JSON-LD keyword to define short-hand names called terms that are
+            used throughout a TD document.
+          type: string
+          example: context
         model:
+          description: Model and Version applied to the Thing.
           allOf:
             - $ref: '#/components/schemas/ModelDescription'
+        status:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/PropertyValues'
         properties:
           type: object
+          description: Property descriptions of the Thing.
           additionalProperties:
             $ref: '#/components/schemas/PropertyAffordance'
           example:
@@ -3948,6 +4808,7 @@ components:
               readOnly: false
         actions:
           type: object
+          description: Action descriptions of the Thing.
           additionalProperties:
             $ref: '#/components/schemas/ActionAffordance'
           example:
@@ -3965,6 +4826,7 @@ components:
               description: "Reboot device"
         events:
           type: object
+          description: Event descriptions of the Thing.
           additionalProperties:
             $ref: '#/components/schemas/EventAffordance'
           example:
@@ -3974,6 +4836,19 @@ components:
               data:
                 type: "number"
                 unit: "percent"
+        links:
+          type: array
+          description: |
+            Provides Web links to arbitrary resources that relate to the Thing.
+            Any link to other Thing in the same space will create a graph
+            relationship between the two Things.
+          items:
+            $ref: '#/components/schemas/Link'
+          example:
+            - href: 'https://help.altair.com/altair-iot-studio/index.htm'
+              rel: 'documentation'
+            - href: 'https://api.swx.altairone.com/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+              rel: 'parent'
 
     ThingCreate:
       title: Thing Creation Request
@@ -3982,6 +4857,7 @@ components:
           properties:
             categories:
               type: array
+              description: List of Category names the Thing belongs to.
               items:
                 type: string
               example: [ 'category1', 'category2' ]
@@ -4002,11 +4878,12 @@ components:
               example: 01FPSXTMN4CEGX09HF5RQ4RMY6
             id:
               type: string
-              example: 'https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+              example: 'https://api.swx.altairone.com/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
         - type: object
           properties:
             categories:
               type: array
+              description: List of Category names the Thing belongs to.
               items:
                 type: string
               example: [ 'category1', 'category2' ]
@@ -4022,7 +4899,7 @@ components:
               example: 01FPSXTMN4CEGX09HF5RQ4RMY6
             id:
               type: string
-              example: 'https://api.swx.altairone.com/beta/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+              example: 'https://api.swx.altairone.com/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
         - $ref: '#/components/schemas/ThingBase'
 
     Thing:
@@ -4035,14 +4912,19 @@ components:
               example: 01FPSXTMN4CEGX09HF5RQ4RMY6
             id:
               type: string
-              example: 'https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
-        - type: object
-          properties:
+              example: 'https://api.swx.altairone.com/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
             categories:
               type: array
+              description: List of Category names the Thing belongs to.
               items:
                 type: string
               example: [ 'category1', 'category2' ]
+            client_id:
+              type: string
+              description: |
+                The ID of the OAuth2 client of this Thing. This field will not
+                be included in the response if the client has not been setup.
+              example: "space01::01FPSXTMN4CEGX09HF5RQ4RMY6"
         - $ref: '#/components/schemas/ThingBase'
         - type: object
           properties:
@@ -4065,7 +4947,13 @@ components:
               example: 01FPSXTMN4CEGX09HF5RQ4RMY6
             id:
               type: string
-              example: 'https://api.swx.altairone.com/beta/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+              example: 'https://api.swx.altairone.com/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
+            client_id:
+              type: string
+              description: |
+                The ID of the OAuth2 client of this Thing. This field will not
+                be included in the response if the client has not been setup.
+              example: "space01::01FPSXTMN4CEGX09HF5RQ4RMY6"
         - $ref: '#/components/schemas/ThingBase'
         - type: object
           properties:
@@ -4171,7 +5059,7 @@ components:
             delay: 5
           status: pending
           timeRequested: "2022-06-02 15:37:46+0000"
-          href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR
+          href: /spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR
 
     ActionListResponse:
       properties:
@@ -4185,17 +5073,17 @@ components:
                   delay: 5
                 status: pending
                 timeRequested: "2022-06-02 15:37:46+0000"
-                href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR
+                href: /spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCAQE78A7CP6REXV5J8BAKR
             - delay:
                 input:
                   delay: 7
                 status: pending
                 timeRequested: "2022-06-02 15:39:54+0000"
-                href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E
+                href: /spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCB9FMD0Q3QR0YV4TWY4S3E
             - reboot:
                 status: pending
                 timeRequested: "2022-06-02 15:56:12+0000"
-                href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCCZYATJW1Z3D4T4BA4S2QH
+                href: /spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/actions/delay/01EDCCZYATJW1Z3D4T4BA4S2QH
         paging:
           type: object
           properties:
@@ -4249,7 +5137,7 @@ components:
         highCPU:
           data: 61
           timestamp: "2020-04-02 15:22:37+0000"
-          href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+          href: /spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
 
     EventListResponse:
       properties:
@@ -4261,15 +5149,15 @@ components:
             - highCPU:
                 data: 61
                 timestamp: "2020-04-02 15:22:37+0000"
-                href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
+                href: /spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCEZDTJX50SQTCJST5EW5NX
             - highCPU:
                 data: 85
                 timestamp: "2020-04-02 15:26:42+0000"
-                href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCGYKV4YQ1CY3QHHSX8J843
+                href: /spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/highCPU/01EDCGYKV4YQ1CY3QHHSX8J843
             - lowDiskSpace:
                 data: 95
                 timestamp: "2020-04-03 07:12:55+0000"
-                href: /beta/spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/lowDiskSpace/01GPX7BR5X3YT5Y65ZMT24YT1N
+                href: /spaces/altair/things/01FPSXTMN4CEGX09HF5RQ4RMY6/events/lowDiskSpace/01GPX7BR5X3YT5Y65ZMT24YT1N
         paging:
           type: object
           properties:
@@ -4302,7 +5190,6 @@ components:
         cpu: 22.1
         disk: 18.7
         memory: 67
-        mac: 'aa:bb:cc:dd:ee:ff'
 
     PropertyHistoryValue:
       title: Property History Value
@@ -4381,170 +5268,6 @@ components:
             properties:
               disk: 17
 
-    ThingStatusBase:
-      title: Thing Status Base
-      type: object
-      properties:
-        title:
-          type: string
-          example: SmartWorks Device
-        description:
-          type: string
-          example: My connected SmartWorks device
-        '@type':
-          oneOf:
-            - type: string
-            - type: array
-              items:
-                type: string
-          example: ["Light", "OnOffSwitch"]
-        model:
-          allOf:
-            - $ref: '#/components/schemas/ModelDescription'
-        properties:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/PropertyValues'
-
-    ThingStatusCreate:
-      title: Thing Status Creation Request
-      allOf:
-        - type: object
-          properties:
-            categories:
-              type: array
-              items:
-                type: string
-              example: [ 'category1', 'category2' ]
-        - $ref: '#/components/schemas/ThingStatusBase'
-
-    ThingStatusCategoryCreate:
-      title: Thing Status Creation Request in a Category
-      allOf:
-        - $ref: '#/components/schemas/ThingStatusBase'
-
-    ThingStatusUpdate:
-      title: Thing Status Update Request
-      allOf:
-        - type: object
-          properties:
-            uid:
-              type: string
-              example: 01FPSXTMN4CEGX09HF5RQ4RMY6
-            id:
-              type: string
-              example: 'https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
-        - type: object
-          properties:
-            categories:
-              type: array
-              items:
-                type: string
-              example: [ 'category1', 'category2' ]
-        - $ref: '#/components/schemas/ThingStatusBase'
-
-    ThingStatusCategoryUpdate:
-      title: Thing Status Update Request in a Category
-      allOf:
-        - type: object
-          properties:
-            uid:
-              type: string
-              example: 01FPSXTMN4CEGX09HF5RQ4RMY6
-            id:
-              type: string
-              example: 'https://api.swx.altairone.com/beta/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
-        - $ref: '#/components/schemas/ThingStatusBase'
-
-    ThingStatus:
-      title: Thing Status
-      description: Summarized version of a Thing with the values of all its Properties.
-      allOf:
-        - type: object
-          properties:
-            uid:
-              type: string
-              example: 01FPSXTMN4CEGX09HF5RQ4RMY6
-            id:
-              type: string
-              example: 'https://api.swx.altairone.com/beta/spaces/space01/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
-        - type: object
-          properties:
-            categories:
-              type: array
-              items:
-                type: string
-              example: [ 'category1', 'category2' ]
-        - $ref: '#/components/schemas/ThingStatusBase'
-        - type: object
-          properties:
-            created:
-              type: string
-              format: date-time
-              example: "2021-12-13T09:38:11Z"
-            modified:
-              type: string
-              format: date-time
-              example: "2021-12-13T09:38:11Z"
-
-    ThingStatusCategory:
-      title: Thing Status from a Category
-      description: Summarized version of a Thing with the values of all its Properties.
-      allOf:
-        - type: object
-          properties:
-            uid:
-              type: string
-              example: 01FPSXTMN4CEGX09HF5RQ4RMY6
-            id:
-              type: string
-              example: 'https://api.swx.altairone.com/beta/spaces/space01/categories/category1/things/01FPSXTMN4CEGX09HF5RQ4RMY6'
-        - $ref: '#/components/schemas/ThingStatusBase'
-        - type: object
-          properties:
-            created:
-              type: string
-              format: date-time
-              example: "2021-12-13T09:38:11Z"
-            modified:
-              type: string
-              format: date-time
-              example: "2021-12-13T09:38:11Z"
-
-    ThingStatusList:
-      title: Thing Status List
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ThingStatus'
-        paging:
-          type: object
-          properties:
-            next_cursor:
-              type: string
-              example: ''
-            previous_cursor:
-              type: string
-              example: ''
-
-    ThingStatusCategoryList:
-      title: Thing Status List from a Category
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ThingStatusCategory'
-        paging:
-          type: object
-          properties:
-            next_cursor:
-              type: string
-              example: ''
-            previous_cursor:
-              type: string
-              example: ''
-
     PostAPICursor:
       title: Query Payload
       type: object
@@ -4552,11 +5275,11 @@ components:
         - query
       properties:
         query:
-          description: |+
+          description: |
             Contains the query string to be executed
           type: string
         count:
-          description: |+
+          description: |
             Indicates whether the number of documents in the result set should be returned in
             the "count" attribute of the result.
             Calculating the "count" attribute might have a performance impact for some queries
@@ -4565,7 +5288,7 @@ components:
           format: ''
           type: boolean
         batchSize:
-          description: |+
+          description: |
             Maximum number of result documents to be transferred from
             the server to the client in one roundtrip. If this attribute is
             not set, a server-controlled default value will be used. A *batchSize* value of
@@ -4573,7 +5296,7 @@ components:
           format: int64
           type: integer
         ttl:
-          description: |+
+          description: |
             The time-to-live for the cursor (in seconds). If the result set is small enough
             (less than or equal to `batchSize`) then results are returned right away.
             Otherwise they are stored in memory and will be accessible via the cursor with
@@ -4584,7 +5307,7 @@ components:
           format: int64
           type: integer
         cache:
-          description: |+
+          description: |
             Flag to determine whether the AQL query results cache
             shall be used. If set to *false*, then any query cache lookup will be skipped
             for the query. If set to *true*, it will lead to the query cache being checked
@@ -4592,7 +5315,7 @@ components:
           format: ''
           type: boolean
         memoryLimit:
-          description: |+
+          description: |
             The maximum number of memory (measured in bytes) that the query is allowed to
             use. If set, then the query will fail with error "resource limit exceeded" in
             case it allocates too much memory. A value of *0* indicates that there is no
@@ -4600,16 +5323,17 @@ components:
           format: int64
           type: integer
         bindVars:
-          description: |+
+          description: |
             Key/value pairs representing the bind parameters.
           items:
             additionalProperties: {}
             type: object
           type: array
         options:
-          description: |+
-            This attribute is currently ignored.
+          description: This attribute is currently ignored.
           type: object
+        then:
+          $ref: '#/components/schemas/ThenOperation'
       example:
         query: "FOR i IN RANGE(@min,@max) RETURN i"
         count: true
@@ -4617,6 +5341,43 @@ components:
         bindVars:
           min: 0
           max: 5
+        then:
+          op: "update"
+          resource: "properties"
+          data:
+            temp: 30.0
+
+    ThenQueryRequest:
+      type: object
+      properties:
+        then:
+          $ref: '#/components/schemas/ThenOperation'
+
+    ThenOperation:
+      title: Operation to be applied on the resources returned by a query.
+      type: object
+      description: |
+        Operation to be performed with the data returned in the query.
+      properties:
+        op:
+          description: |
+            Operation type on the resources of the query results. Supported operations:
+              - `update`: Update the resources.
+              - `delete`: Delete the resources.
+          type: string
+          example: update
+        resource:
+          description: |
+            Type of resource the operation will be applied to. Supported resources:
+              - `things`: The Thing description of the Things with the returned IDs.
+              - `properties`: The Properties of the Things with the returned IDs.
+          type: string
+          example: properties
+        data:
+          description: The data used to modify the resources. # TODO: Add more information.
+          # TODO: Add type.
+          example:
+            update_firmware: true
 
     PostAPICursorResponse:
       title: Query Response
@@ -4625,60 +5386,72 @@ components:
         - error
       properties:
         error:
-          description: |+
-            A flag to indicate that an error occurred (*false* in this case)
+          description: |
+            A flag to indicate that an error occurred.
 
           format: ''
           type: boolean
         code:
-          description: |+
-            the HTTP status code
+          description: |
+            The HTTP status code of the response from ArangoDB.
 
           type: integer
         result:
-          description: |+
-            an array of result documents (might be empty if query has no results)
+          description: |
+            An array of result documents (might be empty if query has no results).
 
           items: {}
           type: array
         hasMore:
-          description: |+
-            A boolean indicator whether there are more results
-            available for the cursor on the server
+          description: |
+            A boolean indicating whether there are more results
+            available for the cursor on the server.
 
           format: ''
           type: boolean
         count:
-          description: |+
-            the total number of result documents available (only
-            available if the query was executed with the *count* attribute set)
+          description: |
+            The total number of result documents available (only
+            available if the query was executed with the *count* attribute set).
 
           format: int64
           type: integer
         id:
-          description: |+
-            id of temporary cursor created on the server (optional, see above)
+          description: |
+            ID of temporary cursor created on the server (optional, see above).
 
           type: string
         extra:
           additionalProperties: {}
-          description: |+
-            an optional JSON object with extra information about the query result
+          description: |
+            An optional JSON object with extra information about the query result
             contained in its *stats* sub-attribute. For data-modification queries, the
             *extra.stats* sub-attribute will contain the number of modified documents and
             the number of documents that could not be modified
-            due to an error (if *ignoreErrors* query option is specified)
+            due to an error (if *ignoreErrors* query option is specified).
 
           type: object
         cached:
-          description: |+
-            a boolean flag indicating whether the query result was served
+          description: |
+            A boolean flag indicating whether the query result was served
             from the query cache or not. If the query result is served from the query
             cache, the *extra* return attribute will not contain any *stats* sub-attribute
             and no *profile* sub-attribute.
 
           format: ''
           type: boolean
+        then:
+          description: |
+            Includes information about the operation performed on the query results
+            (only applicable if `then` was used in the request).
+          type: object
+          properties:
+            success_count:
+              description: The number of results that were successfully modified.
+              type: boolean
+            error_count:
+              description: The number of results that could not be modified.
+              type: boolean
       example:
         result:
           - 0
@@ -4766,7 +5539,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/MQTTCategoryForm'
 
-    MQTTThingsDocumentShow:
+    MQTTThingDocument:
       properties:
         id:
           $ref: '#/components/schemas/ID'
@@ -4784,7 +5557,7 @@ components:
           type: array
           items:
             allOf:
-              - $ref: '#/components/schemas/MQTTThingsDocumentShow'
+              - $ref: '#/components/schemas/MQTTThingDocument'
         paging:
           type: object
           properties:
@@ -4881,3 +5654,103 @@ components:
             error:
               status: 500
               message: Something went wrong
+
+  examples:
+    requestQueryRange:
+      summary: Simple query
+      value:
+        query: "FOR i IN RANGE(@min,@max) RETURN i"
+        count: true
+        batchSize: 3
+        bindVars:
+          min: 0
+          max: 7
+
+    responseQueryRange:
+      summary: Simple query response
+      value:
+        result:
+          - 0
+          - 1
+          - 2
+        hasMore: true
+        id: '3298550880725'
+        count: 8
+        extra:
+          stats:
+            executionTime: 0.00015875999815762043
+        error: false
+        code: 201
+
+    responseQueryRange2:
+      summary: Simple query response (second batch)
+      value:
+        result:
+          - 3
+          - 4
+          - 5
+        hasMore: true
+        id: '3298550880725'
+        count: 8
+        extra:
+          stats:
+            executionTime: 0.00015875999815762043
+        error: false
+        code: 201
+
+    responseQueryRange3:
+      summary: Simple query response (third/last batch)
+      value:
+        result:
+          - 6
+          - 7
+        hasMore: false
+        count: 8
+        extra:
+          stats:
+            executionTime: 0.00015875999815762043
+        error: false
+        code: 201
+
+    requestQueryThenUpdateProperty:
+      summary: Update Thing properties using custom query
+      value:
+        query: "FOR t IN things FILTER HAS(t.properties, @property_name) RETURN t._key"
+        count: true
+        batchSize: 100
+        bindVars:
+          property_name: "update_firmware"
+        then:
+          op: update
+          resource: properties
+          data:
+            update_firmware: true
+
+    responseQueryThenUpdateProperty:
+      summary: Response after updating Thing properties
+      value:
+        result:
+          - "01H02E53RF67NBPF2AT6J6JCB6"
+          - "01H02E5QHJ6PN7NM09AG3J53BK"
+          - "01H02E5QHMREQ249EKQ9AAMXFJ"
+          - "01H02E5QHMREQ249EKQBNWT5K9"
+          - "01H02E5QQBGYSVCQ014GDV0JQG"
+        hasMore: false
+        count: 5
+        extra:
+          stats:
+            executionTime: 0.002683209953829646
+        error: false
+        code: 201
+        then:
+          success_count: 5
+          error_count: 0
+
+    requestQueryNextBatchThenUpdateProperty:
+      summary: Update Thing properties using custom query
+      value:
+        then:
+          op: update
+          resource: properties
+          data:
+            update_firmware: true
