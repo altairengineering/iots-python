@@ -6,14 +6,11 @@ from ..models import models, primitives
 from ..models.extensions.pagination import PaginationDescription
 from .actions import _ActionsMethods
 from .events import _EventsMethods
-from .mqtt_credentials1 import _MqttCredentials1Methods
 from .properties import _PropertiesMethods
-from .properties_history import _PropertiesHistoryMethods
-from .reset_secret import _ResetSecretMethods
 
 
 @dataclass
-class Things1(APIResource, _ResetSecretMethods, _ActionsMethods, _EventsMethods, _PropertiesMethods, _PropertiesHistoryMethods, _MqttCredentials1Methods):
+class Things1(APIResource, _ActionsMethods, _EventsMethods, _PropertiesMethods):
     thing_id: str
 
     def get(self, **kwargs) -> Union[models.Thing, models.ErrorResponse]:

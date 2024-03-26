@@ -4,12 +4,11 @@ from typing import Union, overload
 from ..internal.resource import APIResource
 from ..models import models, primitives
 from ..models.extensions.pagination import PaginationDescription
-from .mqtt_credentials import _MqttCredentialsMethods
 from .things import _ThingsMethods
 
 
 @dataclass
-class Categories1(APIResource, _ThingsMethods, _MqttCredentialsMethods):
+class Categories1(APIResource, _ThingsMethods):
     category_name: str
 
     def get(self, **kwargs) -> Union[models.Category, models.ErrorResponse]:
