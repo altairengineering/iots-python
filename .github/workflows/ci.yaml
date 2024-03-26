@@ -1,12 +1,12 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - '*/*'
+#  push:
+#    branches:
+#      - 'feature/*'
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   unit-test:
@@ -14,15 +14,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
         id: setup-python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -35,7 +35,7 @@ jobs:
 
       - name: Load cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
@@ -49,8 +49,8 @@ jobs:
           poetry run pytest --cov --cov-report=xml -v
           rm -R .venv
 
-      - name: Upload coverage to Codecov
-        if: ${{ matrix.python-version == '3.7' }}
-        uses: codecov/codecov-action@v3
+#      - name: Upload coverage to Codecov
+#        if: ${{ matrix.python-version == '3.9' }}
+#        uses: codecov/codecov-action@v3
 
 #  TODO: Linter
