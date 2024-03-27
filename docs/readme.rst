@@ -1,16 +1,23 @@
 
+
+.. image:: https://img.shields.io/pypi/pyversions/iots-python.svg
+   :target: https://pypi.org/project/iots
+   :alt: Supported Versions
+
+
 Introduction
 ------------
 
 This library allows you to interact with the Altair® IoT Studio™ API using
-Python. The current implementation has support for:
+Python. The current implementation has support for the following AnythingDB
+APIs:
 
 
-* Categories API
-* Things API
-* Properties API
-* Actions API
-* Events API
+* `Categories API <https://openapi.swx.altairone.com/cloud/anything-db#/Categories>`_
+* `Things API <https://openapi.swx.altairone.com/cloud/anything-db#/Things>`_
+* `Properties API <https://openapi.swx.altairone.com/cloud/anything-db#/Properties>`_
+* `Actions API <https://openapi.swx.altairone.com/cloud/anything-db#/Actions>`_
+* `Events API <https://openapi.swx.altairone.com/cloud/anything-db#/Events>`_
 
 Install
 -------

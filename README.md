@@ -1,16 +1,20 @@
-# Altair® IoT Studio™ API Client <!-- NODOC -->
+# Altair IoT Studio API Client <!-- NODOC -->
 
 **A Python client for the Altair® IoT Studio™ API** <!-- NODOC -->
+
+[![Supported Versions](https://img.shields.io/pypi/pyversions/iots.svg)](https://pypi.org/project/iots)
+[![Documentation Status](https://readthedocs.org/projects/iots/badge/?version=latest)](https://iots.readthedocs.io/en/latest/) <!-- NODOC -->
 
 ## Introduction
 
 This library allows you to interact with the Altair® IoT Studio™ API using
-Python. The current implementation has support for:
-- Categories API
-- Things API
-- Properties API
-- Actions API
-- Events API
+Python. The current implementation has support for the following AnythingDB
+APIs:
+- [Categories API](https://openapi.swx.altairone.com/cloud/anything-db#/Categories)
+- [Things API](https://openapi.swx.altairone.com/cloud/anything-db#/Things)
+- [Properties API](https://openapi.swx.altairone.com/cloud/anything-db#/Properties)
+- [Actions API](https://openapi.swx.altairone.com/cloud/anything-db#/Actions)
+- [Events API](https://openapi.swx.altairone.com/cloud/anything-db#/Events)
 
 ## Install
 
