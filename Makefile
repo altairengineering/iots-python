@@ -10,4 +10,7 @@ docs:
 	m2r docs/readme.md
 	rm docs/readme.md
 
+	# Update requirements.txt
+	poetry export --without-hashes --with docs --format=requirements.txt > docs/requirements.txt
+
 	cd docs && make clean && make html
