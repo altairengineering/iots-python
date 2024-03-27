@@ -1,6 +1,11 @@
 
 
-.. image:: https://img.shields.io/pypi/pyversions/iots-python.svg
+.. image:: https://img.shields.io/badge/pip_install-iots-orange
+   :target: https://pypi.org/project/iots
+   :alt: pip command
+
+
+.. image:: https://img.shields.io/pypi/pyversions/iots.svg?logo=python
    :target: https://pypi.org/project/iots
    :alt: Supported Versions
 

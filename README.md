@@ -2,7 +2,8 @@
 
 **A Python client for the Altair® IoT Studio™ API** <!-- NODOC -->
 
-[![Supported Versions](https://img.shields.io/pypi/pyversions/iots.svg)](https://pypi.org/project/iots)
+[![pip command](https://img.shields.io/badge/pip_install-iots-orange)](https://pypi.org/project/iots)
+[![Supported Versions](https://img.shields.io/pypi/pyversions/iots.svg?logo=python)](https://pypi.org/project/iots)
 [![Documentation Status](https://readthedocs.org/projects/iots/badge/?version=latest)](https://iots.readthedocs.io/en/latest/) <!-- NODOC -->
 
 ## Introduction

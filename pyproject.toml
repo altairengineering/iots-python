@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "iots"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Python client for the Altair SmartWorks API"
 authors = ["Daniel Sánchez Gallego <dsanchez@altair.com>"]
 readme = "README.md"
