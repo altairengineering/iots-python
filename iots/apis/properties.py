@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 from typing import Union, overload
 
@@ -20,7 +21,7 @@ class Properties1(APIResource):
         :return: The API response to the request.
         :rtype: Union[models.Property, models.ErrorResponse]
         """
-        req = "{\"" + str(self._path_value('property')) + "\": " + str(value) + "}"
+        req = "{\"" + str(self._path_value('property')) + "\": " + json.dumps(value) + "}"
 
         req_content_types = [
             ("application/json", models.Property),

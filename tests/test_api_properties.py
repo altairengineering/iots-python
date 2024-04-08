@@ -1,6 +1,8 @@
 import json
 from unittest import mock
 
+import pytest
+
 from iots.api import API
 from iots.models.models import Property, Properties
 from .common import make_response
@@ -65,11 +67,16 @@ def test_list():
     assert isinstance(prop, Properties)
 
 
-def test_update_one():
+@pytest.mark.parametrize("property_name, value", [
+    ("temperature", 17.5),
+    ("status", "on"),
+    ("enabled", True),
+])
+def test_update_one(property_name, value):
     """
     Tests a successful request to update one property value.
     """
-    expected_resp_payload = {"temperature": 17.5}
+    expected_resp_payload = {property_name: value}
 
     expected_resp = make_response(201, expected_resp_payload)
 
@@ -78,17 +85,17 @@ def test_update_one():
                 set_token("valid-token").
                 spaces("space01").
                 things("thing01").
-                properties("temperature").
-                update(17.5, params={'foo': 'bar'}))
+                properties(property_name).
+                update(value, params={'foo': 'bar'}))
 
     m.assert_called_once_with("PUT",
-                              "https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties/temperature",
+                              f"https://test-api.swx.altairone.com/spaces/space01/things/thing01/properties/{property_name}",
                               params={'foo': 'bar'},
                               headers={
                                   'Content-Type': 'application/json',
                                   'Authorization': 'Bearer valid-token',
                               },
-                              data=json.dumps({"temperature": 17.5}),
+                              data=json.dumps({property_name: value}),
                               timeout=3)
 
     assert prop == expected_resp_payload

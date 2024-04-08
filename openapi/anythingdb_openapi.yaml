@@ -2354,7 +2354,7 @@ paths:
         parameters:
           - name: value
             description: The new value of the Property.
-        payload: '{"{{ property }}": {{ value }}}'
+        payload: '{"{{ property }}": {{ value | json }}}'
       requestBody:
         content:
           application/json:
@@ -2518,7 +2518,7 @@ paths:
       x-input-parameters:
         parameters:
           - name: value
-        payload: '{"{{ property }}": {{ value }}}'
+        payload: '{"{{ property }}": {{ value | json }}}'
       requestBody:
         content:
           application/json:
@@ -2581,6 +2581,8 @@ paths:
 
   /spaces/{space}/things/{thing-id}/properties-history:
     post:
+      x-method-name:
+        default: create
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -2644,6 +2646,8 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -2666,8 +2670,8 @@ paths:
         - $ref: '#/components/parameters/previous_cursor'
         - $ref: '#/components/parameters/limit'
       responses:
-        201:
-          description: Created
+        200:
+          description: OK
           content:
             application/json:
               schema:
@@ -2721,6 +2725,8 @@ paths:
 
   /spaces/{space}/things/{thing-id}/properties-history/{property}:
     post:
+      x-method-name:
+        default: create
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -2783,6 +2789,8 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -2805,8 +2813,8 @@ paths:
         - $ref: '#/components/parameters/previous_cursor'
         - $ref: '#/components/parameters/limit'
       responses:
-        201:
-          description: Created
+        200:
+          description: OK
           content:
             application/json:
               schema:
@@ -2871,6 +2879,8 @@ paths:
 
   /spaces/{space}/categories/{category-name}/things/{thing-id}/properties-history:
     post:
+      x-method-name:
+        default: create
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -2938,6 +2948,8 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -2964,8 +2976,8 @@ paths:
         - $ref: '#/components/parameters/previous_cursor'
         - $ref: '#/components/parameters/limit'
       responses:
-        201:
-          description: Created
+        200:
+          description: OK
           content:
             application/json:
               schema:
@@ -3023,6 +3035,8 @@ paths:
 
   /spaces/{space}/categories/{category-name}/things/{thing-id}/properties-history/{property}:
     post:
+      x-method-name:
+        default: create
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -3089,6 +3103,8 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     get:
+      x-pagination:
+        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -3115,8 +3131,8 @@ paths:
         - $ref: '#/components/parameters/previous_cursor'
         - $ref: '#/components/parameters/limit'
       responses:
-        201:
-          description: Created
+        200:
+          description: OK
           content:
             application/json:
               schema:
