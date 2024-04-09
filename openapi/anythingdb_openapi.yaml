@@ -56,14 +56,12 @@ tags:
   - name: Things MQTT-credentials
     description: Operations on MQTT credentials for Things
 security:
-  - AccessToken: []
+  - AccessToken: [ ]
   - OAuth2ClientCredentials: [ ]
   - OAuth2AuthorizationCode: [ ]
 paths:
   /spaces/{space}/categories:
     post:
-      x-method-name:
-        default: create
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ category ]
@@ -102,10 +100,11 @@ paths:
           $ref: '#/components/responses/Conflict'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: create
 
     get:
-      x-pagination:
-        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ category ]
@@ -139,6 +138,9 @@ paths:
           $ref: '#/components/responses/Forbidden'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
   /spaces/{space}/categories/{category-name}:
     get:
@@ -174,8 +176,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     put:
-      x-method-name:
-        default: update
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ category ]
@@ -231,6 +231,9 @@ paths:
           $ref: '#/components/responses/Conflict'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: update
 
     delete:
       security:
@@ -586,8 +589,6 @@ paths:
 
   /spaces/{space}/things:
     post:
-      x-method-name:
-        default: create
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -625,10 +626,11 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: create
 
     get:
-      x-pagination:
-        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -686,6 +688,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
     delete:
       security:
@@ -764,8 +769,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     put:
-      x-method-name:
-        default: update
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -835,6 +838,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: update
 
     delete:
       security:
@@ -867,8 +873,6 @@ paths:
 
   /spaces/{space}/categories/{category-name}/things:
     post:
-      x-method-name:
-        default: create
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -916,10 +920,11 @@ paths:
           $ref: '#/components/responses/Conflict'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: create
 
     get:
-      x-pagination:
-        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -979,6 +984,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
     delete:
       security:
@@ -1064,8 +1072,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     put:
-      x-method-name:
-        default: update
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -1142,6 +1148,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: update
 
     delete:
       security:
@@ -1247,8 +1256,6 @@ paths:
 
   /spaces/{space}/things/{thing-id}/actions/{action-name}:
     post:
-      x-method-name:
-        default: create
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -1285,10 +1292,11 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: create
 
     get:
-      x-pagination:
-        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -1343,11 +1351,12 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
   /spaces/{space}/things/{thing-id}/actions:
     get:
-      x-pagination:
-        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -1384,6 +1393,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
   /spaces/{space}/things/{thing-id}/actions/{action-name}/{action-id}:
     get:
@@ -1421,8 +1433,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     put:
-      x-method-name:
-        default: update
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -1468,6 +1478,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: update
 
     delete:
       security:
@@ -1501,8 +1514,6 @@ paths:
 
   /spaces/{space}/categories/{category-name}/things/{thing-id}/actions/{action-name}:
     post:
-      x-method-name:
-        default: create
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -1550,10 +1561,11 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: create
 
     get:
-      x-pagination:
-        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -1613,11 +1625,12 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
   /spaces/{space}/categories/{category-name}/things/{thing-id}/actions:
     get:
-      x-pagination:
-        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -1679,6 +1692,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
   /spaces/{space}/categories/{category-name}/things/{thing-id}/actions/{action-name}/{action-id}:
     get:
@@ -1727,8 +1743,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     put:
-      x-method-name:
-        default: update
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -1778,6 +1792,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: update
 
     delete:
       security:
@@ -1815,8 +1832,6 @@ paths:
 
   /spaces/{space}/things/{thing-id}/events/{event-name}:
     post:
-      x-method-name:
-        default: create
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -1853,10 +1868,11 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: create
 
     get:
-      x-pagination:
-        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -1907,11 +1923,12 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
   /spaces/{space}/things/{thing-id}/events:
     get:
-      x-pagination:
-        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -1948,6 +1965,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
   /spaces/{space}/things/{thing-id}/events/{event-name}/{event-id}:
     get:
@@ -2014,8 +2034,6 @@ paths:
 
   /spaces/{space}/categories/{category-name}/things/{thing-id}/events/{event-name}:
     post:
-      x-method-name:
-        default: create
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -2061,10 +2079,11 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: create
 
     get:
-      x-pagination:
-        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -2119,11 +2138,12 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
   /spaces/{space}/categories/{category-name}/things/{thing-id}/events:
     get:
-      x-pagination:
-        $ref: '#/components/x-pagination/CursorPagination'
       security:
         - AccessToken: []
         - OAuth2ClientCredentials: [ thing ]
@@ -2181,6 +2201,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
   /spaces/{space}/categories/{category-name}/things/{thing-id}/events/{event-name}/{event-id}:
     get:
@@ -2274,8 +2297,6 @@ paths:
         - $ref: '#/components/parameters/space'
         - $ref: '#/components/parameters/thing-id'
         - $ref: '#/components/parameters/update-history'
-      x-method-name:
-        default: update
       requestBody:
         content:
           application/json:
@@ -2298,6 +2319,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: update
 
     get:
       security:
@@ -2348,13 +2372,6 @@ paths:
         - $ref: '#/components/parameters/thing-id'
         - $ref: '#/components/parameters/property'
         - $ref: '#/components/parameters/update-history'
-      x-method-name:
-        default: update
-      x-input-parameters:
-        parameters:
-          - name: value
-            description: The new value of the Property.
-        payload: '{"{{ property }}": {{ value }}}'
       requestBody:
         content:
           application/json:
@@ -2377,6 +2394,14 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: update
+        input-parameters:
+          parameters:
+            - name: value
+              description: The new value of the Property.
+          payload: '{"{{ property }}": {{ value | json }}}'
 
     get:
       security:
@@ -2431,8 +2456,6 @@ paths:
         - $ref: '#/components/parameters/category-name'
         - $ref: '#/components/parameters/thing-id'
         - $ref: '#/components/parameters/update-history'
-      x-method-name:
-        default: update
       requestBody:
         content:
           application/json:
@@ -2455,6 +2478,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: update
 
     get:
       security:
@@ -2513,12 +2539,6 @@ paths:
         - $ref: '#/components/parameters/thing-id'
         - $ref: '#/components/parameters/property'
         - $ref: '#/components/parameters/update-history'
-      x-method-name:
-        default: update
-      x-input-parameters:
-        parameters:
-          - name: value
-        payload: '{"{{ property }}": {{ value }}}'
       requestBody:
         content:
           application/json:
@@ -2541,6 +2561,13 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: update
+        input-parameters:
+          parameters:
+            - name: value
+          payload: '{"{{ property }}": {{ value | json }}}'
 
     get:
       security:
@@ -2642,6 +2669,9 @@ paths:
           $ref: '#/components/responses/PropertyValueAlreadyExists'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: create
 
     get:
       security:
@@ -2666,8 +2696,8 @@ paths:
         - $ref: '#/components/parameters/previous_cursor'
         - $ref: '#/components/parameters/limit'
       responses:
-        201:
-          description: Created
+        200:
+          description: OK
           content:
             application/json:
               schema:
@@ -2682,6 +2712,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
     delete:
       security:
@@ -2781,6 +2814,9 @@ paths:
           $ref: '#/components/responses/PropertyValueAlreadyExists'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: create
 
     get:
       security:
@@ -2805,8 +2841,8 @@ paths:
         - $ref: '#/components/parameters/previous_cursor'
         - $ref: '#/components/parameters/limit'
       responses:
-        201:
-          description: Created
+        200:
+          description: OK
           content:
             application/json:
               schema:
@@ -2832,6 +2868,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
     delete:
       security:
@@ -2936,6 +2975,9 @@ paths:
           $ref: '#/components/responses/PropertyValueAlreadyExists'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: create
 
     get:
       security:
@@ -2964,8 +3006,8 @@ paths:
         - $ref: '#/components/parameters/previous_cursor'
         - $ref: '#/components/parameters/limit'
       responses:
-        201:
-          description: Created
+        200:
+          description: OK
           content:
             application/json:
               schema:
@@ -2980,6 +3022,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
     delete:
       security:
@@ -3087,6 +3132,9 @@ paths:
           $ref: '#/components/responses/PropertyValueAlreadyExists'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        method-name:
+          default: create
 
     get:
       security:
@@ -3115,8 +3163,8 @@ paths:
         - $ref: '#/components/parameters/previous_cursor'
         - $ref: '#/components/parameters/limit'
       responses:
-        201:
-          description: Created
+        200:
+          description: OK
           content:
             application/json:
               schema:
@@ -3142,6 +3190,9 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+      x-api-gen:
+        pagination:
+          $ref: '#/components/x-pagination/CursorPagination'
 
     delete:
       security:

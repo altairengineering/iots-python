@@ -16,8 +16,8 @@ test_thing01 = {
         "category1",
         "category2"
     ],
-    "title": "SmartWorks Device",
-    "description": "My connected SmartWorks device",
+    "title": "IoT Studio Device",
+    "description": "My connected IoT Studio device",
     "@type": [
         "Light",
         "OnOffSwitch"

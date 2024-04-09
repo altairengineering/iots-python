@@ -1,5 +1,6 @@
 import time
 from abc import ABC, abstractmethod
+from typing import List
 
 import requests
 from requests import Request
@@ -179,7 +180,7 @@ class OAuth2ClientCredentials(SecurityStrategyWithTokenExchange):
     :param client_secret: The client secret for OAuth2 client credentials authentication.
     :type client_secret: str
     :param scopes: The list of scopes to be requested during token exchange.
-    :type scopes: list[str]
+    :type scopes: List[str]
     :param token_url: The URL for token exchange.
     :type token_url: str
     :param revoke_token_url: The URL for revoking access tokens (optional).
@@ -189,7 +190,7 @@ class OAuth2ClientCredentials(SecurityStrategyWithTokenExchange):
     """
 
     def __init__(self, client_id: str, client_secret: str,
-                 scopes: list[str],
+                 scopes: List[str],
                  token_url: str = '/oauth2/token',
                  revoke_token_url: str = '/oauth2/revoke',
                  refresh_threshold: int = 10):

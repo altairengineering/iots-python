@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Union
+from typing import Union, Tuple
 
 import requests
 from pyexpat import ExpatError
@@ -102,7 +102,7 @@ class APIResource(ABC):
         """
         values = {k: v for k, v in self.__dict__.items() if k != '_stack'}
         for r in self._stack[1:]:
-            values |= {k: v for k, v in r.__dict__.items() if k != '_stack'}
+            values.update({k: v for k, v in r.__dict__.items() if k != '_stack'})
 
         return values
 
@@ -224,7 +224,7 @@ class APIResource(ABC):
 
 
 def _validate_request_payload(body: Union[str, bytes, dict, APIBaseModel],
-                              req_content_types: list, headers: dict) -> tuple[str, dict]:
+                              req_content_types: list, headers: dict) -> Tuple[str, dict]:
     """
     Tries to parse the request body into one of the supported pairs of
     content-type / class type. An exception will be returned if the body
