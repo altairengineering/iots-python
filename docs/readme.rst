@@ -33,7 +33,7 @@ From PyPI:
 
    pip install iots
 
-This library officially supports Python 3.7+.
+This library officially supports Python 3.8+.
 
 The API class
 -------------
@@ -53,7 +53,7 @@ You can also specify a different host:
 
    from iots import API
 
-   api = API(host="https://api.my-smartworks.com")
+   api = API(host="https://api.my-iot-studio.com")
 
 Authentication
 ^^^^^^^^^^^^^^
@@ -66,17 +66,17 @@ There are multiple ways to deal with authentication:
 
   .. code-block:: python
 
-     api = API(host="api.swx.altairone.com").set_token("my-access-token")
+     api = API().set_token("my-access-token")
 
 * 
   Using an OAuth2 client credentials with manual token revocation:
 
   .. code-block:: python
 
-     my_client_id = "some-client-id"
-     my_client_secret = "the-client-secret"
+     my_client_id = "my-client-id"
+     my_client_secret = "my-client-secret"
      my_scopes = ["category", "thing"]
-     api = API(host="api.swx.altairone.com").set_credentials(my_client_id, my_client_secret, my_scopes)
+     api = API().set_credentials(my_client_id, my_client_secret, my_scopes)
 
      # ...
 
@@ -87,7 +87,7 @@ There are multiple ways to deal with authentication:
 
   .. code-block:: python
 
-     with API(host="api.swx.altairone.com").set_credentials(my_client_id, my_client_secret, my_scopes) as api:
+     with API().set_credentials(my_client_id, my_client_secret, my_scopes) as api:
          # ...
          # The token will be revoked when the 'with' block ends
          # or if the code returns or raises an exception
@@ -104,18 +104,20 @@ by the API endpoints. Some examples:
 
 .. code-block:: python
 
+   # Get an instance of a Space that will be used to access resources later.
+   # Creating this instance will NOT make any request to the API.
    space = api.spaces("my-iot-project")
 
-   # List Categories
+   # Get all the Categories in the Space
    categories = space.categories().get()
 
    # Get a specific Thing
    thing = space.things("01GQ2E9M2Y45BX9EW0F2BM032Q").get()
 
-   # List Things inside a Category
+   # Get all the Things inside a Category
    things = space.categories("Sensors").things().get()
 
-   # List Things with query parameters
+   # Get all the Things with some query parameters
    things = space.things().get(params={"property:temperature": "gt:20"})
 
    # Get all the Property values of a Thing
@@ -127,7 +129,7 @@ by the API endpoints. Some examples:
    thing_property = space.things("01GQ2E9M2Y45BX9EW0F2BM032Q").properties("temperature").get()
    temperature = thing_properties['temperature']
 
-   # Set a Property value
+   # Update a Property value
    thing_property = space.things("01GQ2E9M2Y45BX9EW0F2BM032Q").properties("temperature").update(17.3)
 
    # Create a new Action value
@@ -140,7 +142,8 @@ The models used by the API for request and response data can be found in the
 
    💡 **Note:** The API resources use type hints that should help to understand
    how to use the API and the data models to define input data or access
-   response data.
+   response data. It should also help your IDE with code completion and
+   displaying documentation.
 
 
 Query parameters
@@ -171,6 +174,36 @@ needed to fetch the remaining results, they will be made behind the scenes.
 
    for t in things:
        print(t.uid)
+
+Get raw HTTP response
+^^^^^^^^^^^^^^^^^^^^^
+
+Making an API request returns an instance of an object that represents the
+response content. However, you can also access the original response using the
+``http_response()`` method.
+
+.. code-block:: python
+
+   things = api.spaces("my-iot-project").things().get()
+   # Get the raw response as an instance of requests.Response
+   raw_response = things.http_response()
+
+   status_code = raw_response.status_code
+   content = raw_response.content
+   body = raw_response.json()
+   # ...
+
+This method is also available in the raised exceptions, provided that a response
+has been returned from the server.
+
+.. code-block:: python
+
+   from iots.models.exceptions import ResponseError
+
+   try:
+       things = api.spaces("my-iot-project").things().get()
+   except ResponseError as e:
+       raw_response = e.http_response()
 
 🔮 Future features
 ------------------

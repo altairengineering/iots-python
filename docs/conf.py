@@ -10,7 +10,7 @@ import sys
 
 project = 'iots'
 copyright = '2024, Altair® IoT Studio™'
-author = 'SmartWorks'
+author = 'Altair® IoT Studio™'
 release = '0.1.0'
 
 master_doc = "index"
