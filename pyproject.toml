@@ -1,18 +1,18 @@
 [tool.poetry]
 name = "iots"
 version = "0.1.1"
-description = "A Python client for the Altair SmartWorks API"
+description = "A Python client for the Altair IoT Studio API"
 authors = ["Daniel Sánchez Gallego <dsanchez@altair.com>"]
 readme = "README.md"
 documentation = "https://iots.readthedocs.io/"
 repository = "https://github.com/altairengineering/iots-python"
-keywords = ["iot", "altair", "smartcore", "api", "client", "library"]
+keywords = ["iot", "altair", "smartcore", "smartworks", "api", "client", "library"]
 classifiers = ["Topic :: Software Development :: Libraries"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 requests = "^2.31.0"
-pydantic = "^1.10.9"
+pydantic = "^1.10.14"
 xmltodict = "^0.13.0"
 
 [tool.poetry.group.dev.dependencies]

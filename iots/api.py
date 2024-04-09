@@ -1,5 +1,5 @@
 import json
-from typing import Union
+from typing import Union, List
 
 import requests
 from pydantic import BaseModel
@@ -56,7 +56,7 @@ class API(_SpacesMethods):
 
     def set_token(self, token: str):
         """
-        Sets an already exchanged access token as an bearer token security
+        Sets an already exchanged access token as a bearer token security
         strategy.
 
         :return: The modified API client.
@@ -64,7 +64,7 @@ class API(_SpacesMethods):
         return self.with_security(AccessToken(token))
 
     def set_credentials(self, client_id: str, client_secret: str,
-                        scopes: list[str],
+                        scopes: List[str],
                         token_url: str = '/oauth2/token',
                         revoke_token_url: str = '/oauth2/revoke',
                         refresh_threshold: int = 10):
