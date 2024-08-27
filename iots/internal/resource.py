@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Union, Tuple
+from typing import Tuple, Union
 
 import requests
 from pyexpat import ExpatError
@@ -106,17 +106,18 @@ class APIResource(ABC):
 
         return values
 
-    def _make_request(self, method="GET", body=None, req_content_types: list = None, **kwargs) -> Response:
+    def _api(self):
         if len(self._stack) == 0 or not _is_api(self._stack[0]):
             raise RuntimeError("API instance is missing in the stack")
+        return self._stack[0]
+
+    def _make_request(self, method="GET", body=None, req_content_types: list = None, **kwargs) -> Response:
+        api = self._api()
 
         body, headers = _validate_request_payload(body, req_content_types, kwargs.get('headers'))
         kwargs['headers'] = headers
 
-        api = self._stack[0]
-        resp = api.make_request(method, self._build_path(), body=body, **kwargs)
-
-        return resp
+        return api.make_request(method, self._build_path(), body=body, **kwargs)
 
     def _handle_response(self, response: requests.Response, expected_responses: list,
                          param_types: dict = None,
@@ -216,8 +217,9 @@ class APIResource(ABC):
             prepare_request(req, modifier.param, value)
 
         def make_request():
-            with requests.Session() as session:
-                new_resp = session.send(req)
+            api = self._api()
+            new_resp = api.make_request(req.method, req.url, req.body,
+                                        headers=req.headers)
             return self._handle_response(new_resp, expected_responses, params_info, pagination_info)
 
         ret._pagination.iter_func = make_request

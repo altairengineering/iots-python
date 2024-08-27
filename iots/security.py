@@ -16,8 +16,8 @@ class SecurityStrategy(ABC):
     measures such as authentication and authorization to API requests.
 
     Methods:
-    - `apply(request)`: Apply security measures to the given request.
-    - `clean()`: Clean sensitive information from the security strategy.
+     - `apply(request)`: Apply security measures to the given request.
+     - `clean()`: Clean sensitive information from the security strategy.
 
     This class serves as a template for implementing different security
     strategies, allowing flexibility in handling various authentication
@@ -70,11 +70,12 @@ class SecurityStrategyWithTokenExchange(SecurityStrategy):
     a token server.
 
     Methods:
-    - `apply(request)`: Apply security measures to the given request.
-    - `clean()`: Clean sensitive information from the security strategy.
-    - `set_token_url_host(token_url_host)`: Set the host URL for token exchange.
-    - `get_token()`: Exchange and retrieve a token from the server.
-    - `revoke_token()`: Revoke the currently held token.
+     - `apply(request)`: Apply security measures to the given request.
+     - `clean()`: Clean sensitive information from the security strategy.
+     - `set_token_url_host(token_url_host)`: Set the host URL for token exchange.
+     - `set_verify_tls_certificate(verify)`: Set whether to verify the authentication server's TLS certificate.
+     - `get_token()`: Exchange and retrieve a token from the server.
+     - `revoke_token()`: Revoke the currently held token.
 
     This class serves as a template for implementing security strategies
     that involve exchanging tokens with a token server, such as OAuth2 or
@@ -90,6 +91,18 @@ class SecurityStrategyWithTokenExchange(SecurityStrategy):
         where tokens can be exchanged with the server.
 
         :param token_url_host: The host URL for token exchange.
+        """
+        pass
+
+    @abstractmethod
+    def set_verify_tls_certificate(self, verify: bool):
+        """
+        Set whether to verify the authentication server's TLS certificate.
+
+        This method should be implemented by subclasses to set the host URL
+        where tokens can be exchanged with the server.
+
+        :param verify: Whether to verify the server's TLS certificate.
         """
         pass
 
@@ -125,8 +138,8 @@ class AccessToken(SecurityStrategy):
     token to the Authorization header of the request.
 
     Methods:
-    - `apply(request)`: Apply security measures to the given request.
-    - `clean()`: Clean sensitive information from the security strategy.
+     - `apply(request)`: Apply security measures to the given request.
+     - `clean()`: Clean sensitive information from the security strategy.
 
     :param token: The Bearer token used for authentication.
     :type token: str
@@ -169,11 +182,12 @@ class OAuth2ClientCredentials(SecurityStrategyWithTokenExchange):
     Authorization header of the request.
 
     Methods:
-    - `apply_security(request)`: Apply security measures to the given request.
-    - `clean()`: Clean sensitive information from the security strategy.
-    - `set_token_url_host(token_url_host)`: Set the host URL for token exchange.
-    - `get_token()`: Exchange and retrieve an access token from the token server.
-    - `revoke_token()`: Revoke the currently held access token, if supported.
+     - `apply_security(request)`: Apply security measures to the given request.
+     - `clean()`: Clean sensitive information from the security strategy.
+     - `set_token_url_host(token_url_host)`: Set the host URL for token exchange.
+     - `set_verify_tls_certificate(verify)`: Set whether to verify the authentication server's TLS certificate.
+     - `get_token()`: Exchange and retrieve an access token from the token server.
+     - `revoke_token()`: Revoke the currently held access token, if supported.
 
     :param client_id: The client ID for OAuth2 client credentials authentication.
     :type client_id: str
@@ -191,9 +205,10 @@ class OAuth2ClientCredentials(SecurityStrategyWithTokenExchange):
 
     def __init__(self, client_id: str, client_secret: str,
                  scopes: List[str],
-                 token_url: str = '/oauth2/token',
-                 revoke_token_url: str = '/oauth2/revoke',
-                 refresh_threshold: int = 10):
+                 token_url: str = 'https://api.swx.altairone.com/oauth2/token',
+                 revoke_token_url: str = '',
+                 refresh_threshold: int = 10,
+                 verify: bool = True):
         """
         Initialize OAuth2ClientCredentials with the provided parameters.
 
@@ -203,6 +218,7 @@ class OAuth2ClientCredentials(SecurityStrategyWithTokenExchange):
         :param token_url: The URL for token exchange.
         :param revoke_token_url: The URL for revoking access tokens (optional).
         :param refresh_threshold: The number of seconds before token expiration to trigger token refresh.
+        :param verify: Whether to verify the server's TLS certificate.
         """
         super().__init__()
         self._token = ''
@@ -215,6 +231,7 @@ class OAuth2ClientCredentials(SecurityStrategyWithTokenExchange):
         self.expires_in = 0
         self.expires_at = 0
         self.refresh_threshold = refresh_threshold
+        self.verify = verify
 
     def set_token_url_host(self, token_url_host: str):
         """
@@ -223,6 +240,14 @@ class OAuth2ClientCredentials(SecurityStrategyWithTokenExchange):
         :param token_url_host: The host URL for token exchange.
         """
         self.token_url_host = token_url_host.rstrip('/')
+
+    def set_verify_tls_certificate(self, verify: bool):
+        """
+        Set whether to verify the authentication server's TLS certificate.
+
+        :param verify: Whether to verify the server's TLS certificate.
+        """
+        self.verify = verify
 
     def get_token(self):
         """
@@ -243,7 +268,8 @@ class OAuth2ClientCredentials(SecurityStrategyWithTokenExchange):
         if token_url.startswith('/'):
             token_url = self.token_url_host.rstrip('/') + token_url
 
-        response = requests.request('POST', token_url, data=data)
+        response = requests.request('POST', token_url, data=data,
+                                    verify=self.verify)
         response_json = response.json()
         if 'access_token' in response_json:
             self._token = response_json['access_token']
@@ -270,7 +296,8 @@ class OAuth2ClientCredentials(SecurityStrategyWithTokenExchange):
             if revoke_token_url.startswith('/'):
                 revoke_token_url = self.token_url_host.rstrip('/') + revoke_token_url
 
-            response = requests.request('POST', revoke_token_url, data=data)
+            response = requests.request('POST', revoke_token_url,
+                                        data=data, verify=self.verify)
             if response.status_code == 200:
                 self._token = ''
                 self.expires_in = 0

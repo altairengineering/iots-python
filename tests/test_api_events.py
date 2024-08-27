@@ -62,7 +62,8 @@ def test_create(event_req):
                                   'Content-Type': 'application/json',
                               },
                               data=to_json(event_req),
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert event == EventResponse.parse_obj(expected_resp_payload)
     assert isinstance(event, EventResponse)
@@ -95,7 +96,8 @@ def test_list_event():
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert event == EventListResponse.parse_obj(expected_resp_payload)
     assert isinstance(event, EventListResponse)
@@ -148,7 +150,8 @@ def test_list_all():
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert events == EventListResponse.parse_obj(expected_resp_payload)
     assert isinstance(events, EventListResponse)
@@ -195,7 +198,8 @@ def test_get_event():
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert event == EventResponse.parse_obj(test_event02)
     assert isinstance(event, EventResponse)

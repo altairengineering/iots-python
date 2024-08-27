@@ -65,7 +65,8 @@ def test_create(action_req):
                                   'Content-Type': 'application/json',
                               },
                               data=to_json(action_req),
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert action == ActionResponse.parse_obj(expected_resp_payload)
     assert isinstance(action, ActionResponse)
@@ -98,7 +99,8 @@ def test_list_action():
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert action == ActionListResponse.parse_obj(expected_resp_payload)
     assert isinstance(action, ActionListResponse)
@@ -151,7 +153,8 @@ def test_list_all():
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert actions == ActionListResponse.parse_obj(expected_resp_payload)
     assert isinstance(actions, ActionListResponse)
@@ -198,7 +201,8 @@ def test_get_action():
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert action == ActionResponse.parse_obj(test_action02)
     assert isinstance(action, ActionResponse)
@@ -232,7 +236,8 @@ def test_put_action(action_req):
                                   'Authorization': 'Bearer valid-token',
                               },
                               data=to_json(action_req),
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert action == ActionResponse.parse_obj(expected_resp_payload)
     assert isinstance(action, ActionResponse)
@@ -258,4 +263,5 @@ def test_delete_action():
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
