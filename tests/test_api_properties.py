@@ -31,7 +31,8 @@ def test_get():
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert prop.dict() == expected_resp_payload
     assert isinstance(prop, Property)
@@ -61,7 +62,8 @@ def test_list():
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert prop == expected_resp_payload
     assert isinstance(prop, Properties)
@@ -96,7 +98,8 @@ def test_update_one(property_name, value):
                                   'Authorization': 'Bearer valid-token',
                               },
                               data=json.dumps({property_name: value}),
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert prop == expected_resp_payload
     assert isinstance(prop, Property)
@@ -130,7 +133,8 @@ def test_update_multiple():
                                   'Authorization': 'Bearer valid-token',
                               },
                               data=json.dumps(new_values),
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert prop == expected_resp_payload
     assert isinstance(prop, Properties)

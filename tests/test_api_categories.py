@@ -84,7 +84,8 @@ def test_create(category_req):
                                   'Content-Type': 'application/json',
                               },
                               data=to_json(category_req),
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert action == Category.parse_obj(expected_resp_payload)
     assert isinstance(action, Category)
@@ -108,7 +109,8 @@ def test_get():
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert cat == Category.parse_obj(test_category01)
     assert isinstance(cat, Category)
@@ -140,7 +142,8 @@ def test_list():
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert cat == CategoryList.parse_obj(expected_resp_payload)
     assert isinstance(cat, CategoryList)
@@ -188,7 +191,8 @@ def test_update(category_req):
                                   'Content-Type': 'application/json',
                               },
                               data=to_json(category_req),
-                              timeout=3)
+                              timeout=3,
+                              verify=True)
 
     assert action == Category.parse_obj(expected_resp_payload)
     assert isinstance(action, Category)
@@ -212,4 +216,5 @@ def test_delete():
                               params={'foo': 'bar'},
                               headers={'Authorization': 'Bearer valid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=True)

@@ -15,6 +15,7 @@ def test_create_successfully():
     """ Creates an API instance successfully. """
     api = API(host="test-api.swx.altairone.com")
     assert api.host == "https://test-api.swx.altairone.com"
+    assert api._verify is True
 
 
 def test_missing_host():
@@ -29,7 +30,8 @@ def test_set_token():
     assert api._security_strategy._token == "valid-token"
 
 
-def test_set_credentials():
+@pytest.mark.parametrize("verify", [True, False])
+def test_set_credentials(verify):
     """
     Creates an API instance that handles authentication using OAuth2 credentials
     and revokes the token.
@@ -47,7 +49,7 @@ def test_set_credentials():
     scopes = ["app", "function"]
 
     with mock.patch(request_mock_pkg, return_value=expected_token_resp) as mock_get_token:
-        api = API(host="api.swx.mock").set_credentials(
+        api = API(host="api.swx.mock", verify=verify).set_credentials(
             client_id=client_id,
             client_secret=client_secret,
             scopes=scopes,
@@ -67,7 +69,8 @@ def test_set_credentials():
                                                'client_id': 'test-client-id',
                                                'client_secret': 'test-client-secret',
                                                'scope': 'app function',
-                                           })
+                                           },
+                                           verify=verify)
 
     mock_revoke_token.assert_called_once_with('POST',
                                               'https://api.swx.mock/oauth2/revoke',
@@ -75,10 +78,12 @@ def test_set_credentials():
                                                   'token': 'valid-token',
                                                   'client_id': 'test-client-id',
                                                   'client_secret': 'test-client-secret',
-                                              })
+                                              },
+                                              verify=verify)
 
 
-def test_get_token_with():
+@pytest.mark.parametrize("verify", [True, False])
+def test_get_token_with(verify):
     """
     Creates an API instance that handles authentication using OAuth2 credentials
     and revokes the token automatically using a context manager (with).
@@ -96,11 +101,11 @@ def test_get_token_with():
     scopes = ["app", "function"]
 
     with mock.patch(request_mock_pkg, side_effect=[expected_token_resp, make_response(200)]) as m:
-        with API().set_credentials(client_id=client_id,
-                                   client_secret=client_secret,
-                                   scopes=scopes,
-                                   token_url='/auth/token',
-                                   revoke_token_url='/auth/revoke') as api:
+        with API(verify=verify).set_credentials(client_id=client_id,
+                                                client_secret=client_secret,
+                                                scopes=scopes,
+                                                token_url='/auth/token',
+                                                revoke_token_url='/auth/revoke') as api:
             assert api._security_strategy._token == expected_token['access_token']
 
             m.assert_called_with('POST',
@@ -110,7 +115,8 @@ def test_get_token_with():
                                      'client_id': 'test-client-id',
                                      'client_secret': 'test-client-secret',
                                      'scope': 'app function',
-                                 })
+                                 },
+                                 verify=verify)
 
     assert api._security_strategy._token == ''
 
@@ -120,12 +126,14 @@ def test_get_token_with():
                              'token': 'valid-token',
                              'client_id': 'test-client-id',
                              'client_secret': 'test-client-secret',
-                         })
+                         },
+                         verify=verify)
 
     assert m.call_count == 2
 
 
-def test_make_request():
+@pytest.mark.parametrize("verify", [True, False])
+def test_make_request(verify):
     """ Makes an authenticated request to the API successfully. """
     req_payload = {"foo": "bar"}
     expected_resp_payload = {
@@ -136,7 +144,7 @@ def test_make_request():
     expected_resp = make_response(200, expected_resp_payload)
 
     with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
-        resp = (API(host="test-api.swx.altairone.com").
+        resp = (API(host="test-api.swx.altairone.com", verify=verify).
                 set_token("valid-token").
                 make_request("POST", "/info", body=req_payload))
 
@@ -148,13 +156,15 @@ def test_make_request():
                                   'Authorization': 'Bearer valid-token',
                               },
                               data=json.dumps(req_payload),
-                              timeout=3)
+                              timeout=3,
+                              verify=verify)
 
     assert resp.status_code == 200
     assert resp.json() == expected_resp_payload
 
 
-def test_make_request_get_token():
+@pytest.mark.parametrize("verify", [True, False])
+def test_make_request_get_token(verify):
     """
     Makes an authenticated request to the API successfully using OAuth2
     Client Credentials.
@@ -180,7 +190,7 @@ def test_make_request_get_token():
     expected_resp = make_response(200, expected_resp_payload)
 
     with mock.patch(request_mock_pkg, side_effect=[expected_token_resp, expected_resp]) as m:
-        resp = (API(host="test-api.swx.altairone.com").
+        resp = (API(host="test-api.swx.altairone.com", verify=verify).
                 set_credentials(client_id=client_id,
                                 client_secret=client_secret,
                                 scopes=scopes).
@@ -194,7 +204,8 @@ def test_make_request_get_token():
                  'client_id': 'test-client-id',
                  'client_secret': 'test-client-secret',
                  'scope': 'app function',
-             }),
+             },
+             verify=verify),
         call("POST",
              "https://test-api.swx.altairone.com/info",
              params={},
@@ -203,14 +214,16 @@ def test_make_request_get_token():
                  'Authorization': 'Bearer valid-token',
              },
              data=json.dumps(req_payload),
-             timeout=3),
+             timeout=3,
+             verify=verify),
     ])
 
     assert resp.status_code == 200
     assert resp.json() == expected_resp_payload
 
 
-def test_make_request_unauthenticated():
+@pytest.mark.parametrize("verify", [True, False])
+def test_make_request_unauthenticated(verify):
     """ Makes a request to the API with invalid authentication. """
     expected_resp_payload = {
         "error": {
@@ -222,7 +235,7 @@ def test_make_request_unauthenticated():
     expected_resp = make_response(401, expected_resp_payload)
 
     with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
-        resp = (API(host="test-api.swx.altairone.com").
+        resp = (API(host="test-api.swx.altairone.com", verify=verify).
                 set_token("invalid-token").
                 make_request("GET", "/info", auth=True))
 
@@ -231,7 +244,8 @@ def test_make_request_unauthenticated():
                               params={},
                               headers={'Authorization': 'Bearer invalid-token'},
                               data=[],
-                              timeout=3)
+                              timeout=3,
+                              verify=verify)
 
     assert resp.status_code == 401
     assert resp.json() == expected_resp_payload

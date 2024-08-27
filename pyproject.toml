@@ -12,7 +12,7 @@ classifiers = ["Topic :: Software Development :: Libraries"]
 [tool.poetry.dependencies]
 python = "^3.8"
 requests = "^2.31.0"
-pydantic = "^1.10.14"
+pydantic = "^1.10.18"
 xmltodict = "^0.13.0"
 
 [tool.poetry.group.dev.dependencies]

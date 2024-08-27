@@ -28,7 +28,8 @@ def test_bearer_security():
     assert bearer_strategy._token == ''
 
 
-def test_oauth2_security():
+@pytest.mark.parametrize("verify", [True, False])
+def test_oauth2_security(verify):
     """
     Tests the OAuth2ClientCredentials security strategy.
     """
@@ -54,6 +55,7 @@ def test_oauth2_security():
     assert oauth2_strategy._token == ''
 
     oauth2_strategy.set_token_url_host('https://test-api.com')
+    oauth2_strategy.set_verify_tls_certificate(verify)
 
     # Apply token
     with mock.patch(request_mock_pkg, return_value=expected_token_resp) as m:
@@ -69,7 +71,8 @@ def test_oauth2_security():
                                   'client_id': 'test-client-id',
                                   'client_secret': 'test-client-secret',
                                   'scope': 'foo bar',
-                              })
+                              },
+                              verify=verify)
 
     # Revoke token
     with mock.patch(request_mock_pkg, return_value=make_response(200)) as m:
@@ -82,7 +85,8 @@ def test_oauth2_security():
                                   'token': 'valid-token',
                                   'client_id': 'test-client-id',
                                   'client_secret': 'test-client-secret',
-                              })
+                              },
+                              verify=verify)
 
     # Get token
     with mock.patch(request_mock_pkg, return_value=expected_token_resp) as m:
@@ -96,7 +100,8 @@ def test_oauth2_security():
                                   'client_id': 'test-client-id',
                                   'client_secret': 'test-client-secret',
                                   'scope': 'foo bar',
-                              })
+                              },
+                              verify=verify)
 
     # Reuse token before it expires
     req = Request()
@@ -119,7 +124,8 @@ def test_oauth2_security():
                                   'client_id': 'test-client-id',
                                   'client_secret': 'test-client-secret',
                                   'scope': 'foo bar',
-                              })
+                              },
+                              verify=verify)
 
 
 def test_oauth2_security_get_token_error():

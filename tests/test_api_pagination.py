@@ -1,15 +1,20 @@
 import copy
 import json
 import math
+from unittest import mock
 
 import httpretty
+import requests
+
+request_mock_pkg = 'iots.api.requests.request'
 
 
 @httpretty.activate
 def assert_pagination(pagination_function: callable, expected_url: str,
                       expected_results: list, limit: int,
                       extra_query_params: dict, get_cursor_func: callable,
-                      expected_type):
+                      expected_type, assert_func: callable = None,
+                      expected_verify: bool = True):
     """
     Asserts that, given API function (pagination_function) that supports
     pagination, it can be paginated properly.
@@ -64,21 +69,32 @@ def assert_pagination(pagination_function: callable, expected_url: str,
     query_params = copy.deepcopy(extra_query_params)
     query_params['limit'] = limit
 
-    actual_result = pagination_function(params=query_params)
+    original_request_func = requests.request
 
-    assert len(httpretty.latest_requests()) == 1
-    if limit < len(expected_results):
-        assert len(actual_result.data) == limit
-        # assert actual_result.has_more()
-    else:
-        assert len(actual_result.data) == len(expected_results)
-        # assert not actual_result.has_more()
+    def side_effect(*args, **kwargs):
+        # Makes a real call to the request function
+        response = original_request_func(*args, **kwargs)
+        assert 'verify' in kwargs and kwargs['verify'] == expected_verify
+        return response
 
-    # Iterate results
-    for result_index, result in enumerate(actual_result):
-        assert result == expected_type.parse_obj(expected_results[result_index])
+    with mock.patch(request_mock_pkg) as m:
+        m.side_effect = side_effect
 
-    # assert not actual_result.has_more()
+        actual_result = pagination_function(params=query_params)
 
-    # Assert that the API has been called until all data has been fetched
-    assert len(httpretty.latest_requests()) == math.ceil(len(expected_results) / limit)
+        assert len(httpretty.latest_requests()) == 1
+        if limit < len(expected_results):
+            assert len(actual_result.data) == limit
+        else:
+            assert len(actual_result.data) == len(expected_results)
+
+        # Iterate results
+        for result_index, result in enumerate(actual_result):
+            assert result == expected_type.parse_obj(expected_results[result_index])
+            if assert_func:
+                assert assert_func(result)
+
+        # Assert that the API has been called until all data has been fetched
+        expected_call_count = math.ceil(len(expected_results) / limit)
+        assert len(httpretty.latest_requests()) == expected_call_count
+        assert m.call_count == expected_call_count

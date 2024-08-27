@@ -19,16 +19,20 @@ class API(_SpacesMethods):
     """
 
     def __init__(self, host: str = "https://api.swx.altairone.com",
-                 security_strategy: Union[AccessToken, OAuth2ClientCredentials] = None):
+                 security_strategy: Union[AccessToken, OAuth2ClientCredentials] = None,
+                 verify: bool = True):
         """
         Creates a new API instance.
 
         :param host: (optional) Host name of the AnythingDB - API reference.
+        :param security_strategy: (optional) The security strategy for the API client.
+        :param verify: (optional) Whether to verify the server's TLS certificate.
         """
         if not host.startswith("http://") and not host.startswith("https://"):
             host = "https://" + host
 
         self.host = host
+        self._verify = verify
         self.headers = {}
         self._raise_errors = True
 
@@ -50,6 +54,7 @@ class API(_SpacesMethods):
 
         if isinstance(self._security_strategy, SecurityStrategyWithTokenExchange):
             self._security_strategy.set_token_url_host(self.host)
+            self._security_strategy.set_verify_tls_certificate(self._verify)
             self._security_strategy.get_token()
 
         return self
@@ -90,7 +95,8 @@ class API(_SpacesMethods):
             self._security_strategy.revoke_token()
 
     def make_request(self, method: str, url: str, body=None, params=None,
-                     headers: dict = None, timeout: float = 3, auth: bool = True) -> requests.Response:
+                     headers: dict = None, timeout: float = 3, auth: bool = True,
+                     verify=None) -> requests.Response:
         """
         Makes a request to the API server.
 
@@ -108,6 +114,8 @@ class API(_SpacesMethods):
             read timeout)` tuple.
         :param auth: (optional) If True (default), the authentication token will
             be sent in the request. An exception will be raised if no token is set.
+        :param verify: (optional) If set as a boolean, it will override the API
+            verify value.
         :return: An instance of :class:`request.Response`.
         """
         if headers is None:
@@ -123,7 +131,12 @@ class API(_SpacesMethods):
             headers['Content-Type'] = 'application/json'
             body = body.json()
 
-        req = requests.Request(method, self.host + url, params=params,
+        if url.lower().startswith('http://') or url.lower().startswith('https://'):
+            url = url
+        else:
+            url = self.host + url
+
+        req = requests.Request(method, url, params=params,
                                headers=headers, data=body)
 
         if auth:
@@ -131,8 +144,12 @@ class API(_SpacesMethods):
                 raise APIException("No security strategy has been set")
             self._security_strategy.apply(req)
 
+        if verify is None:
+            verify = self._verify
+
         return requests.request(req.method, req.url, params=req.params,
-                                headers=req.headers, data=req.data, timeout=timeout)
+                                headers=req.headers, data=req.data,
+                                timeout=timeout, verify=verify)
 
     def __enter__(self):
         return self

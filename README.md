@@ -182,6 +182,15 @@ except ResponseError as e:
     raw_response = e.http_response()
 ```
 
+### TLS certificate verification
+
+If you need to skip the TLS certificate verification, you can use the `verify`
+argument when creating the `API` instance:
+
+```python
+api = API(verify=False)
+```
+
 
 ## 🔮 Future features
 - Add more API resource components.

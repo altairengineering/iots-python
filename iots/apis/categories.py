@@ -13,7 +13,7 @@ class Categories1(APIResource, _ThingsMethods):
 
     def get(self, **kwargs) -> Union[models.Category, models.ErrorResponse]:
         """
-        Returns a Category.
+        Returns the Category information.
 
         :return: The API response to the request.
         :rtype: Union[models.Category, models.ErrorResponse]
@@ -108,7 +108,7 @@ class Categories2(APIResource):
 
     def get(self, **kwargs) -> Union[models.CategoryList, models.ErrorResponse]:
         """
-        Returns the list of Categories.
+        Returns the list of Categories in a Space.
 
         > 🚧 **Limitations:** A maximum of 1000 Categories will be returned per
         > page (50 by default).
