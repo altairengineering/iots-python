@@ -3,11 +3,12 @@ from typing import overload
 
 from ..internal.resource import APIResource
 from .categories import _CategoriesMethods
+from .communications import _CommunicationsMethods
 from .things import _ThingsMethods
 
 
 @dataclass
-class Spaces1(APIResource, _CategoriesMethods, _ThingsMethods):
+class Spaces1(APIResource, _CategoriesMethods, _ThingsMethods, _CommunicationsMethods):
     space: str
 
     def _build_partial_path(self):
@@ -25,4 +26,3 @@ class _SpacesMethods:
 
     def spaces(self, space: str):
         return Spaces1(space)._child_of(self)
-
