@@ -173,4 +173,8 @@ class APIBaseModel(PaginatorBaseModel):
     """
     The Pydantic base model used for API schema models.
     """
-    pass
+
+    class Config:
+        use_alias = True
+
+

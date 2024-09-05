@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 
 from iots.api import API
-from iots.models.models import Thing, ThingList, ThingCreate, ThingUpdate
+from iots.models.models import Thing, ThingList, ThingCreate, ThingUpdate, ThingPatch
 from .common import make_response, to_json
 from .test_api_pagination import assert_pagination
 
@@ -119,6 +119,14 @@ things = [
     test_thing02,
     test_thing03,
     test_thing04,
+]
+
+test_patch_request = [
+    {
+        "op": "replace",
+        "path": "/description",
+        "value": "Updated description"
+    }
 ]
 
 # Payload of a request to create/update a Category
@@ -285,6 +293,40 @@ def test_update(thing_req):
                               headers={
                                   'Authorization': 'Bearer valid-token',
                                   'Content-Type': 'application/json',
+                              },
+                              data=to_json(thing_req),
+                              timeout=3,
+                              verify=True)
+
+    assert action == Thing.parse_obj(expected_resp_payload)
+    assert isinstance(action, Thing)
+
+
+@pytest.mark.parametrize("thing_req", [
+    ThingPatch.parse_obj(test_patch_request),
+    test_patch_request,
+])
+def test_patch(thing_req):
+    """
+    Tests a successful request to partially update a Thing.
+    """
+    expected_resp_payload = test_thing01
+
+    expected_resp = make_response(200, expected_resp_payload)
+
+    with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
+        action = (API(host="test-api.swx.altairone.com").
+                  set_token("valid-token").
+                  spaces("space01").
+                  things("THING000000000000000000001").
+                  patch(thing_req, params={'foo': 'bar'}))
+
+    m.assert_called_once_with("PATCH",
+                              "https://test-api.swx.altairone.com/spaces/space01/things/THING000000000000000000001",
+                              params={'foo': 'bar'},
+                              headers={
+                                  'Authorization': 'Bearer valid-token',
+                                  'Content-Type': 'application/json-patch+json',
                               },
                               data=to_json(thing_req),
                               timeout=3,
