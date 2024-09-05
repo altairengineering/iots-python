@@ -59,7 +59,7 @@ class Categories1(APIResource, _ThingsMethods):
         Deletes a Category.
 
         > 📘 **Information:** The Things inside the Category will not be removed.
-        > They will simply not belong to the eliminated Category anymore.
+        > They simply no longer belong to the deleted Category.
 
         :return: The API response to the request.
         :rtype: primitives.NoResponse
@@ -158,7 +158,7 @@ class _CategoriesMethods:
         ...
 
     def categories(self, category_name: str = None):
-        if category_name is not None :
+        if category_name is not None:
             return Categories1(category_name)._child_of(self)
 
         if category_name is None:
