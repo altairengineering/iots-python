@@ -4,14 +4,6 @@ iots package
 Submodules
 ----------
 
-iots.apis.actions module
-------------------------
-
-.. automodule:: iots.apis.actions
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 iots.api module
 ---------------
 
@@ -21,6 +13,14 @@ iots.api module
    :show-inheritance:
    :class-doc-from: init
 
+iots.apis.spaces module
+-----------------------
+
+.. automodule:: iots.apis.spaces
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 iots.apis.categories module
 ---------------------------
 
@@ -29,10 +29,18 @@ iots.apis.categories module
    :undoc-members:
    :show-inheritance:
 
-iots.models.exceptions module
------------------------------
+iots.apis.things module
+-----------------------
 
-.. automodule:: iots.models.exceptions
+.. automodule:: iots.apis.things
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+iots.apis.actions module
+------------------------
+
+.. automodule:: iots.apis.actions
    :members:
    :undoc-members:
    :show-inheritance:
@@ -53,18 +61,18 @@ iots.apis.properties module
    :undoc-members:
    :show-inheritance:
 
-iots.apis.spaces module
------------------------
+iots.apis.communications module
+-------------------------------
 
-.. automodule:: iots.apis.spaces
+.. automodule:: iots.apis.communications
    :members:
    :undoc-members:
    :show-inheritance:
 
-iots.apis.things module
------------------------
+iots.apis.email module
+-------------------------------
 
-.. automodule:: iots.apis.things
+.. automodule:: iots.apis.email
    :members:
    :undoc-members:
    :show-inheritance:
@@ -73,6 +81,14 @@ iots.security module
 --------------------
 
 .. automodule:: iots.security
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+iots.models.exceptions module
+-----------------------------
+
+.. automodule:: iots.models.exceptions
    :members:
    :undoc-members:
    :show-inheritance:
