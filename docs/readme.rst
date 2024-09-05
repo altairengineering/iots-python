@@ -14,15 +14,18 @@ Introduction
 ------------
 
 This library allows you to interact with the Altair® IoT Studio™ API using
-Python. The current implementation has support for the following AnythingDB
-APIs:
+Python. The current implementation has support for the following APIs:
 
 
-* `Categories API <https://openapi.swx.altairone.com/cloud/anything-db#/Categories>`_
-* `Things API <https://openapi.swx.altairone.com/cloud/anything-db#/Things>`_
-* `Properties API <https://openapi.swx.altairone.com/cloud/anything-db#/Properties>`_
-* `Actions API <https://openapi.swx.altairone.com/cloud/anything-db#/Actions>`_
-* `Events API <https://openapi.swx.altairone.com/cloud/anything-db#/Events>`_
+* `AnythingDB <https://openapi.swx.altairone.com/cloud/anything-db>`_\ :
+
+  * `Categories API <https://openapi.swx.altairone.com/cloud/anything-db#/Categories>`_
+  * `Things API <https://openapi.swx.altairone.com/cloud/anything-db#/Things>`_
+  * `Properties API <https://openapi.swx.altairone.com/cloud/anything-db#/Properties>`_
+  * `Actions API <https://openapi.swx.altairone.com/cloud/anything-db#/Actions>`_
+  * `Events API <https://openapi.swx.altairone.com/cloud/anything-db#/Events>`_
+
+* Communications API
 
 Install
 -------
@@ -204,6 +207,16 @@ has been returned from the server.
        things = api.spaces("my-iot-project").things().get()
    except ResponseError as e:
        raw_response = e.http_response()
+
+TLS certificate verification
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you need to skip the TLS certificate verification, you can use the ``verify``
+argument when creating the ``API`` instance:
+
+.. code-block:: python
+
+   api = API(verify=False)
 
 🔮 Future features
 ------------------

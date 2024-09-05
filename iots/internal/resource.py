@@ -1,16 +1,20 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from pyexpat import ExpatError
 from typing import Tuple, Union
 
 import requests
-from pyexpat import ExpatError
 from requests import HTTPError, PreparedRequest, Response
 from requests.structures import CaseInsensitiveDict
 
 from ..models.basemodel import APIBaseModel
 from ..models.exceptions import ExceptionList, ResponseError
 from ..models.extensions.pagination import PaginationDescription
-from .content_type import SUPPORTED_REQUEST_CONTENT_TYPES, content_types_match
+from .content_type import (
+    SUPPORTED_REQUEST_CONTENT_TYPES,
+    content_types_compatible,
+    content_types_match,
+)
 from .runtime_expr import evaluate, prepare_request
 
 
@@ -263,7 +267,7 @@ def _validate_request_payload(body: Union[str, bytes, dict, APIBaseModel],
             # TODO: currently, request_class is not used, but it could be used
             #       to validate that the payload matches a given model
             for ct, conv_func in SUPPORTED_REQUEST_CONTENT_TYPES.items():
-                if content_types_match(content_type, ct):
+                if content_types_compatible(content_type, ct):
                     try:
                         body = conv_func(body)
 

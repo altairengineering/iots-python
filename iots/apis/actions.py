@@ -80,6 +80,8 @@ class Actions2(APIResource):
         """
         Creates a new Action resource for the given Thing's Action.
 
+        > 🚧 **Limitations:** A maximum of 100 Action resources will be stored.
+
         :param req: Request payload.
         :type req: Union[models.ActionCreateRequest, dict]
         :return: The API response to the request.
@@ -103,8 +105,8 @@ class Actions2(APIResource):
         """
         Returns the list of Action resources of the given Thing's Action.
 
-        > 🚧 **Limitations:** A maximum of 1000 Action resources will be returned
-        > per page (50 by default).
+        > 🚧 **Limitations:** A maximum of 100 Action resources will be stored and returned
+        > (50 by default per page).
 
         Query parameters:
          - `next_cursor` _(str)_: Cursor used to get the next page of results.
@@ -145,8 +147,8 @@ class Actions3(APIResource):
         """
         Returns the list of Action resources of the given Thing.
 
-        > 🚧 **Limitations:** A maximum of 1000 Action resources will be returned
-        > per page (50 by default).
+        > 🚧 **Limitations:** A maximum of 100 Action resources per Action will be stored and returned
+        > (50 by default per page).
 
         Query parameters:
          - `next_cursor` _(str)_: Cursor used to get the next page of results.
@@ -198,10 +200,10 @@ class _ActionsMethods:
         ...
 
     def actions(self, action_name: str = None, action_id: str = None):
-        if action_name is not None  and action_id is not None :
+        if action_name is not None and action_id is not None:
             return Actions1(action_name, action_id)._child_of(self)
 
-        if action_name is not None :
+        if action_name is not None:
             return Actions2(action_name)._child_of(self)
 
         if action_name is None and action_id is None:

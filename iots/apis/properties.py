@@ -122,7 +122,7 @@ class _PropertiesMethods:
         ...
 
     def properties(self, property: str = None):
-        if property is not None :
+        if property is not None:
             return Properties1(property)._child_of(self)
 
         if property is None:

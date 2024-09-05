@@ -33,7 +33,7 @@ def to_dict(d) -> dict:
 
 
 def to_json(d) -> str:
-    if isinstance(d, dict):
+    if isinstance(d, (dict, list)):
         return json.dumps(d)
     elif isinstance(d, BaseModel):
         return d.json()

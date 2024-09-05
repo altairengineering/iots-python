@@ -15,7 +15,7 @@ from .security import (
 
 class API(_SpacesMethods):
     """
-    The top-level class used as an abstraction of the AnythingDB - API reference.
+    The top-level class used as an abstraction of the Altair IoT Studio API.
     """
 
     def __init__(self, host: str = "https://api.swx.altairone.com",
@@ -24,7 +24,7 @@ class API(_SpacesMethods):
         """
         Creates a new API instance.
 
-        :param host: (optional) Host name of the AnythingDB - API reference.
+        :param host: (optional) Host name of the Altair IoT Studio API.
         :param security_strategy: (optional) The security strategy for the API client.
         :param verify: (optional) Whether to verify the server's TLS certificate.
         """
@@ -124,7 +124,7 @@ class API(_SpacesMethods):
         headers.update(self.headers)
 
         # TODO: Handle request Content-Type
-        if isinstance(body, dict):
+        if isinstance(body, (dict, list)):
             headers['Content-Type'] = 'application/json'
             body = json.dumps(body)
         elif isinstance(body, BaseModel):

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "iots"
-version = "0.2.0"
+version = "0.4.0"
 description = "A Python client for the Altair IoT Studio API"
 authors = ["Daniel Sánchez Gallego <dsanchez@altair.com>"]
 readme = "README.md"

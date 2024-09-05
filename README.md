@@ -9,13 +9,15 @@
 ## Introduction
 
 This library allows you to interact with the Altair® IoT Studio™ API using
-Python. The current implementation has support for the following AnythingDB
-APIs:
-- [Categories API](https://openapi.swx.altairone.com/cloud/anything-db#/Categories)
-- [Things API](https://openapi.swx.altairone.com/cloud/anything-db#/Things)
-- [Properties API](https://openapi.swx.altairone.com/cloud/anything-db#/Properties)
-- [Actions API](https://openapi.swx.altairone.com/cloud/anything-db#/Actions)
-- [Events API](https://openapi.swx.altairone.com/cloud/anything-db#/Events)
+Python. The current implementation has support for the following APIs:
+
+- [AnythingDB](https://openapi.swx.altairone.com/cloud/anything-db):
+  - [Categories API](https://openapi.swx.altairone.com/cloud/anything-db#/Categories)
+  - [Things API](https://openapi.swx.altairone.com/cloud/anything-db#/Things)
+  - [Properties API](https://openapi.swx.altairone.com/cloud/anything-db#/Properties)
+  - [Actions API](https://openapi.swx.altairone.com/cloud/anything-db#/Actions)
+  - [Events API](https://openapi.swx.altairone.com/cloud/anything-db#/Events)
+- Communications API
 
 ## Install
 

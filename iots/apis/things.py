@@ -53,6 +53,29 @@ class Things1(APIResource, _ActionsMethods, _EventsMethods, _PropertiesMethods):
             (500, "application/json", models.ErrorResponse),
         ])
 
+    def patch(self, req: Union[models.ThingPatch, list], **kwargs) -> Union[models.Thing, models.ErrorResponse]:
+        """
+        Partially updates a Thing with the given ID.
+
+        :param req: Request payload.
+        :type req: Union[models.ThingPatch, list]
+        :return: The API response to the request.
+        :rtype: Union[models.Thing, models.ErrorResponse]
+        """
+        req_content_types = [
+            ("application/json-patch+json", models.ThingPatch),
+        ]
+
+        resp = self._make_request("PATCH", req, req_content_types=req_content_types, **kwargs)
+        return self._handle_response(resp, [
+            (200, "application/json", models.Thing),
+            (400, "application/json", models.ErrorResponse),
+            (401, "application/json", models.ErrorResponse),
+            (403, "application/json", models.ErrorResponse),
+            (404, "application/json", models.ErrorResponse),
+            (500, "application/json", models.ErrorResponse),
+        ])
+
     def delete(self, **kwargs) -> primitives.NoResponse:
         """
         Deletes the Thing with the given ID and all its related information
@@ -95,6 +118,29 @@ class Things2(APIResource):
         resp = self._make_request("POST", req, req_content_types=req_content_types, **kwargs)
         return self._handle_response(resp, [
             (201, "application/json", models.Thing),
+            (400, "application/json", models.ErrorResponse),
+            (401, "application/json", models.ErrorResponse),
+            (403, "application/json", models.ErrorResponse),
+            (404, "application/json", models.ErrorResponse),
+            (500, "application/json", models.ErrorResponse),
+        ])
+
+    def patch(self, req: Union[models.ThingsPatch, list], **kwargs) -> Union[models.ThingsPatchMultiStatus, models.ErrorResponse]:
+        """
+        Partially updates Things with the given IDs.
+
+        :param req: Request payload.
+        :type req: Union[models.ThingsPatch, list]
+        :return: The API response to the request.
+        :rtype: Union[models.ThingsPatchMultiStatus, models.ErrorResponse]
+        """
+        req_content_types = [
+            ("application/json-patch+json", models.ThingsPatch),
+        ]
+
+        resp = self._make_request("PATCH", req, req_content_types=req_content_types, **kwargs)
+        return self._handle_response(resp, [
+            (207, "application/json", models.ThingsPatchMultiStatus),
             (400, "application/json", models.ErrorResponse),
             (401, "application/json", models.ErrorResponse),
             (403, "application/json", models.ErrorResponse),
@@ -281,7 +327,7 @@ class _ThingsMethods:
         ...
 
     def things(self, thing_id: str = None):
-        if thing_id is not None :
+        if thing_id is not None:
             return Things1(thing_id)._child_of(self)
 
         if thing_id is None:

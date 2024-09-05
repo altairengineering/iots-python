@@ -56,6 +56,11 @@ class Events2(APIResource):
         """
         Creates a new Event resource for the given Thing's Event.
 
+        > 🚧 **Limitations:** A maximum of 100 Event resources will be stored.
+
+        > 🚧 **Limitations:** This operation will only work in the scope of the
+        > given Category.
+
         :param req: Request payload.
         :type req: Union[models.EventCreateRequest, dict]
         :return: The API response to the request.
@@ -79,8 +84,8 @@ class Events2(APIResource):
         """
         Returns the list of Event resources of the given Thing's Event.
 
-        > 🚧 **Limitations:** A maximum of 1000 Event resources will be returned
-        > per page (50 by default).
+        > 🚧 **Limitations:** A maximum of 100 Event resources will be stored and returned
+        > (50 by default per page).
 
         Query parameters:
          - `next_cursor` _(str)_: Cursor used to get the next page of results.
@@ -121,8 +126,8 @@ class Events3(APIResource):
         """
         Returns the list of Event resources of the given Thing.
 
-        > 🚧 **Limitations:** A maximum of 1000 Event resources will be returned
-        > per page (50 by default).
+        > 🚧 **Limitations:** A maximum of 100 Event resources per Event will be stored and returned
+        >(50 by default per page).
 
         Query parameters:
          - `next_cursor` _(str)_: Cursor used to get the next page of results.
@@ -174,10 +179,10 @@ class _EventsMethods:
         ...
 
     def events(self, event_name: str = None, event_id: str = None):
-        if event_name is not None  and event_id is not None :
+        if event_name is not None and event_id is not None:
             return Events1(event_name, event_id)._child_of(self)
 
-        if event_name is not None :
+        if event_name is not None:
             return Events2(event_name)._child_of(self)
 
         if event_name is None and event_id is None:
