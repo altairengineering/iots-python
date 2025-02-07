@@ -17,7 +17,7 @@ Python. The current implementation has support for the following APIs:
   - [Properties API](https://openapi.swx.altairone.com/cloud/anything-db#/Properties)
   - [Actions API](https://openapi.swx.altairone.com/cloud/anything-db#/Actions)
   - [Events API](https://openapi.swx.altairone.com/cloud/anything-db#/Events)
-- Communications API
+- [Communications API](https://openapi.swx.altairone.com/cloud/communications)
 
 ## Install
 
