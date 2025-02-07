@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "iots"
-version = "0.4.0"
+version = "0.5.0"
 description = "A Python client for the Altair IoT Studio API"
 authors = ["Daniel Sánchez Gallego <dsanchez@altair.com>"]
 readme = "README.md"
@@ -12,8 +12,8 @@ classifiers = ["Topic :: Software Development :: Libraries"]
 [tool.poetry.dependencies]
 python = "^3.8"
 requests = "^2.31.0"
-pydantic = "^1.10.18"
-xmltodict = "^0.13.0"
+pydantic = "^1.10.21"
+xmltodict = "^0.14.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
