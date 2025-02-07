@@ -129,7 +129,7 @@ class API(_SpacesMethods):
             body = json.dumps(body)
         elif isinstance(body, BaseModel):
             headers['Content-Type'] = 'application/json'
-            body = body.json()
+            body = body.json(by_alias=True)
 
         if url.lower().startswith('http://') or url.lower().startswith('https://'):
             url = url

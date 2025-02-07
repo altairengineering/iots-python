@@ -167,9 +167,18 @@ class Things2(APIResource):
          - `in_category` _(bool)_: If `true`, only Things within some Category will be listed. If `false`, only Things not associated to any Category will be listed. If omitted, all Things will be listed.
          - `sort` _(list)_: Sort items by one or more fields in any order.
 
-           For example, using `sort=uid,+title,-created` will return the results
-           ordered by ascending `uid`, ascending `title` and descending `created`
-           (having `uid` the highest priority and `created` the lowest).
+           > **Example**: Using `sort=uid,+title,-created` will return the results
+           > ordered by ascending `uid`, ascending `title` and descending `created`
+           > (having `uid` the highest priority and `created` the lowest).
+
+           Any Thing Description attribute can be used for sorting, even if it is
+           specific to a Thing or deeply nested.
+
+           > **Example**: To get all the Things sorted by the value of the
+           > `temperature` Property in descending order, you can use
+           > `sort=-status.temperature`. The result won't filter out the Things
+           > that don't have the `temperature` Property, but they will be placed at
+           > the end of the list.
          - `property` _(dict)_: This parameter adds a condition on the value of a Thing Property.
            Only the Things that meet this criteria will satisfy this filter.
 
