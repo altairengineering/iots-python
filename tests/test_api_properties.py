@@ -80,7 +80,7 @@ def test_update_one(property_name, value):
     """
     expected_resp_payload = {property_name: value}
 
-    expected_resp = make_response(201, expected_resp_payload)
+    expected_resp = make_response(200, expected_resp_payload)
 
     with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         prop = (API(host="test-api.swx.altairone.com").
@@ -102,7 +102,7 @@ def test_update_one(property_name, value):
                               verify=True)
 
     assert prop == expected_resp_payload
-    assert isinstance(prop, Property)
+    assert isinstance(prop, Properties)
 
 
 def test_update_multiple():
@@ -115,7 +115,7 @@ def test_update_multiple():
     }
     expected_resp_payload = new_values
 
-    expected_resp = make_response(201, expected_resp_payload)
+    expected_resp = make_response(200, expected_resp_payload)
 
     with mock.patch(request_mock_pkg, return_value=expected_resp) as m:
         prop = (API(host="test-api.swx.altairone.com").

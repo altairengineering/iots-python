@@ -10,16 +10,18 @@ from ..models import models
 class Properties1(APIResource):
     property: str
 
-    def update(self, value, **kwargs) -> Union[models.Property, models.ErrorResponse]:
+    def update(self, value, **kwargs) -> Union[models.Properties, models.ErrorResponse]:
         """
         Updates the value of a Thing Property.
 
         Query parameters:
          - `update_history` _(bool)_: Indicates whether the values should be stored in the Properties history.
+           By default, the values will be added to the history so that they can be
+           retrieved later using the [Properties History](#/Properties%20History) API.
 
         :param value: The new value of the Property.
         :return: The API response to the request.
-        :rtype: Union[models.Property, models.ErrorResponse]
+        :rtype: Union[models.Properties, models.ErrorResponse]
         """
         req = "{\"" + str(self._path_value('property')) + "\": " + json.dumps(value) + "}"
 
@@ -29,7 +31,7 @@ class Properties1(APIResource):
 
         resp = self._make_request("PUT", req, req_content_types=req_content_types, **kwargs)
         return self._handle_response(resp, [
-            (201, "application/json", models.Property),
+            (200, "application/json", models.Properties),
             (400, "application/json", models.ErrorResponse),
             (401, "application/json", models.ErrorResponse),
             (403, "application/json", models.ErrorResponse),
@@ -67,6 +69,8 @@ class Properties2(APIResource):
 
         Query parameters:
          - `update_history` _(bool)_: Indicates whether the values should be stored in the Properties history.
+           By default, the values will be added to the history so that they can be
+           retrieved later using the [Properties History](#/Properties%20History) API.
 
         :param req: Request payload.
         :type req: Union[models.Properties, dict]
@@ -79,7 +83,7 @@ class Properties2(APIResource):
 
         resp = self._make_request("PUT", req, req_content_types=req_content_types, **kwargs)
         return self._handle_response(resp, [
-            (201, "application/json", models.Properties),
+            (200, "application/json", models.Properties),
             (400, "application/json", models.ErrorResponse),
             (401, "application/json", models.ErrorResponse),
             (403, "application/json", models.ErrorResponse),
