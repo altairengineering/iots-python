@@ -25,7 +25,7 @@ Python. The current implementation has support for the following APIs:
   * `Actions API <https://openapi.swx.altairone.com/cloud/anything-db#/Actions>`_
   * `Events API <https://openapi.swx.altairone.com/cloud/anything-db#/Events>`_
 
-* Communications API
+* `Communications API <https://openapi.swx.altairone.com/cloud/communications>`_
 
 Install
 -------
